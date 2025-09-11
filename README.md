@@ -1,47 +1,48 @@
 # comercio-eletronico-N2
 ## Engenharia de Requisitos
-### Requisitos funcionais para o cliente
-1. Visualizar produtos
+### 1. Requisitos funcionais para o cliente
+a. Visualizar produtos
 > - O cliente deve conseguir ver todos os produtos disponíveis, com foto, preço e descrição.
 
-2. Filtrar produtos por categoria ou tipo de pet
+b. Filtrar produtos por categoria ou tipo de pet
 > - Permitir filtrar por cães, gatos, acessórios, brinquedos, rações, etc.
 
-3. Visualizar detalhes do produto
+c. Visualizar detalhes do produto
 > - Mostrar descrição completa, estoque, preço e avaliações.
 
-4. Adicionar produtos ao carrinho
+d. Adicionar produtos ao carrinho
 > - Permitir selecionar quantidade e adicionar ao carrinho.
 
-5. Remover ou alterar quantidade de produtos no carrinho
+e. Remover ou alterar quantidade de produtos no carrinho
 > - Checkout simulado
 
-6. Preencher dados fictícios de endereço e forma de pagamento.
+f. Preencher dados fictícios de endereço e forma de pagamento.
 > - Gerar confirmação do pedido.
 
-7. Login e cadastro de clientes
+g. Login e cadastro de clientes
 > - Permitir criar conta e acessar histórico de pedidos.
 
-8. Visualizar histórico de pedidos
+h. Visualizar histórico de pedidos
 > - Mostrar lista de pedidos já realizados com detalhes do pedido.
 
-9. Perfil do pet (opcional)
+i. Perfil do pet (opcional)
 > - Adicionar e gerenciar informações do pet: nome, idade, raça.
 
-### Requisitos funcionais para o administrador
-1. CRUD de produtos
+
+### 2. Requisitos funcionais para o administrador
+a. CRUD de produtos
 > - Adicionar, editar, remover e listar produtos.
 
-2. Gerenciar categorias de produtos
+b. Gerenciar categorias de produtos
 > - Criar, editar e excluir categorias como “Ração”, “Brinquedos”, “Higiene”.
 
-3. Visualizar pedidos realizados
+c. Visualizar pedidos realizados
 > - Listar pedidos feitos pelos clientes com detalhes.
 
-4. Gerenciar estoque
+d. Gerenciar estoque
 > - Atualizar quantidade de produtos disponíveis.
 
-5. Gerenciar cupons de desconto (opcional)
+e. Gerenciar cupons de desconto (opcional)
 > - Criar e editar cupons aplicáveis no checkout.
 
 ## Diagrama de classes
