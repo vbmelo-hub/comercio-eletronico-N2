@@ -128,3 +128,27 @@ e. Gerenciar cupons de desconto (opcional)
     ItemPedido "*" --> "1" Produto : referente_a
     Veterinario "1" --> "*" Pet : atende
     Pet "1" --> "*" Consulta : possui
+
+---
+
+## Stack implementada (Spring Boot + Angular)
+- **Backend**: `backend/` com Spring Boot 3, H2 em memória, endpoints REST para catálogo, auth, carrinho/pedidos e painel admin (CRUD produtos/categorias/cupons e listagem de pedidos). Login retorna token em `X-Auth-Token`. Seeds iniciais criados em `DataInitializer`.
+- **Frontend**: `frontend/` com Angular standalone (abas: Catálogo, Carrinho, Pedidos, Perfil/Pets, Admin). Consome a API; guarda token/carrinho em localStorage; fluxo completo de compra simulado.
+
+### Como rodar
+1) Backend:
+```
+cd backend
+mvn spring-boot:run
+```
+API em `http://localhost:8080/api`. H2 console opcional em `/h2-console`.
+
+2) Frontend:
+```
+cd frontend
+npm install
+npm start
+```
+App em `http://localhost:4200` consumindo a API.
+
+Credenciais admin: `admin@petshop.com / admin123`. Cliente demo: `cliente@petshop.com / cliente123`.

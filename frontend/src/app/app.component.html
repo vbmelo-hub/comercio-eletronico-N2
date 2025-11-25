@@ -1,0 +1,289 @@
+<div class="layout">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">AP</div>
+      <div>
+        <div class="muted" style="font-size:12px;">Petshop digital</div>
+        <strong>Artemis Pets</strong>
+      </div>
+    </div>
+    <div class="tab-bar">
+      <button class="tab-btn" [class.active]="activeTab==='catalog'" (click)="setTab('catalog')">Catalogo</button>
+      <button class="tab-btn" [class.active]="activeTab==='cart'" (click)="setTab('cart')">Carrinho</button>
+      <button class="tab-btn" [class.active]="activeTab==='orders'" (click)="setTab('orders')">Pedidos</button>
+      <button class="tab-btn" [class.active]="activeTab==='profile'" (click)="setTab('profile')">Perfil</button>
+      <button class="tab-btn" [class.active]="activeTab==='admin'" (click)="setTab('admin')">Admin</button>
+    </div>
+    <div class="row" style="gap:8px;">
+      <span class="pill" *ngIf="user; else guest">{{user?.name}} · {{user?.role}}</span>
+      <ng-template #guest><span class="pill">Visitante</span></ng-template>
+      <button class="btn ghost" *ngIf="!user" (click)="setTab('profile')">Entrar</button>
+      <button class="btn ghost danger" *ngIf="user" (click)="logout()">Sair</button>
+    </div>
+  </header>
+
+  <div class="muted" *ngIf="statusMessage">{{statusMessage}}</div>
+
+  <section class="panel" *ngIf="activeTab==='catalog'">
+    <div class="row">
+      <div>
+        <div class="muted">Filtre por especie, categoria e texto.</div>
+        <h2 class="section-title">Catalogo</h2>
+      </div>
+      <div class="row" style="gap:8px;">
+        <input placeholder="Buscar" [(ngModel)]="searchTerm" (input)="loadProducts()" style="width:200px;">
+        <select [(ngModel)]="petFilter" (change)="loadProducts()">
+          <option value="">Todos</option>
+          <option value="DOG">Caes</option>
+          <option value="CAT">Gatos</option>
+          <option value="ACCESSORY">Acessorios</option>
+        </select>
+        <select [(ngModel)]="categoryFilter" (change)="loadProducts()">
+          <option [ngValue]="null">Todas as categorias</option>
+          <option *ngFor="let c of categories" [ngValue]="c.id">{{c.name}}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="grid">
+      <article class="card product" *ngFor="let p of products">
+        <img [src]="p.imageUrl" [alt]="p.name">
+        <div class="pill">{{p.category?.name}} · {{p.petType}}</div>
+        <h3>{{p.name}}</h3>
+        <div class="muted">{{p.description}}</div>
+        <div class="row">
+          <span class="price">{{p.price | currency:'BRL':'symbol'}}</span>
+          <span class="muted">Estoque: {{p.stock}}</span>
+        </div>
+        <div class="row">
+          <button class="btn primary" (click)="addToCart(p)">Adicionar</button>
+          <span class="pill">★ {{p.rating}}</span>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="panel" *ngIf="activeTab==='cart'">
+    <div class="row">
+      <div>
+        <div class="muted">Atualize quantidades, aplique cupom e siga para checkout.</div>
+        <h2 class="section-title">Carrinho e Checkout</h2>
+      </div>
+      <button class="btn ghost" (click)="clearCart()">Esvaziar</button>
+    </div>
+    <div class="grid">
+      <div class="card" *ngFor="let item of cartItems">
+        <div class="row">
+          <div>
+            <strong>{{item.product.name}}</strong>
+            <div class="muted">{{item.product.price | currency:'BRL':'symbol'}} · Estoque: {{item.product.stock}}</div>
+          </div>
+          <input type="number" min="1" [max]="item.product.stock" [(ngModel)]="item.quantity" (change)="updateQty(item.product.id, item.quantity)" style="width:80px;">
+        </div>
+        <div class="row">
+          <button class="btn ghost danger" (click)="removeItem(item.product.id)">Remover</button>
+          <div class="price">{{(item.product.price * item.quantity) | currency:'BRL':'symbol'}}</div>
+        </div>
+      </div>
+      <div class="muted" *ngIf="cartItems.length===0">Carrinho vazio.</div>
+    </div>
+
+    <div class="card" style="margin-top:12px;">
+      <div class="row">
+        <label style="flex:1;">Cupom
+          <input placeholder="BEMVINDO" [(ngModel)]="checkoutForm.coupon">
+        </label>
+        <button class="btn ghost" (click)="applyCoupon()">Aplicar</button>
+      </div>
+      <div class="row">
+        <div>Itens: {{cartItems.length}}</div>
+        <div class="price">
+          Total estimado:
+          {{ cartTotal | currency:'BRL':'symbol' }}
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:12px;">
+      <h3>Dados de entrega e pagamento</h3>
+      <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
+        <label>Nome<input [(ngModel)]="checkoutForm.name"></label>
+        <label>Email<input [(ngModel)]="checkoutForm.email"></label>
+        <label>Endereco<input [(ngModel)]="checkoutForm.street"></label>
+        <label>Cidade<input [(ngModel)]="checkoutForm.city"></label>
+        <label>Estado<input [(ngModel)]="checkoutForm.state"></label>
+        <label>CEP<input [(ngModel)]="checkoutForm.zip"></label>
+        <label>Pagamento
+          <select [(ngModel)]="checkoutForm.paymentMethod">
+            <option value="CREDIT_CARD">Cartao</option>
+            <option value="PIX">PIX</option>
+            <option value="BOLETO">Boleto</option>
+          </select>
+        </label>
+      </div>
+      <button class="btn primary full" (click)="checkout()">Finalizar</button>
+    </div>
+  </section>
+
+  <section class="panel" *ngIf="activeTab==='orders'">
+    <div class="row">
+      <div>
+        <div class="muted">Pedidos feitos neste navegador</div>
+        <h2 class="section-title">Historico de pedidos</h2>
+      </div>
+      <button class="btn ghost" (click)="loadOrders()">Atualizar</button>
+    </div>
+    <div class="grid">
+      <div class="order-card" *ngFor="let o of orders">
+        <div class="row">
+          <strong>#{{o.id}}</strong>
+          <span class="muted">{{o.createdAt | date:'short'}}</span>
+        </div>
+        <div class="row">
+          <span>{{o.items.length}} itens</span>
+          <span class="price">{{o.total | currency:'BRL':'symbol'}}</span>
+        </div>
+        <div class="muted">Pagamento: {{o.paymentMethod}} · Status: {{o.status}}</div>
+      </div>
+      <div class="muted" *ngIf="orders.length===0">Sem pedidos ainda.</div>
+    </div>
+  </section>
+
+  <section class="panel" *ngIf="activeTab==='profile'">
+    <div class="row">
+      <div>
+        <div class="muted">Acesse ou cadastre, gerencie pets.</div>
+        <h2 class="section-title">Conta</h2>
+      </div>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <h3>Login</h3>
+        <label>Email<input [(ngModel)]="loginForm.email"></label>
+        <label>Senha<input type="password" [(ngModel)]="loginForm.password"></label>
+        <button class="btn primary full" (click)="login()">Entrar</button>
+        <div class="muted">Admin: admin&#64;petshop.com / admin123</div>
+      </div>
+      <div class="card">
+        <h3>Novo cadastro</h3>
+        <label>Nome<input [(ngModel)]="signupForm.name"></label>
+        <label>Email<input [(ngModel)]="signupForm.email"></label>
+        <label>Senha<input type="password" [(ngModel)]="signupForm.password"></label>
+        <button class="btn ghost full" (click)="signup()">Cadastrar</button>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:12px;" *ngIf="user">
+      <div class="row">
+        <div>
+          <div class="muted">Pets</div>
+          <h3>{{user?.name}}</h3>
+        </div>
+      </div>
+      <div class="pill-collection">
+        <span class="pill" *ngFor="let p of user?.pets">{{p.name}} · {{p.age}} · {{p.breed}}</span>
+      </div>
+      <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-top:10px;">
+        <label>Nome<input [(ngModel)]="petForm.name"></label>
+        <label>Idade<input [(ngModel)]="petForm.age"></label>
+        <label>Raca<input [(ngModel)]="petForm.breed"></label>
+      </div>
+      <button class="btn ghost" (click)="addPet()">Adicionar pet</button>
+    </div>
+  </section>
+
+  <section class="panel" *ngIf="activeTab==='admin'">
+    <div class="row">
+      <div>
+        <div class="muted">CRUD de produtos, categorias, cupons e pedidos.</div>
+        <h2 class="section-title">Painel Admin</h2>
+      </div>
+      <div class="pill" *ngIf="!user || user.role!=='ADMIN'">Restrito ao admin</div>
+    </div>
+    <div *ngIf="user?.role==='ADMIN'; else noadmin">
+      <div class="card">
+        <h3>Produto</h3>
+        <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+          <label>Nome<input [(ngModel)]="adminProduct.name"></label>
+          <label>Descricao<input [(ngModel)]="adminProduct.description"></label>
+          <label>Preco<input type="number" [(ngModel)]="adminProduct.price"></label>
+          <label>Estoque<input type="number" [(ngModel)]="adminProduct.stock"></label>
+          <label>Categoria
+            <select [(ngModel)]="adminProduct.categoryId">
+              <option *ngFor="let c of categories" [ngValue]="c.id">{{c.name}}</option>
+            </select>
+          </label>
+          <label>Tipo pet
+            <select [(ngModel)]="adminProduct.petType">
+              <option value="DOG">Caes</option>
+              <option value="CAT">Gatos</option>
+              <option value="ACCESSORY">Acessorios</option>
+            </select>
+          </label>
+          <label>Imagem<input [(ngModel)]="adminProduct.imageUrl"></label>
+        </div>
+        <button class="btn primary" (click)="saveProduct()">Salvar produto</button>
+      </div>
+
+      <div class="card">
+        <h3>Categorias</h3>
+        <div class="row">
+          <label style="flex:1;">Nome<input [(ngModel)]="adminCategory.name"></label>
+          <label style="flex:1;">Pet
+            <select [(ngModel)]="adminCategory.petType">
+              <option value="DOG">Caes</option>
+              <option value="CAT">Gatos</option>
+              <option value="ACCESSORY">Acessorios</option>
+            </select>
+          </label>
+          <button class="btn ghost" (click)="saveCategory()">Salvar</button>
+        </div>
+        <div class="pill-collection">
+          <span class="pill" *ngFor="let c of categories">
+            {{c.name}} · {{c.petType}}
+            <button class="btn ghost danger" (click)="deleteCategory(c.id)">x</button>
+          </span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Cupons</h3>
+        <div class="row">
+          <label style="flex:1;">Codigo<input [(ngModel)]="couponForm.code"></label>
+          <label style="flex:1;">Desconto %<input type="number" [(ngModel)]="couponForm.discountPercent"></label>
+          <label>Ativo
+            <select [(ngModel)]="couponForm.active">
+              <option [ngValue]="true">Ativo</option>
+              <option [ngValue]="false">Pausado</option>
+            </select>
+          </label>
+          <button class="btn ghost" (click)="saveCoupon()">Salvar cupom</button>
+          <button class="btn ghost" (click)="loadCoupons()">Atualizar</button>
+        </div>
+        <div class="pill-collection">
+          <span class="pill" *ngFor="let c of coupons">{{c.code}} · {{c.discountPercent}}% · {{c.active ? 'ativo' : 'off'}}</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="row">
+          <div>
+            <div class="muted">Pedidos recentes</div>
+            <h3>Pedidos</h3>
+          </div>
+          <button class="btn ghost" (click)="loadOrders()">Atualizar</button>
+        </div>
+        <div class="grid">
+          <div class="order-card" *ngFor="let o of orders">
+            <div class="row"><strong>#{{o.id}}</strong><span class="muted">{{o.createdAt | date:'short'}}</span></div>
+            <div class="row"><span>{{o.items.length}} itens</span><span class="price">{{o.total | currency:'BRL':'symbol'}}</span></div>
+            <div class="muted">Cliente: {{o.user?.name}}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ng-template #noadmin>
+      <div class="card muted">Faca login como admin&#64;petshop.com para acessar.</div>
+    </ng-template>
+  </section>
+</div>
