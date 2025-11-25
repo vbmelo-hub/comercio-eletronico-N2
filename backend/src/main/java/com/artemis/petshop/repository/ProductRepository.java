@@ -11,4 +11,6 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("select p from Product p where (:categoryId is null or p.category.id = :categoryId) and (:petType is null or p.petType = :petType) and (lower(p.name) like lower(concat('%',:q,'%')) or lower(p.description) like lower(concat('%',:q,'%')))")
     List<Product> search(@Param("categoryId") Long categoryId, @Param("petType") PetType petType, @Param("q") String query);
+
+    long countByCategoryId(Long categoryId);
 }

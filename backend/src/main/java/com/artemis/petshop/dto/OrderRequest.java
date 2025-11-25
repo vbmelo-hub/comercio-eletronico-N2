@@ -1,7 +1,6 @@
 package com.artemis.petshop.dto;
 
 import com.artemis.petshop.model.PaymentMethod;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -21,15 +20,14 @@ public class OrderRequest {
 
     @NotBlank
     private String name;
-    @Email
     @NotBlank
     private String email;
-    @NotBlank
+    // Endereço exigido apenas para entrega (validado no serviço)
     private String street;
-    @NotBlank
     private String city;
-    @NotBlank
     private String state;
-    @NotBlank
     private String zip;
+
+    // true = retirada; false = entrega
+    private boolean pickup = false;
 }

@@ -2,13 +2,40 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from './api.service';
-import { CartItem, Category, OrderRecord, Product, User, PaymentMethod } from './models';
 import { StateService } from './state.service';
+import { CartItem, Category, OrderRecord, Product, User, PaymentMethod } from './models';
+import { CatalogFiltersComponent } from './components/catalog/catalog-filters.component';
+import { ProductCardComponent } from './components/catalog/product-card.component';
+import { CartItemsComponent } from './components/cart/cart-items.component';
+import { CheckoutSummaryComponent } from './components/cart/checkout-summary.component';
+import { OrderListComponent } from './components/orders/order-list.component';
+import { LoginPanelComponent } from './components/auth/login-panel.component';
+import { SignupPanelComponent } from './components/auth/signup-panel.component';
+import { PetListComponent } from './components/pets/pet-list.component';
+import { AdminProductFormComponent } from './components/admin/admin-product-form.component';
+import { AdminCategoryPanelComponent } from './components/admin/admin-category-panel.component';
+import { AdminCouponPanelComponent } from './components/admin/admin-coupon-panel.component';
+import { AdminOrdersPanelComponent } from './components/admin/admin-orders-panel.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    CatalogFiltersComponent,
+    ProductCardComponent,
+    CartItemsComponent,
+    CheckoutSummaryComponent,
+    OrderListComponent,
+    LoginPanelComponent,
+    SignupPanelComponent,
+    PetListComponent,
+    AdminProductFormComponent,
+    AdminCategoryPanelComponent,
+    AdminCouponPanelComponent,
+    AdminOrdersPanelComponent
+  ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
@@ -26,8 +53,8 @@ export class AppComponent implements OnInit {
 
   loginForm = { email: '', password: '' };
   signupForm = { name: '', email: '', password: '' };
-  checkoutForm: { name: string; email: string; street: string; city: string; state: string; zip: string; paymentMethod: PaymentMethod; coupon: string } =
-    { name: '', email: '', street: '', city: '', state: '', zip: '', paymentMethod: 'CREDIT_CARD', coupon: '' };
+  checkoutForm: { name: string; email: string; street: string; city: string; state: string; zip: string; paymentMethod: PaymentMethod; coupon: string; pickup: boolean } =
+    { name: '', email: '', street: '', city: '', state: '', zip: '', paymentMethod: 'PIX', coupon: '', pickup: false };
   petForm = { name: '', age: '', breed: '' };
 
   adminProduct: any = { id: null, name: '', description: '', price: 0, stock: 0, rating: 4.5, imageUrl: '', petType: 'DOG', categoryId: null };
@@ -36,6 +63,15 @@ export class AppComponent implements OnInit {
   coupons: any[] = [];
 
   statusMessage = '';
+  paymentDetails: { method: PaymentMethod; pixKey?: string; boleto?: string; qrCodeUrl?: string; info: string } | null = null;
+  paymentModal = false;
+  toast: { message: string; type: 'info' | 'error' } | null = null;
+  readonly pixKey = 'pix@artemispets.com';
+  formError = '';
+
+  private buildPixQr(payload: string): string {
+    return `https://quickchart.io/qr?text=${encodeURIComponent(payload)}`;
+  }
 
   constructor(private api: ApiService, private state: StateService) {}
 
@@ -76,9 +112,7 @@ export class AppComponent implements OnInit {
           }
         }
       },
-      error: () => {
-        // ignora erro 401/500 ao inicializar sem token
-      }
+      error: () => {}
     });
   }
 
@@ -94,7 +128,7 @@ export class AppComponent implements OnInit {
 
   addToCart(product: Product) {
     this.state.addToCart(product, 1);
-    this.statusMessage = `${product.name} adicionado ao carrinho`;
+    this.showToast(`${product.name} adicionado ao carrinho`, 'info');
   }
 
   updateQty(productId: number, qty: number) {
@@ -117,12 +151,44 @@ export class AppComponent implements OnInit {
     return this.cartItems.reduce((sum, i) => sum + i.product.price * i.quantity, 0);
   }
 
+  get deliveryFee(): number {
+    return this.checkoutForm.pickup ? 0 : 15;
+  }
+
+  get totalWithDelivery(): number {
+    return this.cartTotal + this.deliveryFee;
+  }
+
+  onSearch(term: string) {
+    this.searchTerm = term;
+    this.loadProducts();
+  }
+
+  onPetChange(pet: string) {
+    this.petFilter = pet;
+    this.loadProducts();
+  }
+
+  onCategoryChange(catId: number | null) {
+    this.categoryFilter = catId;
+    this.loadProducts();
+  }
+
+  setName(v: string) { this.checkoutForm.name = v; }
+  setEmail(v: string) { this.checkoutForm.email = v; }
+  setStreet(v: string) { this.checkoutForm.street = v; }
+  setCity(v: string) { this.checkoutForm.city = v; }
+  setState(v: string) { this.checkoutForm.state = v; }
+  setZip(v: string) { this.checkoutForm.zip = v; }
+  setPickup(v: boolean) { this.checkoutForm.pickup = v; }
+  setPaymentMethod(v: PaymentMethod) { this.checkoutForm.paymentMethod = v; }
+
   login() {
     this.api.login(this.loginForm.email, this.loginForm.password).subscribe(res => {
       this.state.setUserAuth(res);
       this.refreshUser();
       this.loadOrders();
-      this.statusMessage = 'Login realizado';
+      this.showToast('Login realizado', 'info');
       this.activeTab = 'catalog';
     });
   }
@@ -131,7 +197,7 @@ export class AppComponent implements OnInit {
     this.api.signup(this.signupForm.name, this.signupForm.email, this.signupForm.password).subscribe(res => {
       this.state.setUserAuth(res);
       this.refreshUser();
-      this.statusMessage = 'Conta criada';
+      this.showToast('Conta criada', 'info');
     });
   }
 
@@ -139,6 +205,7 @@ export class AppComponent implements OnInit {
     this.state.logout();
     this.orders = [];
     this.activeTab = 'catalog';
+    this.showToast('Sessão encerrada', 'info');
   }
 
   get isAdmin(): boolean {
@@ -146,13 +213,23 @@ export class AppComponent implements OnInit {
   }
 
   loadOrders() {
+    if (!this.user) {
+      this.orders = [];
+      return;
+    }
     this.api.listOrders().subscribe(data => (this.orders = data));
   }
 
   checkout() {
-    if (!this.user) {
-      this.statusMessage = 'Entre para finalizar';
-      this.activeTab = 'profile';
+    this.formError = '';
+    if (!this.checkoutForm.name.trim()) {
+      this.formError = 'Preencha o nome.';
+      return;
+    }
+    const email = this.checkoutForm.email.trim();
+    const emailOk = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email);
+    if (!emailOk) {
+      this.formError = 'Informe um email valido.';
       return;
     }
     const items = this.cartItems.map(i => ({ productId: i.product.id, quantity: i.quantity }));
@@ -165,21 +242,66 @@ export class AppComponent implements OnInit {
       street: this.checkoutForm.street,
       city: this.checkoutForm.city,
       state: this.checkoutForm.state,
-      zip: this.checkoutForm.zip
+      zip: this.checkoutForm.zip,
+      pickup: this.checkoutForm.pickup
     };
-    this.api.createOrder(payload).subscribe(order => {
-      this.statusMessage = `Pedido ${order.id} confirmado`;
-      this.state.clearCart();
-      this.loadOrders();
-      this.loadProducts();
-      this.activeTab = 'orders';
+    this.api.createOrder(payload).subscribe({
+      next: order => {
+        this.showToast(`Pedido ${order.id} confirmado`, 'info');
+        this.state.clearCart();
+        if (this.checkoutForm.paymentMethod === 'PIX') {
+          this.paymentDetails = {
+            method: 'PIX',
+            pixKey: this.pixKey,
+            qrCodeUrl: this.buildPixQr(this.pixKey),
+            info: 'Use a chave PIX ou o QR Code para pagar.'
+          };
+        } else {
+          const boleto = `34191.${Date.now().toString().slice(-10)}`;
+          this.paymentDetails = { method: 'BOLETO', boleto, info: 'Boleto gerado. Pague em ate 48h.' };
+        }
+        this.paymentModal = true;
+        if (this.user) {
+          this.loadOrders();
+        } else {
+          this.showToast('Crie uma conta para salvar o histórico.', 'info');
+          this.orders = [];
+        }
+        this.loadProducts();
+        this.activeTab = 'orders';
+      },
+      error: (err) => {
+        this.formError = err?.error?.error || 'Nao foi possivel finalizar. Verifique os dados.';
+        this.showToast(this.formError, 'error');
+      }
     });
+  }
+
+  copyPix(key: string) {
+    if (navigator?.clipboard) {
+      navigator.clipboard.writeText(key).then(() => {
+        this.showToast('Chave PIX copiada', 'info');
+      });
+    } else {
+      this.showToast('Copie manualmente: ' + key, 'info');
+    }
+  }
+
+  openPaymentModalFromOrder(order: any) {
+    if (!order) return;
+    if (order.paymentMethod === 'PIX') {
+      const pixPayload = order.paymentCode || this.pixKey;
+      this.paymentDetails = { method: 'PIX', pixKey: pixPayload, qrCodeUrl: this.buildPixQr(pixPayload), info: 'Use a chave PIX ou o QR Code para pagar.' };
+    } else {
+      this.paymentDetails = { method: 'BOLETO', boleto: order.paymentCode, info: 'Boleto gerado. Pague em ate 48h.' };
+    }
+    this.paymentModal = true;
   }
 
   addPet() {
     if (!this.user) return;
     this.api.addPet(this.petForm.name, this.petForm.age, this.petForm.breed).subscribe(() => {
-      this.statusMessage = 'Pet adicionado';
+      this.showToast('Pet adicionado', 'info');
       this.petForm = { name: '', age: '', breed: '' };
       this.refreshUser();
     });
@@ -192,7 +314,7 @@ export class AppComponent implements OnInit {
 
   saveProduct() {
     this.api.adminSaveProduct(this.adminProduct).subscribe(() => {
-      this.statusMessage = 'Produto salvo';
+      this.showToast('Produto salvo', 'info');
       this.adminProduct = { id: null, name: '', description: '', price: 0, stock: 0, rating: 4.5, imageUrl: '', petType: 'DOG', categoryId: null };
       this.loadProducts();
     });
@@ -200,14 +322,14 @@ export class AppComponent implements OnInit {
 
   deleteProduct(id: number) {
     this.api.adminDeleteProduct(id).subscribe(() => {
-      this.statusMessage = 'Produto removido';
+      this.showToast('Produto removido', 'info');
       this.loadProducts();
     });
   }
 
   saveCategory() {
     this.api.adminCreateCategory(this.adminCategory).subscribe(() => {
-      this.statusMessage = 'Categoria salva';
+      this.showToast('Categoria salva', 'info');
       this.adminCategory = { name: '', petType: 'DOG' };
       this.loadCategories();
     });
@@ -215,16 +337,21 @@ export class AppComponent implements OnInit {
 
   deleteCategory(id: number) {
     this.api.adminDeleteCategory(id).subscribe(() => {
-      this.statusMessage = 'Categoria removida';
+      this.showToast('Categoria removida', 'info');
       this.loadCategories();
     });
   }
 
   saveCoupon() {
     this.api.adminSaveCoupon(this.couponForm).subscribe(() => {
-      this.statusMessage = 'Cupom salvo';
+      this.showToast('Cupom salvo', 'info');
       this.couponForm = { code: '', discountPercent: 10, active: true };
       this.loadCoupons();
     });
+  }
+
+  showToast(message: string, type: 'info' | 'error' = 'info') {
+    this.toast = { message, type };
+    setTimeout(() => (this.toast = null), 2500);
   }
 }

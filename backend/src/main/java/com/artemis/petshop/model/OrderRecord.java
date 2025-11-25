@@ -27,8 +27,8 @@ public class OrderRecord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "user_id", nullable = true)
     private AppUser user;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -48,6 +48,10 @@ public class OrderRecord {
     private BigDecimal discount;
     private BigDecimal total;
     private Instant createdAt;
+
+    // novo: indicador de retirada e código de pagamento (PIX chave ou boleto)
+    private boolean pickup;
+    private String paymentCode;
 
     public OrderRecord(AppUser user, List<OrderItem> items, Address address, PaymentMethod paymentMethod, OrderStatus status, String couponCode, BigDecimal subtotal, BigDecimal discount, BigDecimal total) {
         this.user = user;

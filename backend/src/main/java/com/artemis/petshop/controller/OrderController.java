@@ -23,14 +23,14 @@ public class OrderController {
     }
 
     @GetMapping
-    public List<OrderRecord> list(@RequestHeader("X-Auth-Token") String token) {
-        AppUser user = authService.requireUser(token);
+    public List<OrderRecord> list(@RequestHeader(value = "X-Auth-Token", required = false) String token) {
+        AppUser user = authService.me(token);
         return orderService.listForUser(user);
     }
 
     @PostMapping
-    public OrderRecord create(@RequestHeader("X-Auth-Token") String token, @Valid @RequestBody OrderRequest request) {
-        AppUser user = authService.requireUser(token);
+    public OrderRecord create(@RequestHeader(value = "X-Auth-Token", required = false) String token, @Valid @RequestBody OrderRequest request) {
+        AppUser user = authService.me(token);
         return orderService.createOrder(user, request);
     }
 }

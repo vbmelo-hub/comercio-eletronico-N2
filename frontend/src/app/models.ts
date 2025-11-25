@@ -92,6 +92,8 @@ export interface OrderRecord {
   subtotal: number;
   discount: number;
   total: number;
+  paymentCode?: string;
+  pickup?: boolean;
   createdAt: string;
 }
 

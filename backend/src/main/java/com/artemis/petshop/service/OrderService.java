@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.Instant;
 
 @Service
 public class OrderService {
@@ -27,6 +28,18 @@ public class OrderService {
 
     @Transactional
     public OrderRecord createOrder(AppUser user, OrderRequest request) {
+        if (request == null || request.getItems() == null || request.getItems().isEmpty()) {
+            throw new IllegalArgumentException("Carrinho vazio");
+        }
+        if (request.getPaymentMethod() == null) {
+            throw new IllegalArgumentException("Selecione um meio de pagamento");
+        }
+        if (request.getName() == null || request.getName().isBlank()) {
+            throw new IllegalArgumentException("Informe o nome");
+        }
+        if (request.getEmail() == null || request.getEmail().isBlank()) {
+            throw new IllegalArgumentException("Informe o email");
+        }
         List<OrderItem> items = new ArrayList<>();
         BigDecimal subtotal = BigDecimal.ZERO;
         for (OrderItemRequest itemReq : request.getItems()) {
@@ -54,15 +67,43 @@ public class OrderService {
         }
 
         BigDecimal total = subtotal.subtract(discount);
-        Address address = new Address(request.getName(), request.getEmail(), request.getStreet(), request.getCity(), request.getState(), request.getZip());
+        boolean pickup = request.isPickup();
+        if (!pickup) {
+            if (request.getStreet() == null || request.getStreet().isBlank()
+                    || request.getCity() == null || request.getCity().isBlank()
+                    || request.getState() == null || request.getState().isBlank()
+                    || request.getZip() == null || request.getZip().isBlank()) {
+                throw new IllegalArgumentException("Endere�o completo obrigat�rio para entrega");
+            }
+            total = total.add(BigDecimal.valueOf(15)); // taxa de entrega
+        }
+        Address address = new Address(
+                request.getName(),
+                request.getEmail(),
+                request.getStreet() == null ? "" : request.getStreet(),
+                request.getCity() == null ? "" : request.getCity(),
+                request.getState() == null ? "" : request.getState(),
+                request.getZip() == null ? "" : request.getZip());
+
+        String paymentCode;
+        if (request.getPaymentMethod() == PaymentMethod.PIX) {
+            paymentCode = "pix@artemispets.com";
+        } else {
+            paymentCode = "34191." + Instant.now().toEpochMilli();
+        }
 
         OrderRecord order = new OrderRecord(user, items, address, request.getPaymentMethod(), OrderStatus.CONFIRMED, coupon != null ? coupon.getCode() : null, subtotal, discount, total);
+        order.setPickup(pickup);
+        order.setPaymentCode(paymentCode);
         return orderRecordRepository.save(order);
     }
 
     public List<OrderRecord> listForUser(AppUser user) {
-        if (user.getRole() == UserRole.ADMIN) {
+        if (user != null && user.getRole() == UserRole.ADMIN) {
             return orderRecordRepository.findAllByOrderByCreatedAtDesc();
+        }
+        if (user == null) {
+            return List.of();
         }
         return orderRecordRepository.findByUserIdOrderByCreatedAtDesc(user.getId());
     }

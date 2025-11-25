@@ -1,7 +1,7 @@
 <div class="layout">
   <nav class="navbar">
     <div class="brand">
-      <div class="brand-mark">🐾</div>
+      <div class="brand-mark">AP</div>
       <div>
         <p class="eyebrow">Artemis Pets</p>
         <strong>Loja completa para seu pet</strong>
@@ -9,7 +9,7 @@
     </div>
 
     <div class="nav-links">
-      <button class="nav-btn" [class.active]="activeTab==='catalog'" (click)="setTab('catalog')">Catálogo</button>
+      <button class="nav-btn" [class.active]="activeTab==='catalog'" (click)="setTab('catalog')">Catalogo</button>
       <button class="nav-btn" [class.active]="activeTab==='cart'" (click)="setTab('cart')">Carrinho</button>
       <button class="nav-btn" [class.active]="activeTab==='orders'" (click)="setTab('orders')">Pedidos</button>
       <button class="nav-btn" [class.active]="activeTab==='profile'" (click)="setTab('profile')">Perfil</button>
@@ -25,56 +25,35 @@
   </nav>
 
   <div class="status" *ngIf="statusMessage">{{statusMessage}}</div>
+  <div class="toast" *ngIf="toast" [class.error]="toast.type==='error'">{{toast.message}}</div>
 
   <main>
-    <!-- CATÁLOGO -->
+    <!-- CATALOGO -->
     <section *ngIf="activeTab==='catalog'" class="panel catalog-panel">
       <div class="panel-head">
         <div>
           <p class="eyebrow">Produtos</p>
-          <h2>Catálogo premium</h2>
+          <h2>Catalogo premium</h2>
         </div>
-        <div class="pill muted">Itens disponíveis: {{products.length}}</div>
+        <div class="pill muted">Itens disponiveis: {{products.length}}</div>
       </div>
 
-      <div class="filters-bar">
-        <label>
-          <span class="muted tiny">Buscar</span>
-          <input placeholder="Ração, brinquedo, petisco..." [(ngModel)]="searchTerm" (input)="loadProducts()">
-        </label>
-        <label>
-          <span class="muted tiny">Tipo de pet</span>
-          <select [(ngModel)]="petFilter" (change)="loadProducts()">
-            <option value="">Todos</option>
-            <option value="DOG">Cães</option>
-            <option value="CAT">Gatos</option>
-            <option value="ACCESSORY">Acessórios</option>
-          </select>
-        </label>
-        <label>
-          <span class="muted tiny">Categoria</span>
-          <select [(ngModel)]="categoryFilter" (change)="loadProducts()">
-            <option [ngValue]="null">Todas</option>
-            <option *ngFor="let c of categories" [ngValue]="c.id">{{c.name}}</option>
-          </select>
-        </label>
-      </div>
+      <app-catalog-filters
+        [categories]="categories"
+        [searchTerm]="searchTerm"
+        [petFilter]="petFilter"
+        [categoryFilter]="categoryFilter"
+        (searchChange)="onSearch($event)"
+        (petChange)="onPetChange($event)"
+        (categoryChange)="onCategoryChange($event)">
+      </app-catalog-filters>
 
       <div class="product-grid">
-        <article class="card product" *ngFor="let p of products">
-          <img [src]="p.imageUrl" [alt]="p.name">
-          <div class="row">
-            <span class="pill">{{p.category?.name}} · {{p.petType}}</span>
-            <span class="pill">★ {{p.rating}}</span>
-          </div>
-          <h3>{{p.name}}</h3>
-          <p class="muted">{{p.description}}</p>
-          <div class="card-footer">
-            <span class="price">{{p.price | currency:'BRL':'symbol'}}</span>
-            <span class="muted">Estoque: {{p.stock}}</span>
-          </div>
-          <button class="btn primary cta" (click)="addToCart(p)" title="Clique para adicionar ao carrinho">Adicionar ao carrinho</button>
-        </article>
+        <app-product-card
+          *ngFor="let p of products"
+          [product]="p"
+          (add)="addToCart($event)">
+        </app-product-card>
       </div>
     </section>
 
@@ -87,57 +66,40 @@
         </div>
         <button class="btn ghost" (click)="clearCart()">Esvaziar</button>
       </div>
-      <div class="split">
-        <div class="card stack">
-          <h3>Itens no carrinho</h3>
-          <div class="cart-list">
-            <div class="cart-row" *ngFor="let item of cartItems">
-              <div>
-                <strong>{{item.product.name}}</strong>
-                <p class="muted">{{item.product.price | currency:'BRL':'symbol'}} · Estoque: {{item.product.stock}}</p>
-              </div>
-              <div class="row">
-                <input type="number" min="1" [max]="item.product.stock" [(ngModel)]="item.quantity" (change)="updateQty(item.product.id, item.quantity)" style="width:80px;">
-                <button class="btn ghost danger" (click)="removeItem(item.product.id)">Remover</button>
-              </div>
-            </div>
-            <p class="muted" *ngIf="cartItems.length===0">Carrinho vazio.</p>
-          </div>
-          <div class="row">
-            <label style="flex:1;">Cupom
-              <input placeholder="BEMVINDO" [(ngModel)]="checkoutForm.coupon">
-            </label>
-            <button class="btn ghost" (click)="applyCoupon()">Aplicar</button>
-          </div>
-          <div class="row total-row">
-            <span class="muted">Itens: {{cartItems.length}}</span>
-            <span class="price">{{ cartTotal | currency:'BRL':'symbol' }}</span>
-          </div>
-        </div>
+      <div class="cart-wrap">
+        <app-cart-items
+          [cartItems]="cartItems"
+          (qtyChange)="updateQty($event.id, $event.qty)"
+          (removeItem)="removeItem($event)">
+        </app-cart-items>
 
-        <div class="card stack">
-          <h3>Entrega e pagamento</h3>
-          <div class="mini-grid">
-            <label>Nome<input [(ngModel)]="checkoutForm.name"></label>
-            <label>Email<input [(ngModel)]="checkoutForm.email"></label>
-          </div>
-          <label>Endereço<input [(ngModel)]="checkoutForm.street"></label>
-          <div class="mini-grid">
-            <label>Cidade<input [(ngModel)]="checkoutForm.city"></label>
-            <label>Estado<input [(ngModel)]="checkoutForm.state"></label>
-          </div>
-          <div class="mini-grid">
-            <label>CEP<input [(ngModel)]="checkoutForm.zip"></label>
-            <label>Pagamento
-              <select [(ngModel)]="checkoutForm.paymentMethod">
-                <option value="CREDIT_CARD">Cartão</option>
-                <option value="PIX">PIX</option>
-                <option value="BOLETO">Boleto</option>
-              </select>
-            </label>
-          </div>
-          <button class="btn primary full" (click)="checkout()">Finalizar</button>
-        </div>
+        <app-checkout-summary
+          [itemsCount]="cartItems.length"
+          [cartTotal]="cartTotal"
+          [deliveryFee]="deliveryFee"
+          [totalWithDelivery]="totalWithDelivery"
+          [coupon]="checkoutForm.coupon"
+          [pickup]="checkoutForm.pickup"
+          [name]="checkoutForm.name"
+          [email]="checkoutForm.email"
+          [street]="checkoutForm.street"
+          [city]="checkoutForm.city"
+          [state]="checkoutForm.state"
+          [zip]="checkoutForm.zip"
+          [paymentMethod]="checkoutForm.paymentMethod"
+          [formError]="formError"
+          (couponChange)="checkoutForm.coupon = $event"
+          (applyCoupon)="applyCoupon()"
+          (pickupChange)="setPickup($event)"
+          (nameChange)="setName($event)"
+          (emailChange)="setEmail($event)"
+          (streetChange)="setStreet($event)"
+          (cityChange)="setCity($event)"
+          (stateChange)="setState($event)"
+          (zipChange)="setZip($event)"
+          (paymentMethodChange)="setPaymentMethod($event)"
+          (checkout)="checkout()">
+        </app-checkout-summary>
       </div>
     </section>
 
@@ -145,25 +107,12 @@
     <section class="panel" *ngIf="activeTab==='orders'">
       <div class="panel-head">
         <div>
-          <p class="eyebrow">Histórico</p>
+          <p class="eyebrow">Historico</p>
           <h2>Pedidos simulados</h2>
         </div>
         <button class="btn ghost" (click)="loadOrders()">Atualizar</button>
       </div>
-      <div class="grid">
-        <div class="order-card card" *ngFor="let o of orders">
-          <div class="row">
-            <strong>#{{o.id}}</strong>
-            <span class="muted">{{o.createdAt | date:'short'}}</span>
-          </div>
-          <div class="row">
-            <span>{{o.items.length}} itens</span>
-            <span class="price">{{o.total | currency:'BRL':'symbol'}}</span>
-          </div>
-          <div class="muted">Pagamento: {{o.paymentMethod}} · Status: {{o.status}}</div>
-        </div>
-        <p class="muted" *ngIf="orders.length===0">Sem pedidos ainda.</p>
-      </div>
+      <app-order-list [orders]="orders" (viewPayment)="openPaymentModalFromOrder($event)"></app-order-list>
     </section>
 
     <!-- PERFIL -->
@@ -175,39 +124,26 @@
         </div>
       </div>
       <div class="split">
-        <div class="card stack">
-          <h3>Login</h3>
-          <label>Email<input [(ngModel)]="loginForm.email"></label>
-          <label>Senha<input type="password" [(ngModel)]="loginForm.password"></label>
-          <button class="btn primary full" (click)="login()">Entrar</button>
-          <p class="muted">Admin: admin&#64;petshop.com / admin123</p>
-        </div>
-        <div class="card stack">
-          <h3>Novo cadastro</h3>
-          <label>Nome<input [(ngModel)]="signupForm.name"></label>
-          <label>Email<input [(ngModel)]="signupForm.email"></label>
-          <label>Senha<input type="password" [(ngModel)]="signupForm.password"></label>
-          <button class="btn ghost full" (click)="signup()">Cadastrar</button>
-        </div>
+        <app-login-panel
+          [email]="loginForm.email"
+          [password]="loginForm.password"
+          (login)="loginForm = { email: $event.email, password: $event.password }; login()">
+        </app-login-panel>
+        <app-signup-panel
+          [name]="signupForm.name"
+          [email]="signupForm.email"
+          [password]="signupForm.password"
+          (signup)="signupForm = { name: $event.name, email: $event.email, password: $event.password }; signup()">
+        </app-signup-panel>
       </div>
 
-      <div class="card stack" *ngIf="user">
-        <div class="row">
-          <div>
-            <p class="eyebrow">Pets</p>
-            <h3>{{user?.name}}</h3>
-          </div>
-        </div>
-        <div class="pill-collection">
-          <span class="pill" *ngFor="let p of user?.pets">{{p.name}} · {{p.age}} · {{p.breed}}</span>
-        </div>
-        <div class="mini-grid">
-          <label>Nome<input [(ngModel)]="petForm.name"></label>
-          <label>Idade<input [(ngModel)]="petForm.age"></label>
-          <label>Raça<input [(ngModel)]="petForm.breed"></label>
-        </div>
-        <button class="btn ghost" (click)="addPet()">Adicionar pet</button>
-      </div>
+      <app-pet-list
+        *ngIf="user"
+        [enabled]="!!user"
+        [ownerName]="user?.name || ''"
+        [pets]="user?.pets || []"
+        (add)="petForm = $event; addPet()">
+      </app-pet-list>
     </section>
 
     <!-- ADMIN -->
@@ -215,91 +151,63 @@
       <div class="panel-head">
         <div>
           <p class="eyebrow">Painel</p>
-          <h2>Administração</h2>
-        </div>
-      </div>
-      <div class="card stack">
-        <h3>Produto</h3>
-        <div class="mini-grid">
-          <label>Nome<input [(ngModel)]="adminProduct.name"></label>
-          <label>Descrição<input [(ngModel)]="adminProduct.description"></label>
-          <label>Preço<input type="number" [(ngModel)]="adminProduct.price"></label>
-          <label>Estoque<input type="number" [(ngModel)]="adminProduct.stock"></label>
-          <label>Categoria
-            <select [(ngModel)]="adminProduct.categoryId">
-              <option *ngFor="let c of categories" [ngValue]="c.id">{{c.name}}</option>
-            </select>
-          </label>
-          <label>Tipo pet
-            <select [(ngModel)]="adminProduct.petType">
-              <option value="DOG">Cães</option>
-              <option value="CAT">Gatos</option>
-              <option value="ACCESSORY">Acessórios</option>
-            </select>
-          </label>
-          <label>Imagem<input [(ngModel)]="adminProduct.imageUrl"></label>
-        </div>
-        <button class="btn primary" (click)="saveProduct()">Salvar produto</button>
-      </div>
-
-      <div class="split">
-        <div class="card stack">
-          <h3>Categorias</h3>
-          <div class="row">
-            <label style="flex:1;">Nome<input [(ngModel)]="adminCategory.name"></label>
-            <label style="flex:1;">Pet
-              <select [(ngModel)]="adminCategory.petType">
-                <option value="DOG">Cães</option>
-                <option value="CAT">Gatos</option>
-                <option value="ACCESSORY">Acessórios</option>
-              </select>
-            </label>
-            <button class="btn ghost" (click)="saveCategory()">Salvar</button>
-          </div>
-          <div class="pill-collection">
-            <span class="pill" *ngFor="let c of categories">
-              {{c.name}} · {{c.petType}}
-              <button class="btn ghost danger" (click)="deleteCategory(c.id)">x</button>
-            </span>
-          </div>
-        </div>
-
-        <div class="card stack">
-          <h3>Cupons</h3>
-          <div class="row">
-            <label style="flex:1;">Código<input [(ngModel)]="couponForm.code"></label>
-            <label style="flex:1;">Desconto %<input type="number" [(ngModel)]="couponForm.discountPercent"></label>
-            <label>Ativo
-              <select [(ngModel)]="couponForm.active">
-                <option [ngValue]="true">Ativo</option>
-                <option [ngValue]="false">Pausado</option>
-              </select>
-            </label>
-            <button class="btn ghost" (click)="saveCoupon()">Salvar cupom</button>
-            <button class="btn ghost" (click)="loadCoupons()">Atualizar</button>
-          </div>
-          <div class="pill-collection">
-            <span class="pill" *ngFor="let c of coupons">{{c.code}} · {{c.discountPercent}}% · {{c.active ? 'ativo' : 'off'}}</span>
-          </div>
+          <h2>Administracao</h2>
         </div>
       </div>
 
-      <div class="card stack">
-        <div class="row">
-          <div>
-            <p class="eyebrow">Pedidos</p>
-            <h3>Pedidos recentes</h3>
-          </div>
-          <button class="btn ghost" (click)="loadOrders()">Atualizar</button>
-        </div>
-        <div class="grid">
-          <div class="order-card card" *ngFor="let o of orders">
-            <div class="row"><strong>#{{o.id}}</strong><span class="muted">{{o.createdAt | date:'short'}}</span></div>
-            <div class="row"><span>{{o.items.length}} itens</span><span class="price">{{o.total | currency:'BRL':'symbol'}}</span></div>
-            <div class="muted">Cliente: {{o.user?.name}}</div>
-          </div>
-        </div>
+      <app-admin-product-form
+        [product]="adminProduct"
+        [categories]="categories"
+        (refresh)="loadProducts()"
+        (save)="adminProduct=$event; saveProduct()">
+      </app-admin-product-form>
+
+      <div class="admin-duo">
+        <app-admin-category-panel
+          [category]="adminCategory"
+          [categories]="categories"
+          (save)="adminCategory=$event; saveCategory()"
+          (remove)="deleteCategory($event)"
+          (refresh)="loadCategories()">
+        </app-admin-category-panel>
+
+        <app-admin-coupon-panel
+          [coupon]="couponForm"
+          [coupons]="coupons"
+          (save)="couponForm=$event; saveCoupon()"
+          (refresh)="loadCoupons()">
+        </app-admin-coupon-panel>
       </div>
+
+      <app-admin-orders-panel
+        [orders]="orders"
+        (refresh)="loadOrders()">
+      </app-admin-orders-panel>
     </section>
   </main>
+
+  <div class="modal-backdrop" *ngIf="paymentModal">
+    <div class="modal-card">
+      <div class="row">
+        <h3>Pagamento</h3>
+        <button class="btn ghost danger" (click)="paymentModal=false">Fechar</button>
+      </div>
+      <p class="muted" *ngIf="paymentDetails">{{paymentDetails?.info}}</p>
+      <div *ngIf="paymentDetails?.pixKey">
+        <div class="row">
+          <span>Chave PIX:</span>
+          <strong>{{paymentDetails.pixKey}}</strong>
+        </div>
+        <img *ngIf="paymentDetails.qrCodeUrl" [src]="paymentDetails.qrCodeUrl" alt="QR Code PIX" class="qr">
+        <button class="btn primary full" (click)="copyPix(paymentDetails.pixKey)">Copiar chave</button>
+      </div>
+      <div *ngIf="paymentDetails?.boleto">
+        <div class="row">
+          <span>Boleto:</span>
+          <strong>{{paymentDetails.boleto}}</strong>
+        </div>
+        <p class="muted tiny">Pague em ate 48h.</p>
+      </div>
+    </div>
+  </div>
 </div>
