@@ -61,6 +61,11 @@ public class AuthService {
     }
 
     public AppUser me(String token) {
-        return sessions.containsKey(token) ? requireUser(token) : null;
+        if (token == null || token.isBlank()) {
+            return null;
+        }
+        Long userId = sessions.get(token);
+        if (userId == null) return null;
+        return userRepository.findById(userId).orElse(null);
     }
 }

@@ -17,3 +17,12 @@ button.btn.ghost.danger {
   color: inherit;
   cursor: pointer;
 }
+
+.panel > .row,
+.panel > .grid {
+  margin-top: 6px;
+}
+
+.grid + .card {
+  margin-top: 12px;
+}

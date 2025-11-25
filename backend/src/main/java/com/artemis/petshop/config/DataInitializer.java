@@ -19,6 +19,8 @@ public class DataInitializer {
                               UserRepository userRepository,
                               OrderRecordRepository orderRecordRepository) {
         return args -> {
+            final String genericCat = "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?auto=format&fit=crop&w=800&q=80";
+            final String genericDog = "https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&w=800&q=80";
             if (categoryRepository.count() == 0) {
                 Category racaoDog = categoryRepository.save(new Category("Racao Premium", PetType.DOG));
                 Category racaoCat = categoryRepository.save(new Category("Racao Gatos", PetType.CAT));
@@ -27,12 +29,23 @@ public class DataInitializer {
                 Category acessorios = categoryRepository.save(new Category("Acessorios", PetType.ACCESSORY));
 
                 productRepository.saveAll(List.of(
-                        new Product("Racao Natural Caees 10kg", "Blend natural com omegas, sem corantes e com probiotic os.", BigDecimal.valueOf(189.9), 14, 4.8, "https://images.unsplash.com/photo-1543857261-77de430d2478?auto=format&fit=crop&w=800&q=80", PetType.DOG, racaoDog),
-                        new Product("Racao Indoor Gatos 7kg", "Controle de bolas de pelo, rica em taurina e com baixo sodio.", BigDecimal.valueOf(146.5), 12, 4.7, "https://images.unsplash.com/photo-1507149833265-60c372daea22?auto=format&fit=crop&w=800&q=80", PetType.CAT, racaoCat),
-                        new Product("Brinquedo Mordedor", "Borracha atoxica com aroma de menta e cavidades para petiscos.", BigDecimal.valueOf(59.9), 22, 4.6, "https://images.unsplash.com/photo-1508672019048-805c876b67e2?auto=format&fit=crop&w=800&q=80", PetType.DOG, brinquedo),
-                        new Product("Arranhador Modular", "Arranhador com modulos substituiveis, sisal natural e cama elevada.", BigDecimal.valueOf(219.0), 8, 4.9, "https://images.unsplash.com/photo-1574158622682-e40e69881006?auto=format&fit=crop&w=800&q=80", PetType.CAT, brinquedo),
-                        new Product("Kit Banho Calmante", "Shampoo hipoalergenico + spray hidratante sem enxague.", BigDecimal.valueOf(84.9), 18, 4.5, "https://images.unsplash.com/photo-1516726817505-f5ed825624d8?auto=format&fit=crop&w=800&q=80", PetType.ACCESSORY, higiene),
-                        new Product("Caminha Ortopedica", "Espuma de memoria, capa lavavel e base antiderrapante.", BigDecimal.valueOf(239.9), 10, 4.8, "https://images.unsplash.com/photo-1507146426996-ef05306b995a?auto=format&fit=crop&w=800&q=80", PetType.ACCESSORY, acessorios)
+                        new Product("Racao Natural Caees 10kg", "Blend natural com omegas, sem corantes e com probiotic os.", BigDecimal.valueOf(189.9), 14, 4.8, genericDog, PetType.DOG, racaoDog),
+                        new Product("Racao Indoor Gatos 7kg", "Controle de bolas de pelo, rica em taurina e com baixo sodio.", BigDecimal.valueOf(146.5), 12, 4.7, genericCat, PetType.CAT, racaoCat),
+                        new Product("Brinquedo Mordedor", "Borracha atoxica com aroma de menta e cavidades para petiscos.", BigDecimal.valueOf(59.9), 22, 4.6, genericDog, PetType.DOG, brinquedo),
+                        new Product("Arranhador Modular", "Arranhador com modulos substituiveis, sisal natural e cama elevada.", BigDecimal.valueOf(219.0), 8, 4.9, genericCat, PetType.CAT, brinquedo),
+                        new Product("Kit Banho Calmante", "Shampoo hipoalergenico + spray hidratante sem enxague.", BigDecimal.valueOf(84.9), 18, 4.5, genericCat, PetType.ACCESSORY, higiene),
+                        new Product("Caminha Ortopedica", "Espuma de memoria, capa lavavel e base antiderrapante.", BigDecimal.valueOf(239.9), 10, 4.8, genericCat, PetType.ACCESSORY, acessorios),
+                        new Product("Coleira Reflexiva Noturna", "Nylon reforcado com tira refletiva e fecho seguro.", BigDecimal.valueOf(69.9), 25, 4.7, genericDog, PetType.DOG, acessorios),
+                        new Product("Snack Dental Fresh", "Petisco funcional que reduz placa e deixa o hálito fresco.", BigDecimal.valueOf(34.9), 30, 4.4, genericDog, PetType.DOG, racaoDog),
+                        new Product("Fonte Hidrata Cat", "Fonte silenciosa com filtro triplo e LED noturno.", BigDecimal.valueOf(139.9), 16, 4.8, genericCat, PetType.CAT, acessorios),
+                        new Product("Areia Premium Silica", "Controle de odor prolongado e grãos que não grudam.", BigDecimal.valueOf(74.9), 20, 4.6, genericCat, PetType.CAT, higiene),
+                        new Product("Bolinha Inteligente", "Brinquedo interativo que libera petisco ao brincar.", BigDecimal.valueOf(54.9), 28, 4.5, genericDog, PetType.DOG, brinquedo),
+                        new Product("Colete Anti-ansiedade", "Tecido respirável, efeito calmante para passeios.", BigDecimal.valueOf(119.9), 12, 4.3, genericDog, PetType.DOG, acessorios),
+                        new Product("Petisco Liofilizado Gato", "100% frango, rico em proteína e sem aditivos.", BigDecimal.valueOf(48.5), 22, 4.7, genericCat, PetType.CAT, racaoCat),
+                        new Product("Tapete Higiênico Ultra", "Super absorvente, neutraliza odores e tem gel instasec.", BigDecimal.valueOf(89.9), 18, 4.6, genericDog, PetType.ACCESSORY, higiene),
+                        new Product("Ração Grain Free Light", "Baixas calorias, sem grãos, com proteínas nobres para cães.", BigDecimal.valueOf(199.0), 14, 4.7, genericDog, PetType.DOG, racaoDog),
+                        new Product("Ração Indoor Castrados", "Controle de peso e bolas de pelo para gatos castrados.", BigDecimal.valueOf(158.0), 15, 4.8, genericCat, PetType.CAT, racaoCat),
+                        new Product("Kit Escova e Pasta Dental", "Cuidados orais diários para cães e gatos.", BigDecimal.valueOf(45.0), 26, 4.4, genericCat, PetType.ACCESSORY, higiene)
                 ));
             }
 

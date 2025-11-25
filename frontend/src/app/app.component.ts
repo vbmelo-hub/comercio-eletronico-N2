@@ -47,6 +47,9 @@ export class AppComponent implements OnInit {
         this.loadOrders();
         this.api.setToken(this.state.token);
       }
+      if (!this.isAdmin && this.activeTab === 'admin') {
+        this.activeTab = 'catalog';
+      }
     });
     this.loadCategories();
     this.loadProducts();
@@ -54,15 +57,27 @@ export class AppComponent implements OnInit {
   }
 
   setTab(tab: typeof this.activeTab) {
+    if (tab === 'admin' && !this.isAdmin) {
+      this.activeTab = 'catalog';
+      return;
+    }
     this.activeTab = tab;
   }
 
   refreshUser() {
-    this.api.me().subscribe(user => {
-      if (user) {
-        this.user = user;
-        this.state.user$.next(user);
-        this.api.setToken(this.state.token);
+    this.api.me().subscribe({
+      next: (user) => {
+        if (user) {
+          this.user = user;
+          this.state.user$.next(user);
+          this.api.setToken(this.state.token);
+          if (this.isAdmin) {
+            this.loadCoupons();
+          }
+        }
+      },
+      error: () => {
+        // ignora erro 401/500 ao inicializar sem token
       }
     });
   }
@@ -124,6 +139,10 @@ export class AppComponent implements OnInit {
     this.state.logout();
     this.orders = [];
     this.activeTab = 'catalog';
+  }
+
+  get isAdmin(): boolean {
+    return this.user?.role === 'ADMIN';
   }
 
   loadOrders() {
