@@ -88,8 +88,12 @@ public class OrderService {
         String paymentCode;
         if (request.getPaymentMethod() == PaymentMethod.PIX) {
             paymentCode = "pix@artemispets.com";
-        } else {
+        } else if (request.getPaymentMethod() == PaymentMethod.BOLETO) {
             paymentCode = "34191." + Instant.now().toEpochMilli();
+        } else if (request.getPaymentMethod() == PaymentMethod.CASH) {
+            paymentCode = "PAGAR-NA-ENTREGA";
+        } else {
+            paymentCode = "";
         }
 
         OrderRecord order = new OrderRecord(user, items, address, request.getPaymentMethod(), OrderStatus.CONFIRMED, coupon != null ? coupon.getCode() : null, subtotal, discount, total);

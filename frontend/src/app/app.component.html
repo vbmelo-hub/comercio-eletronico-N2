@@ -17,9 +17,9 @@
     </div>
 
     <div class="nav-user">
-      <span class="pill" *ngIf="user; else guest">{{user?.name}} · {{user?.role}}</span>
+      <span class="pill" *ngIf="user; else guest">{{user?.name}} / {{user?.role}}</span>
       <ng-template #guest><span class="pill muted">Visitante</span></ng-template>
-      <button class="btn ghost" *ngIf="!user" (click)="setTab('profile')">Entrar</button>
+      <button class="btn ghost" *ngIf="!user" (click)="openLoginModal()">Entrar</button>
       <button class="btn ghost danger" *ngIf="user" (click)="logout()">Sair</button>
     </div>
   </nav>
@@ -120,30 +120,78 @@
       <div class="panel-head">
         <div>
           <p class="eyebrow">Conta</p>
-          <h2>Login, cadastro e pets</h2>
+          <h2>Perfil e preferencias</h2>
         </div>
       </div>
-      <div class="split">
-        <app-login-panel
-          [email]="loginForm.email"
-          [password]="loginForm.password"
-          (login)="loginForm = { email: $event.email, password: $event.password }; login()">
-        </app-login-panel>
-        <app-signup-panel
-          [name]="signupForm.name"
-          [email]="signupForm.email"
-          [password]="signupForm.password"
-          (signup)="signupForm = { name: $event.name, email: $event.email, password: $event.password }; signup()">
-        </app-signup-panel>
-      </div>
+      <ng-container *ngIf="user; else authPrompt">
+        <div class="split profile-grid">
+          <div class="card stack highlight">
+            <p class="eyebrow">Resumo da conta</p>
+            <h3>{{user?.name}}</h3>
+            <div class="compact-stats">
+              <span class="pill muted">Email: {{user?.email}}</span>
+              <span class="pill muted">Perfil: {{user?.role}}</span>
+            </div>
+            <div class="compact-stats">
+              <span class="pill">Pets: {{user?.pets?.length || 0}}</span>
+              <span class="pill">Pedidos: {{orders.length}}</span>
+              <span class="pill">ID: #{{user?.id}}</span>
+            </div>
+            <p class="muted tiny">Use esses dados para agilizar o checkout e manter o historico organizado.</p>
+          </div>
 
-      <app-pet-list
-        *ngIf="user"
-        [enabled]="!!user"
-        [ownerName]="user?.name || ''"
-        [pets]="user?.pets || []"
-        (add)="petForm = $event; addPet()">
-      </app-pet-list>
+          <div class="card stack">
+            <div class="row">
+              <h3>Dados de contato e entrega</h3>
+              <span class="pill muted">Aplicado no checkout</span>
+            </div>
+            <div class="field-grid">
+              <label>Nome completo
+                <input [(ngModel)]="contactForm.name" placeholder="Seu nome">
+              </label>
+              <label>Email
+                <input type="email" [(ngModel)]="contactForm.email" placeholder="email@exemplo.com">
+              </label>
+              <label>Rua / numero
+                <input [(ngModel)]="contactForm.street" placeholder="Av. Exemplo, 123">
+              </label>
+              <label>Cidade
+                <input [(ngModel)]="contactForm.city" placeholder="Sao Paulo">
+              </label>
+              <label>Estado
+                <input [(ngModel)]="contactForm.state" placeholder="SP">
+              </label>
+              <label>CEP
+                <input [(ngModel)]="contactForm.zip" placeholder="00000-000">
+              </label>
+            </div>
+            <div class="row">
+              <button class="btn primary" (click)="saveProfileContact()">Salvar dados</button>
+              <span class="muted tiny">Gravamos no navegador para preencher o checkout automaticamente.</span>
+            </div>
+            <p class="muted danger" *ngIf="profileError">{{profileError}}</p>
+          </div>
+        </div>
+
+        <app-pet-list
+          [enabled]="!!user"
+          [ownerName]="user?.name || ''"
+          [pets]="user?.pets || []"
+          (add)="petForm = $event; addPet()">
+        </app-pet-list>
+      </ng-container>
+
+      <ng-template #authPrompt>
+        <div class="card stack auth-cta">
+          <p class="eyebrow">Acesso</p>
+          <h3>Entre para ver seu perfil</h3>
+          <p class="muted">Faca login para acessar pedidos, dados salvos e cadastro de pets. Se ainda nao tem conta, cadastre-se em segundos.</p>
+          <div class="row">
+            <button class="btn primary" (click)="openLoginModal()">Entrar</button>
+            <button class="btn ghost" (click)="openSignupModal()">Criar conta</button>
+          </div>
+        </div>
+      </ng-template>
     </section>
 
     <!-- ADMIN -->
@@ -207,6 +255,51 @@
           <strong>{{paymentDetails.boleto}}</strong>
         </div>
         <p class="muted tiny">Pague em ate 48h.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" *ngIf="loginModal">
+    <div class="modal-card auth-modal">
+      <div class="row">
+        <div>
+          <p class="eyebrow">Acesso seguro</p>
+          <h3>Entrar</h3>
+        </div>
+        <button class="btn ghost danger" (click)="closeAuthModals()">Fechar</button>
+      </div>
+      <p class="muted tiny">Use seu email e senha para continuar.</p>
+      <app-login-panel
+        [email]="loginForm.email"
+        [password]="loginForm.password"
+        (login)="loginForm = { email: $event.email, password: $event.password }; login(); closeAuthModals()">
+      </app-login-panel>
+      <div class="row">
+        <span class="muted tiny">Ainda nao tem conta?</span>
+        <button class="btn ghost" (click)="openSignupModal()">Criar conta</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" *ngIf="signupModal">
+    <div class="modal-card auth-modal">
+      <div class="row">
+        <div>
+          <p class="eyebrow">Cadastro</p>
+          <h3>Criar conta</h3>
+        </div>
+        <button class="btn ghost danger" (click)="closeAuthModals()">Fechar</button>
+      </div>
+      <p class="muted tiny">Ganhe historico, cupons e cadastro de pets.</p>
+      <app-signup-panel
+        [name]="signupForm.name"
+        [email]="signupForm.email"
+        [password]="signupForm.password"
+        (signup)="signupForm = { name: $event.name, email: $event.email, password: $event.password }; signup(); closeAuthModals()">
+      </app-signup-panel>
+      <div class="row">
+        <span class="muted tiny">Ja tem conta?</span>
+        <button class="btn ghost" (click)="openLoginModal()">Entrar</button>
       </div>
     </div>
   </div>

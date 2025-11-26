@@ -48,6 +48,7 @@ import { PaymentMethod } from '../../models';
           <select [ngModel]="paymentMethod" (ngModelChange)="paymentMethodChange.emit($event)" [class.filled]="paymentMethod">
             <option value="PIX">PIX</option>
             <option value="BOLETO">Boleto</option>
+            <option value="CASH">Dinheiro na entrega</option>
           </select>
         </label>
       </div>

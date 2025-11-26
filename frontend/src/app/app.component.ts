@@ -62,9 +62,14 @@ export class AppComponent implements OnInit {
   couponForm: any = { code: '', discountPercent: 10, active: true };
   coupons: any[] = [];
 
+  contactForm = { name: '', email: '', street: '', city: '', state: '', zip: '' };
+  profileError = '';
+
   statusMessage = '';
   paymentDetails: { method: PaymentMethod; pixKey?: string; boleto?: string; qrCodeUrl?: string; info: string } | null = null;
   paymentModal = false;
+  loginModal = false;
+  signupModal = false;
   toast: { message: string; type: 'info' | 'error' } | null = null;
   readonly pixKey = 'pix@artemispets.com';
   formError = '';
@@ -82,6 +87,7 @@ export class AppComponent implements OnInit {
       if (u) {
         this.loadOrders();
         this.api.setToken(this.state.token);
+        this.prefillContactForm(u);
       }
       if (!this.isAdmin && this.activeTab === 'admin') {
         this.activeTab = 'catalog';
@@ -89,6 +95,7 @@ export class AppComponent implements OnInit {
     });
     this.loadCategories();
     this.loadProducts();
+    this.prefillContactForm(this.user);
     this.refreshUser();
   }
 
@@ -201,6 +208,66 @@ export class AppComponent implements OnInit {
     });
   }
 
+  prefillContactForm(user: User | null) {
+    const stored = localStorage.getItem('petshop-profile-contact');
+    let saved: any = null;
+    try {
+      saved = stored ? JSON.parse(stored) : null;
+    } catch {
+      saved = null;
+    }
+    this.contactForm = {
+      name: saved?.name ?? user?.name ?? this.checkoutForm.name ?? '',
+      email: saved?.email ?? user?.email ?? this.checkoutForm.email ?? '',
+      street: saved?.street ?? this.checkoutForm.street ?? '',
+      city: saved?.city ?? this.checkoutForm.city ?? '',
+      state: saved?.state ?? this.checkoutForm.state ?? '',
+      zip: saved?.zip ?? this.checkoutForm.zip ?? ''
+    };
+    this.checkoutForm = {
+      ...this.checkoutForm,
+      name: this.contactForm.name || this.checkoutForm.name,
+      email: this.contactForm.email || this.checkoutForm.email,
+      street: this.contactForm.street || this.checkoutForm.street,
+      city: this.contactForm.city || this.checkoutForm.city,
+      state: this.contactForm.state || this.checkoutForm.state,
+      zip: this.contactForm.zip || this.checkoutForm.zip
+    };
+  }
+
+  saveProfileContact() {
+    if (!this.user) {
+      this.profileError = 'Entre na sua conta para editar o perfil.';
+      return;
+    }
+    this.profileError = '';
+    const name = (this.contactForm.name || '').trim();
+    const email = (this.contactForm.email || '').trim();
+    if (!name) {
+      this.profileError = 'Informe um nome.';
+      return;
+    }
+    const emailOk = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email);
+    if (!emailOk) {
+      this.profileError = 'Email invalido.';
+      return;
+    }
+    const updatedUser: User = { ...this.user, name, email };
+    this.user = updatedUser;
+    this.state.user$.next(updatedUser);
+    this.checkoutForm = {
+      ...this.checkoutForm,
+      name,
+      email,
+      street: this.contactForm.street,
+      city: this.contactForm.city,
+      state: this.contactForm.state,
+      zip: this.contactForm.zip
+    };
+    localStorage.setItem('petshop-profile-contact', JSON.stringify(this.contactForm));
+    this.showToast('Dados do perfil atualizados', 'info');
+  }
+
   logout() {
     this.state.logout();
     this.orders = [];
@@ -232,6 +299,12 @@ export class AppComponent implements OnInit {
       this.formError = 'Informe um email valido.';
       return;
     }
+    if (!this.checkoutForm.pickup) {
+      if (!this.checkoutForm.street.trim() || !this.checkoutForm.city.trim() || !this.checkoutForm.state.trim() || !this.checkoutForm.zip.trim()) {
+        this.formError = 'Preencha endereco completo para entrega ou escolha retirar na loja.';
+        return;
+      }
+    }
     const items = this.cartItems.map(i => ({ productId: i.product.id, quantity: i.quantity }));
     const payload = {
       items,
@@ -256,9 +329,11 @@ export class AppComponent implements OnInit {
             qrCodeUrl: this.buildPixQr(this.pixKey),
             info: 'Use a chave PIX ou o QR Code para pagar.'
           };
-        } else {
+        } else if (this.checkoutForm.paymentMethod === 'BOLETO') {
           const boleto = `34191.${Date.now().toString().slice(-10)}`;
           this.paymentDetails = { method: 'BOLETO', boleto, info: 'Boleto gerado. Pague em ate 48h.' };
+        } else {
+          this.paymentDetails = { method: 'CASH', info: 'Pague em dinheiro na entrega/retirada.' };
         }
         this.paymentModal = true;
         if (this.user) {
@@ -292,8 +367,10 @@ export class AppComponent implements OnInit {
     if (order.paymentMethod === 'PIX') {
       const pixPayload = order.paymentCode || this.pixKey;
       this.paymentDetails = { method: 'PIX', pixKey: pixPayload, qrCodeUrl: this.buildPixQr(pixPayload), info: 'Use a chave PIX ou o QR Code para pagar.' };
-    } else {
+    } else if (order.paymentMethod === 'BOLETO') {
       this.paymentDetails = { method: 'BOLETO', boleto: order.paymentCode, info: 'Boleto gerado. Pague em ate 48h.' };
+    } else {
+      this.paymentDetails = { method: 'CASH', info: 'Pague em dinheiro na entrega/retirada.' };
     }
     this.paymentModal = true;
   }
@@ -353,5 +430,20 @@ export class AppComponent implements OnInit {
   showToast(message: string, type: 'info' | 'error' = 'info') {
     this.toast = { message, type };
     setTimeout(() => (this.toast = null), 2500);
+  }
+
+  openLoginModal() {
+    this.loginModal = true;
+    this.signupModal = false;
+  }
+
+  openSignupModal() {
+    this.signupModal = true;
+    this.loginModal = false;
+  }
+
+  closeAuthModals() {
+    this.loginModal = false;
+    this.signupModal = false;
   }
 }

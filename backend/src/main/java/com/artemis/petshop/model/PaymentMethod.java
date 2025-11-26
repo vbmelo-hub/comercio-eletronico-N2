@@ -1,5 +1,5 @@
 package com.artemis.petshop.model;
 
 public enum PaymentMethod {
-    CREDIT_CARD, PIX, BOLETO
+    CREDIT_CARD, PIX, BOLETO, CASH
 }

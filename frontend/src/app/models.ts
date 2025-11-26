@@ -1,5 +1,5 @@
 export type PetType = 'DOG' | 'CAT' | 'ACCESSORY';
-export type PaymentMethod = 'CREDIT_CARD' | 'PIX' | 'BOLETO';
+export type PaymentMethod = 'CREDIT_CARD' | 'PIX' | 'BOLETO' | 'CASH';
 export type OrderStatus = 'CONFIRMED' | 'PROCESSING' | 'SHIPPED' | 'CANCELLED';
 
 export interface Category {

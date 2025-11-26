@@ -276,8 +276,9 @@ label { display: grid; gap: 6px; font-size: 0.96rem; position: relative; }
   color: #ff6b6b;
   font-weight: 700;
   position: absolute;
-  top: -2px;
-  right: -8px;
+  top: -4px;
+  right: auto;
+  left: -6px;
 }
 .filled {
   border-color: rgba(82, 242, 201, 0.7) !important;
@@ -306,24 +307,20 @@ label { display: grid; gap: 6px; font-size: 0.96rem; position: relative; }
   flex: 1;
   display: inline-flex;
   align-items: center;
-  gap: 10px;
   padding: 10px 14px;
-  border-radius: 14px;
-  border: 1px solid var(--border);
   background: rgba(255,255,255,0.04);
   cursor: pointer;
-  min-width: 180px;
 }
 .delivery-toggle label:hover {
   border-color: rgba(246, 195, 67, 0.6);
 }
 .delivery-toggle input {
   flex: 0 0 auto;
-  width: 18px;
-  height: 18px;
+  width: 14px;
+  height: auto;
   box-sizing: border-box;
   appearance: none;
-  border-radius: 50%;
+  border-radius: 100%;
   border: 2px solid var(--accent);
   background: transparent;
   display: inline-block;
@@ -447,7 +444,7 @@ label { display: grid; gap: 6px; font-size: 0.96rem; position: relative; }
 .product-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 18px;
+  gap: 22px;
 }
 .product-grid .product h3 {
   margin: 6px 0;
