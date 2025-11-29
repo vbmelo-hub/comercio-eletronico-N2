@@ -3,18 +3,11 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-signup-panel',
+  selector: 'app-painel-cadastro',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  template: `
-    <div class="cartao pilha">
-      <h3>Novo cadastro</h3>
-      <label>Nome<input [(ngModel)]="nome"></label>
-      <label>Email<input [(ngModel)]="email"></label>
-      <label>Senha<input type="password" [(ngModel)]="senha"></label>
-      <button class="botao fantasma cheio" (click)="signup.emit({ nome, email, senha })">Cadastrar</button>
-    </div>
-  `
+  templateUrl: './painel-cadastro.component.html',
+  styleUrls: ['./painel-cadastro.component.css']
 })
 export class SignupPanelComponent {
   @Input() nome = '';

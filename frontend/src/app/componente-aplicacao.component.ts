@@ -1,22 +1,22 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ApiService } from './api.service';
-import { StateService } from './state.service';
-import { ItemCarrinho, Categoria, Pedido, Produto, Usuario, MetodoPagamento } from './models';
-import { CatalogFiltersComponent } from './components/catalog/catalog-filters.component';
-import { ProductCardComponent } from './components/catalog/product-card.component';
-import { CartItemsComponent } from './components/cart/cart-items.component';
-import { CheckoutSummaryComponent } from './components/cart/checkout-summary.component';
-import { OrderListComponent } from './components/orders/order-list.component';
-import { LoginPanelComponent } from './components/auth/login-panel.component';
-import { SignupPanelComponent } from './components/auth/signup-panel.component';
-import { PetListComponent } from './components/pets/pet-list.component';
-import { AdminProductFormComponent } from './components/admin/admin-product-form.component';
-import { AdminCategoryPanelComponent } from './components/admin/admin-category-panel.component';
-import { AdminCouponPanelComponent } from './components/admin/admin-coupon-panel.component';
-import { AdminOrdersPanelComponent } from './components/admin/admin-orders-panel.component';
-import { labelUserRole } from './labels';
+import { ApiService } from './servico-api.service';
+import { StateService } from './estado.service';
+import { ItemCarrinho, Categoria, Pedido, Produto, Usuario, MetodoPagamento } from './modelos';
+import { CatalogFiltersComponent } from './components/catalog/filtros-catalogo.component';
+import { ProductCardComponent } from './components/catalog/cartao-produto.component';
+import { CartItemsComponent } from './components/cart/itens-carrinho.component';
+import { CheckoutSummaryComponent } from './components/cart/resumo-checkout.component';
+import { OrderListComponent } from './components/orders/lista-pedidos.component';
+import { LoginPanelComponent } from './components/auth/painel-login.component';
+import { SignupPanelComponent } from './components/auth/painel-cadastro.component';
+import { PetListComponent } from './components/pets/lista-pets.component';
+import { AdminProductFormComponent } from './components/admin/formulario-produto-admin.component';
+import { AdminCategoryPanelComponent } from './components/admin/painel-categoria-admin.component';
+import { AdminCouponPanelComponent } from './components/admin/painel-cupom-admin.component';
+import { AdminOrdersPanelComponent } from './components/admin/painel-pedidos-admin.component';
+import { labelUserRole } from './rotulos';
 
 @Component({
   selector: 'app-root',
@@ -37,10 +37,10 @@ import { labelUserRole } from './labels';
     AdminCouponPanelComponent,
     AdminOrdersPanelComponent
   ],
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  templateUrl: './componente-aplicacao.component.html',
+  styleUrls: ['./componente-aplicacao.component.css']
 })
-export class AppComponent implements OnInit {
+export class ComponenteAplicacaoComponent implements OnInit {
   activeTab: 'catalog' | 'cart' | 'orders' | 'profile' | 'admin' = 'catalog';
   categories: Categoria[] = [];
   products: Produto[] = [];

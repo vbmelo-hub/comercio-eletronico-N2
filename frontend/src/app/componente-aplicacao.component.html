@@ -38,7 +38,7 @@
         <div class="selo suave">Itens disponiveis: {{products.length}}</div>
       </div>
 
-      <app-catalog-filters
+      <app-filtros-catalogo
         [categories]="categories"
         [searchTerm]="searchTerm"
         [petFilter]="petFilter"
@@ -46,14 +46,14 @@
         (searchChange)="onSearch($event)"
         (petChange)="onPetChange($event)"
         (categoryChange)="onCategoryChange($event)">
-      </app-catalog-filters>
+      </app-filtros-catalogo>
 
       <div class="grade-produtos">
-        <app-product-card
+        <app-cartao-produto
           *ngFor="let p of products"
           [product]="p"
           (add)="addToCart($event)">
-        </app-product-card>
+        </app-cartao-produto>
       </div>
     </section>
 
@@ -67,13 +67,13 @@
         <button class="botao fantasma" (click)="clearCart()">Esvaziar</button>
       </div>
       <div class="conjunto-carrinho">
-        <app-cart-items
+        <app-itens-carrinho
           [cartItems]="cartItems"
           (qtyChange)="updateQty($event.id, $event.qty)"
           (removeItem)="removeItem($event)">
-        </app-cart-items>
+        </app-itens-carrinho>
 
-        <app-checkout-summary
+        <app-resumo-checkout
           [itemsCount]="cartItems.length"
           [cartTotal]="cartTotal"
           [deliveryFee]="deliveryFee"
@@ -99,7 +99,7 @@
           (cepChange)="setCep($event)"
           (metodoPagamentoChange)="setMetodoPagamento($event)"
           (checkout)="checkout()">
-        </app-checkout-summary>
+        </app-resumo-checkout>
       </div>
     </section>
 
@@ -112,7 +112,7 @@
         </div>
         <button class="botao fantasma" (click)="loadOrders()">Atualizar</button>
       </div>
-      <app-order-list [orders]="orders" (viewPayment)="openPaymentModalFromOrder($event)"></app-order-list>
+      <app-lista-pedidos [orders]="orders" (viewPayment)="openPaymentModalFromOrder($event)"></app-lista-pedidos>
     </section>
 
     <!-- PERFIL -->
@@ -124,7 +124,7 @@
         </div>
       </div>
       <ng-container *ngIf="user; else authPrompt">
-        <div class="split profile-grid">
+        <div class="perfil-grade">
           <div class="cartao pilha destaque">
             <p class="sobrancelha">Resumo da conta</p>
             <h3>{{user?.nome}}</h3>
@@ -165,7 +165,7 @@
                 <input [(ngModel)]="contactForm.cep" placeholder="00000-000">
               </label>
             </div>
-            <div class="row">
+            <div class="linha">
               <button class="botao primario" (click)="saveProfileContact()">Salvar dados</button>
               <span class="suave tiny">Gravamos no navegador para preencher o checkout automaticamente.</span>
             </div>
@@ -173,12 +173,12 @@
           </div>
         </div>
 
-        <app-pet-list
+        <app-lista-pets
           [enabled]="!!user"
           [ownerName]="user?.nome || ''"
           [pets]="user?.pets || []"
           (add)="petForm = $event; addPet()">
-        </app-pet-list>
+        </app-lista-pets>
       </ng-container>
 
       <ng-template #authPrompt>
@@ -203,34 +203,34 @@
         </div>
       </div>
 
-      <app-admin-product-form
+      <app-formulario-produto-admin
         [product]="adminProduct"
         [categories]="categories"
         (refresh)="loadProducts()"
         (save)="adminProduct=$event; saveProduct()">
-      </app-admin-product-form>
+      </app-formulario-produto-admin>
 
       <div class="dupla-admin">
-        <app-admin-category-panel
+        <app-painel-categoria-admin
           [category]="adminCategory"
           [categories]="categories"
           (save)="adminCategory=$event; saveCategory()"
           (remove)="deleteCategory($event)"
           (refresh)="loadCategories()">
-        </app-admin-category-panel>
+        </app-painel-categoria-admin>
 
-        <app-admin-coupon-panel
+        <app-painel-cupom-admin
           [coupon]="couponForm"
           [coupons]="coupons"
           (save)="couponForm=$event; saveCoupon()"
           (refresh)="loadCoupons()">
-        </app-admin-coupon-panel>
+        </app-painel-cupom-admin>
       </div>
 
-      <app-admin-orders-panel
+      <app-painel-pedidos-admin
         [orders]="orders"
         (refresh)="loadOrders()">
-      </app-admin-orders-panel>
+      </app-painel-pedidos-admin>
     </section>
   </main>
 
@@ -269,11 +269,11 @@
         <button class="botao fantasma perigo fechar-modal" (click)="closeAuthModals()" aria-label="Fechar modal">X</button>
       </div>
       <p class="suave tiny">Use seu email e senha para continuar.</p>
-      <app-login-panel
+      <app-painel-login
         [email]="loginForm.email"
         [senha]="loginForm.senha"
         (login)="loginForm = { email: $event.email, senha: $event.senha }; login(); closeAuthModals()">
-      </app-login-panel>
+      </app-painel-login>
       <div class="linha">
         <span class="suave tiny">Ainda nao tem conta?</span>
         <button class="botao fantasma" (click)="openSignupModal()">Criar conta</button>
@@ -291,12 +291,12 @@
         <button class="botao fantasma perigo fechar-modal" (click)="closeAuthModals()" aria-label="Fechar modal">X</button>
       </div>
       <p class="suave tiny">Ganhe historico, cupons e cadastro de pets.</p>
-      <app-signup-panel
+      <app-painel-cadastro
         [nome]="signupForm.nome"
         [email]="signupForm.email"
         [senha]="signupForm.senha"
         (signup)="signupForm = { nome: $event.nome, email: $event.email, senha: $event.senha }; signup(); closeAuthModals()">
-      </app-signup-panel>
+      </app-painel-cadastro>
       <div class="linha">
         <span class="suave tiny">Ja tem conta?</span>
         <button class="botao fantasma" (click)="openLoginModal()">Entrar</button>

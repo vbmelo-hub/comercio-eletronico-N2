@@ -1,4 +1,4 @@
-import { StatusPedido, MetodoPagamento, TipoPet, Usuario } from './models';
+import { StatusPedido, MetodoPagamento, TipoPet, Usuario } from './modelos';
 
 const petTypeLabels: Record<TipoPet, string> = {
   CAO: 'Caes',

@@ -1,0 +1,15 @@
+<div class="grade lista-pedidos">
+  <div class="cartao-pedido cartao" *ngFor="let o of orders">
+    <div class="linha">
+      <strong>#{{o.id}}</strong>
+      <span class="suave">{{o.criadoEm | date:'short'}}</span>
+    </div>
+    <div class="linha">
+      <span>{{o.itens.length}} itens</span>
+      <span class="preco">{{o.total | currency:'BRL':'symbol'}}</span>
+    </div>
+    <div class="suave">Pagamento: {{labelPaymentMethod(o.metodoPagamento)}} - Status: {{labelOrderStatus(o.status)}}</div>
+    <button class="botao fantasma cheio" (click)="viewPayment.emit(o)">Ver pagamento</button>
+  </div>
+  <p class="suave" *ngIf="!orders || orders.length===0">Sem pedidos ainda.</p>
+</div>
