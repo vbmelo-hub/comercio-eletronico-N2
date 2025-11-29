@@ -10,14 +10,6 @@ import { Categoria } from '../../models';
   template: `
     <div class="barra-filtros">
       <label>
-        <span class="suave tiny">Buscar</span>
-        <input
-          placeholder="Racao, brinquedo, petisco..."
-          [(ngModel)]="searchTerm"
-          (ngModelChange)="onSearch($event)"
-        >
-      </label>
-      <label>
         <span class="suave tiny">Tipo de pet</span>
         <select [(ngModel)]="petFilter" (ngModelChange)="onPet($event)">
           <option value="">Todos</option>
@@ -38,15 +30,12 @@ import { Categoria } from '../../models';
 })
 export class CatalogFiltersComponent {
   @Input() categories: Categoria[] = [];
-  @Input() searchTerm = '';
   @Input() petFilter = '';
   @Input() categoryFilter: number | null = null;
 
-  @Output() searchChange = new EventEmitter<string>();
   @Output() petChange = new EventEmitter<string>();
   @Output() categoryChange = new EventEmitter<number | null>();
 
-  onSearch(v: string) { this.searchChange.emit(v); }
   onPet(v: string) { this.petChange.emit(v); }
   onCategory(v: number | null) { this.categoryChange.emit(v); }
 }

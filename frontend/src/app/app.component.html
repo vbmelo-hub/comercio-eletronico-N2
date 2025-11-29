@@ -1,305 +1,320 @@
-<div class="estrutura">
-  <nav class="barra-navegacao">
-    <div class="marca">
-      <div class="marca-selo">AP</div>
-      <div>
-        <p class="sobrancelha">Artemis Pets</p>
-        <strong>Loja completa para seu pet</strong>
-      </div>
-    </div>
-
-    <div class="links-navegacao">
-      <button class="botao-navegacao" [class.ativo]="activeTab==='catalog'" (click)="setTab('catalog')">Catalogo</button>
-      <button class="botao-navegacao" [class.ativo]="activeTab==='cart'" (click)="setTab('cart')">Carrinho</button>
-      <button class="botao-navegacao" [class.ativo]="activeTab==='orders'" (click)="setTab('orders')">Pedidos</button>
-      <button class="botao-navegacao" [class.ativo]="activeTab==='profile'" (click)="setTab('profile')">Perfil</button>
-      <button class="botao-navegacao" *ngIf="isAdmin" [class.ativo]="activeTab==='admin'" (click)="setTab('admin')">Administracao</button>
-    </div>
-
-    <div class="usuario-navegacao">
-      <span class="selo" *ngIf="user; else guest">{{user?.nome}} / {{roleLabel(user?.papel)}}</span>
-      <ng-template #guest><span class="selo suave">Visitante</span></ng-template>
-      <button class="botao fantasma" *ngIf="!user" (click)="openLoginModal()">Entrar</button>
-      <button class="botao fantasma perigo" *ngIf="user" (click)="logout()">Sair</button>
-    </div>
-  </nav>
-
-  <div class="estado" *ngIf="statusMessage">{{statusMessage}}</div>
-  <div class="aviso" *ngIf="toast" [class.erro]="toast.type==='error'">{{toast.message}}</div>
-
-  <main>
-    <!-- CATALOGO -->
-    <section *ngIf="activeTab==='catalog'" class="painel painel-catalogo">
-      <div class="cabecalho-painel">
-        <div>
-          <p class="sobrancelha">Produtos</p>
-          <h2>Catalogo premium</h2>
-        </div>
-        <div class="selo suave">Itens disponiveis: {{products.length}}</div>
-      </div>
-
-      <app-catalog-filters
-        [categories]="categories"
-        [searchTerm]="searchTerm"
-        [petFilter]="petFilter"
-        [categoryFilter]="categoryFilter"
-        (searchChange)="onSearch($event)"
-        (petChange)="onPetChange($event)"
-        (categoryChange)="onCategoryChange($event)">
-      </app-catalog-filters>
-
-      <div class="grade-produtos">
-        <app-product-card
-          *ngFor="let p of products"
-          [product]="p"
-          (add)="addToCart($event)">
-        </app-product-card>
-      </div>
-    </section>
-
-    <!-- CARRINHO -->
-    <section class="painel" *ngIf="activeTab==='cart'">
-      <div class="cabecalho-painel">
-        <div>
-          <p class="sobrancelha">Pagamento</p>
-          <h2>Carrinho e pagamento</h2>
-        </div>
-        <button class="botao fantasma" (click)="clearCart()">Esvaziar</button>
-      </div>
-      <div class="conjunto-carrinho">
-        <app-cart-items
-          [cartItems]="cartItems"
-          (qtyChange)="updateQty($event.id, $event.qty)"
-          (removeItem)="removeItem($event)">
-        </app-cart-items>
-
-        <app-checkout-summary
-          [itemsCount]="cartItems.length"
-          [cartTotal]="cartTotal"
-          [deliveryFee]="deliveryFee"
-          [totalWithDelivery]="totalWithDelivery"
-          [cupom]="checkoutForm.cupom"
-          [retirada]="checkoutForm.retirada"
-          [nome]="checkoutForm.nome"
-          [email]="checkoutForm.email"
-          [rua]="checkoutForm.rua"
-          [cidade]="checkoutForm.cidade"
-          [estado]="checkoutForm.estado"
-          [cep]="checkoutForm.cep"
-          [metodoPagamento]="checkoutForm.metodoPagamento"
-          [formError]="formError"
-          (cupomChange)="checkoutForm.cupom = $event"
-          (applyCoupon)="applyCoupon()"
-          (retiradaChange)="setRetirada($event)"
-          (nomeChange)="setNome($event)"
-          (emailChange)="setEmail($event)"
-          (ruaChange)="setRua($event)"
-          (cidadeChange)="setCidade($event)"
-          (estadoChange)="setEstado($event)"
-          (cepChange)="setCep($event)"
-          (metodoPagamentoChange)="setMetodoPagamento($event)"
-          (checkout)="checkout()">
-        </app-checkout-summary>
-      </div>
-    </section>
-
-    <!-- PEDIDOS -->
-    <section class="painel" *ngIf="activeTab==='orders'">
-      <div class="cabecalho-painel">
-        <div>
-          <p class="sobrancelha">Historico</p>
-          <h2>Pedidos simulados</h2>
-        </div>
-        <button class="botao fantasma" (click)="loadOrders()">Atualizar</button>
-      </div>
-      <app-order-list [orders]="orders" (viewPayment)="openPaymentModalFromOrder($event)"></app-order-list>
-    </section>
-
-    <!-- PERFIL -->
-    <section class="painel" *ngIf="activeTab==='profile'">
-      <div class="cabecalho-painel">
-        <div>
-          <p class="sobrancelha">Conta</p>
-          <h2>Perfil e preferencias</h2>
-        </div>
-      </div>
-      <ng-container *ngIf="user; else authPrompt">
-        <div class="split profile-grid">
-          <div class="cartao pilha destaque">
-            <p class="sobrancelha">Resumo da conta</p>
-            <h3>{{user?.nome}}</h3>
-            <div class="estatisticas-compactas">
-              <span class="selo suave">Email: {{user?.email}}</span>
-              <span class="selo suave">Perfil: {{roleLabel(user?.papel)}}</span>
-            </div>
-            <div class="estatisticas-compactas">
-              <span class="selo">Pets: {{user?.pets?.length || 0}}</span>
-              <span class="selo">Pedidos: {{orders.length}}</span>
-              <span class="selo">ID: #{{user?.id}}</span>
-            </div>
-            <p class="suave tiny">Use esses dados para agilizar o checkout e manter o historico organizado.</p>
-          </div>
-
-          <div class="cartao pilha">
-            <div class="linha">
-              <h3>Dados de contato e entrega</h3>
-              <span class="selo suave">Aplicado no checkout</span>
-            </div>
-            <div class="grade-campos">
-              <label>Nome completo
-                <input [(ngModel)]="contactForm.nome" placeholder="Seu nome">
-              </label>
-              <label>Email
-                <input type="email" [(ngModel)]="contactForm.email" placeholder="email@exemplo.com">
-              </label>
-              <label>Rua / numero
-                <input [(ngModel)]="contactForm.rua" placeholder="Av. Exemplo, 123">
-              </label>
-              <label>Cidade
-                <input [(ngModel)]="contactForm.cidade" placeholder="Sao Paulo">
-              </label>
-              <label>Estado
-                <input [(ngModel)]="contactForm.estado" placeholder="SP">
-              </label>
-              <label>CEP
-                <input [(ngModel)]="contactForm.cep" placeholder="00000-000">
-              </label>
-            </div>
-            <div class="row">
-              <button class="botao primario" (click)="saveProfileContact()">Salvar dados</button>
-              <span class="suave tiny">Gravamos no navegador para preencher o checkout automaticamente.</span>
-            </div>
-            <p class="suave perigo" *ngIf="profileError">{{profileError}}</p>
+<div class="layout">
+  <div class="shell">
+    <header class="top-hero">
+      <nav class="navbar ribbon-bar">
+        <div class="brand">
+          <div class="brand-mark">PH</div>
+          <div>
+            <p class="eyebrow">PetHouse</p>
+            <strong>Cuidado e conveniencia</strong>
           </div>
         </div>
 
-        <app-pet-list
-          [enabled]="!!user"
-          [ownerName]="user?.nome || ''"
-          [pets]="user?.pets || []"
-          (add)="petForm = $event; addPet()">
-        </app-pet-list>
-      </ng-container>
+        <div class="search-wrap">
+          <input
+            class="search-input"
+            placeholder="Digite sua busca (ex.: escova de pelos)"
+            [(ngModel)]="searchTerm"
+            (keyup.enter)="onSearch(searchTerm)"
+          >
+          <button class="search-btn" (click)="onSearch(searchTerm)">Buscar</button>
+        </div>
 
-      <ng-template #authPrompt>
-        <div class="cartao pilha cta-autenticacao">
-          <p class="sobrancelha">Acesso</p>
-          <h3>Entre para ver seu perfil</h3>
-          <p class="suave">Faca login para acessar pedidos, dados salvos e cadastro de pets. Se ainda nao tem conta, cadastre-se em segundos.</p>
-          <div class="linha">
-            <button class="botao primario" (click)="openLoginModal()">Entrar</button>
-            <button class="botao fantasma" (click)="openSignupModal()">Criar conta</button>
+        <div class="nav-icons">
+          <button class="icon-btn" (click)="setTab('orders')" title="Pedidos">📦</button>
+          <button class="icon-btn" (click)="setTab('profile')" title="Perfil">👤</button>
+          <button class="icon-btn" (click)="setTab('cart')" title="Carrinho">🛒</button>
+          <button class="icon-btn" *ngIf="isAdmin" (click)="setTab('admin')" title="Admin">⚙️</button>
+          <button class="icon-btn" *ngIf="!user" (click)="openLoginModal()" title="Entrar">⋯</button>
+          <button class="icon-btn" *ngIf="user" (click)="logout()" title="Sair">⨯</button>
+        </div>
+      </nav>
+      <div class="color-band"></div>
+    </header>
+
+    <div class="status" *ngIf="statusMessage">{{statusMessage}}</div>
+    <div class="toast" *ngIf="toast" [class.error]="toast.type==='error'">{{toast.message}}</div>
+
+    <main class="content">
+      <!-- CATALOGO -->
+      <section *ngIf="activeTab==='catalog'" class="panel catalog-panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Produtos</p>
+            <h2>Escolha pelo pet</h2>
           </div>
+          <div class="pill muted">Itens disponiveis: {{products.length}}</div>
         </div>
-      </ng-template>
-    </section>
 
-    <!-- ADMIN -->
-    <section class="painel" *ngIf="activeTab==='admin' && isAdmin">
-      <div class="cabecalho-painel">
-        <div>
-          <p class="sobrancelha">Painel</p>
-          <h2>Administracao</h2>
-        </div>
-      </div>
-
-      <app-admin-product-form
-        [product]="adminProduct"
-        [categories]="categories"
-        (refresh)="loadProducts()"
-        (save)="adminProduct=$event; saveProduct()">
-      </app-admin-product-form>
-
-      <div class="dupla-admin">
-        <app-admin-category-panel
-          [category]="adminCategory"
+        <app-catalog-filters
           [categories]="categories"
-          (save)="adminCategory=$event; saveCategory()"
-          (remove)="deleteCategory($event)"
-          (refresh)="loadCategories()">
-        </app-admin-category-panel>
+          [searchTerm]="searchTerm"
+          [petFilter]="petFilter"
+          [categoryFilter]="categoryFilter"
+          (searchChange)="onSearch($event)"
+          (petChange)="onPetChange($event)"
+          (categoryChange)="onCategoryChange($event)">
+        </app-catalog-filters>
 
-        <app-admin-coupon-panel
-          [coupon]="couponForm"
-          [coupons]="coupons"
-          (save)="couponForm=$event; saveCoupon()"
-          (refresh)="loadCoupons()">
-        </app-admin-coupon-panel>
-      </div>
-
-      <app-admin-orders-panel
-        [orders]="orders"
-        (refresh)="loadOrders()">
-      </app-admin-orders-panel>
-    </section>
-  </main>
-
-  <div class="fundo-modal" *ngIf="paymentModal">
-    <div class="cartao-modal">
-      <div class="linha cabecalho-modal">
-        <h3>Pagamento</h3>
-        <button class="botao fantasma perigo fechar-modal" (click)="paymentModal=false" aria-label="Fechar modal">X</button>
-      </div>
-      <p class="suave" *ngIf="paymentDetails">{{paymentDetails?.info}}</p>
-      <div *ngIf="paymentDetails?.chavePix">
-        <div class="linha">
-          <span>Chave PIX:</span>
-          <strong>{{paymentDetails.chavePix}}</strong>
+        <div class="product-grid">
+          <app-product-card
+            *ngFor="let p of products"
+            [product]="p"
+            (add)="addToCart($event)">
+          </app-product-card>
         </div>
-        <img *ngIf="paymentDetails.qrCodeUrl" [src]="paymentDetails.qrCodeUrl" alt="QR Code PIX" class="codigo-qr">
-        <button class="botao primario cheio" (click)="copyPix(paymentDetails.chavePix)">Copiar chave</button>
+      </section>
+
+      <!-- CARRINHO -->
+      <section class="panel" *ngIf="activeTab==='cart'">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Pagamento</p>
+            <h2>Carrinho e checkout</h2>
+          </div>
+          <button class="btn ghost" (click)="clearCart()">Esvaziar</button>
+        </div>
+        <div class="cart-wrap">
+          <app-cart-items
+            [cartItems]="cartItems"
+            (qtyChange)="updateQty($event.id, $event.qty)"
+            (removeItem)="removeItem($event)">
+          </app-cart-items>
+
+          <app-checkout-summary
+            [itemsCount]="cartItems.length"
+            [cartTotal]="cartTotal"
+            [deliveryFee]="deliveryFee"
+            [totalWithDelivery]="totalWithDelivery"
+            [coupon]="checkoutForm.coupon"
+            [pickup]="checkoutForm.pickup"
+            [name]="checkoutForm.name"
+            [email]="checkoutForm.email"
+            [street]="checkoutForm.street"
+            [city]="checkoutForm.city"
+            [state]="checkoutForm.state"
+            [zip]="checkoutForm.zip"
+            [paymentMethod]="checkoutForm.paymentMethod"
+            [loggedIn]="!!user"
+            [formError]="formError"
+            (couponChange)="checkoutForm.coupon = $event"
+            (applyCoupon)="applyCoupon()"
+            (pickupChange)="setPickup($event)"
+            (nameChange)="setName($event)"
+            (emailChange)="setEmail($event)"
+            (streetChange)="setStreet($event)"
+            (cityChange)="setCity($event)"
+            (stateChange)="setState($event)"
+            (zipChange)="setZip($event)"
+            (paymentMethodChange)="setPaymentMethod($event)"
+            (checkout)="checkout()">
+          </app-checkout-summary>
+        </div>
+      </section>
+
+      <!-- PEDIDOS -->
+      <section class="panel" *ngIf="activeTab==='orders'">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Historico</p>
+            <h2>Pedidos simulados</h2>
+          </div>
+          <button class="btn ghost" (click)="loadOrders()">Atualizar</button>
+        </div>
+        <app-order-list [orders]="orders" (viewPayment)="openPaymentModalFromOrder($event)"></app-order-list>
+      </section>
+
+      <!-- PERFIL -->
+      <section class="panel" *ngIf="activeTab==='profile'">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Conta</p>
+            <h2>Perfil e preferencias</h2>
+          </div>
+        </div>
+        <ng-container *ngIf="user; else authPrompt">
+          <div class="split profile-grid">
+            <div class="card stack highlight">
+              <p class="eyebrow">Resumo da conta</p>
+              <h3>{{user?.name}}</h3>
+              <div class="compact-stats">
+                <span class="pill muted">Email: {{user?.email}}</span>
+                <span class="pill muted">Perfil: {{roleLabel(user?.role)}}</span>
+              </div>
+              <div class="compact-stats">
+                <span class="pill">Pets: {{user?.pets?.length || 0}}</span>
+                <span class="pill">Pedidos: {{orders.length}}</span>
+                <span class="pill">ID: #{{user?.id}}</span>
+              </div>
+              <p class="muted tiny">Use esses dados para agilizar o checkout e manter o historico organizado.</p>
+            </div>
+
+            <div class="card stack">
+              <div class="row">
+                <h3>Dados de contato e entrega</h3>
+                <span class="pill muted">Aplicado no checkout</span>
+              </div>
+              <div class="field-grid">
+                <label>Nome completo
+                  <input [(ngModel)]="contactForm.name" placeholder="Seu nome">
+                </label>
+                <label>Email
+                  <input type="email" [(ngModel)]="contactForm.email" placeholder="email@exemplo.com">
+                </label>
+                <label>Rua / numero
+                  <input [(ngModel)]="contactForm.street" placeholder="Av. Exemplo, 123">
+                </label>
+                <label>Cidade
+                  <input [(ngModel)]="contactForm.city" placeholder="Sao Paulo">
+                </label>
+                <label>Estado
+                  <input [(ngModel)]="contactForm.state" placeholder="SP">
+                </label>
+                <label>CEP
+                  <input [(ngModel)]="contactForm.zip" placeholder="00000-000">
+                </label>
+              </div>
+              <div class="row">
+                <button class="btn primary" (click)="saveProfileContact()">Salvar dados</button>
+                <span class="muted tiny">Gravamos no navegador para preencher o checkout automaticamente.</span>
+              </div>
+              <p class="muted danger" *ngIf="profileError">{{profileError}}</p>
+            </div>
+          </div>
+
+          <app-pet-list
+            [enabled]="!!user"
+            [ownerName]="user?.name || ''"
+            [pets]="user?.pets || []"
+            (add)="petForm = $event; addPet()">
+          </app-pet-list>
+        </ng-container>
+
+        <ng-template #authPrompt>
+          <div class="card stack auth-cta">
+            <p class="eyebrow">Acesso</p>
+            <h3>Entre para ver seu perfil</h3>
+            <p class="muted">Faca login para acessar pedidos, dados salvos e cadastro de pets. Se ainda nao tem conta, cadastre-se em segundos.</p>
+            <div class="row">
+              <button class="btn primary" (click)="openLoginModal()">Entrar</button>
+              <button class="btn ghost" (click)="openSignupModal()">Criar conta</button>
+            </div>
+          </div>
+        </ng-template>
+      </section>
+
+      <!-- ADMIN -->
+      <section class="panel" *ngIf="activeTab==='admin' && isAdmin">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Painel</p>
+            <h2>Administracao</h2>
+          </div>
+        </div>
+
+        <app-admin-product-form
+          [product]="adminProduct"
+          [categories]="categories"
+          (refresh)="loadProducts()"
+          (save)="adminProduct=$event; saveProduct()">
+        </app-admin-product-form>
+
+        <div class="admin-duo">
+          <app-admin-category-panel
+            [category]="adminCategory"
+            [categories]="categories"
+            (save)="adminCategory=$event; saveCategory()"
+            (remove)="deleteCategory($event)"
+            (refresh)="loadCategories()">
+          </app-admin-category-panel>
+
+          <app-admin-coupon-panel
+            [coupon]="couponForm"
+            [coupons]="coupons"
+            (save)="couponForm=$event; saveCoupon()"
+            (refresh)="loadCoupons()">
+          </app-admin-coupon-panel>
+        </div>
+
+        <app-admin-orders-panel
+          [orders]="orders"
+          (refresh)="loadOrders()">
+        </app-admin-orders-panel>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal-backdrop" *ngIf="paymentModal">
+    <div class="modal-card">
+      <div class="row modal-header">
+        <h3>Pagamento</h3>
+        <button class="btn ghost danger modal-close" (click)="paymentModal=false" aria-label="Fechar modal">X</button>
+      </div>
+      <p class="muted" *ngIf="paymentDetails">{{paymentDetails?.info}}</p>
+      <div *ngIf="paymentDetails?.pixKey">
+        <div class="row">
+          <span>Chave PIX:</span>
+          <strong>{{paymentDetails.pixKey}}</strong>
+        </div>
+        <img *ngIf="paymentDetails.qrCodeUrl" [src]="paymentDetails.qrCodeUrl" alt="QR Code PIX" class="qr">
+        <button class="btn primary full" (click)="copyPix(paymentDetails.pixKey)">Copiar chave</button>
       </div>
       <div *ngIf="paymentDetails?.boleto">
-        <div class="linha">
+        <div class="row">
           <span>Boleto:</span>
           <strong>{{paymentDetails.boleto}}</strong>
         </div>
-        <p class="suave tiny">Pague em ate 48h.</p>
+        <p class="muted tiny">Pague em ate 48h.</p>
       </div>
     </div>
   </div>
 
-  <div class="fundo-modal" *ngIf="loginModal">
-    <div class="cartao-modal modal-autenticacao">
-      <div class="linha cabecalho-modal">
-        <div>
-          <p class="sobrancelha">Acesso seguro</p>
-          <h3>Entrar</h3>
+  <div class="modal-backdrop" *ngIf="loginModal">
+    <div class="modal-card auth-modal login-modal">
+      <button class="btn ghost danger modal-close" (click)="closeAuthModals()" aria-label="Fechar modal">X</button>
+      <div class="auth-visual">
+        <p class="eyebrow">Acesso seguro</p>
+        <h2>Bem-vindo de volta</h2>
+        <p class="muted">Entre para acompanhar pedidos, salvar dados e gerenciar seus pets.</p>
+        <div class="pill-collection">
+          <span class="pill">Checkout rapido</span>
+          <span class="pill">Dados salvos</span>
+          <span class="pill">Historico organizado</span>
         </div>
-        <button class="botao fantasma perigo fechar-modal" (click)="closeAuthModals()" aria-label="Fechar modal">X</button>
       </div>
-      <p class="suave tiny">Use seu email e senha para continuar.</p>
-      <app-login-panel
-        [email]="loginForm.email"
-        [senha]="loginForm.senha"
-        (login)="loginForm = { email: $event.email, senha: $event.senha }; login(); closeAuthModals()">
-      </app-login-panel>
-      <div class="linha">
-        <span class="suave tiny">Ainda nao tem conta?</span>
-        <button class="botao fantasma" (click)="openSignupModal()">Criar conta</button>
+      <div class="auth-form">
+        <app-login-panel
+          [email]="loginForm.email"
+          [password]="loginForm.password"
+          (login)="loginForm = { email: $event.email, password: $event.password }; login(); closeAuthModals()">
+        </app-login-panel>
+        <div class="row auth-switch">
+          <span class="muted tiny">Ainda nao tem conta?</span>
+          <button class="btn ghost" (click)="openSignupModal()">Criar conta</button>
+        </div>
       </div>
     </div>
   </div>
 
-  <div class="fundo-modal" *ngIf="signupModal">
-    <div class="cartao-modal modal-autenticacao">
-      <div class="linha cabecalho-modal">
+  <div class="modal-backdrop" *ngIf="signupModal">
+    <div class="modal-card auth-modal">
+      <div class="row modal-header">
         <div>
-          <p class="sobrancelha">Cadastro</p>
+          <p class="eyebrow">Cadastro</p>
           <h3>Criar conta</h3>
         </div>
-        <button class="botao fantasma perigo fechar-modal" (click)="closeAuthModals()" aria-label="Fechar modal">X</button>
+        <button class="btn ghost danger modal-close" (click)="closeAuthModals()" aria-label="Fechar modal">X</button>
       </div>
-      <p class="suave tiny">Ganhe historico, cupons e cadastro de pets.</p>
+      <p class="muted tiny">Ganhe historico, cupons e cadastro de pets.</p>
       <app-signup-panel
-        [nome]="signupForm.nome"
+        [name]="signupForm.name"
         [email]="signupForm.email"
-        [senha]="signupForm.senha"
-        (signup)="signupForm = { nome: $event.nome, email: $event.email, senha: $event.senha }; signup(); closeAuthModals()">
+        [password]="signupForm.password"
+        (signup)="signupForm = { name: $event.name, email: $event.email, password: $event.password }; signup(); closeAuthModals()">
       </app-signup-panel>
-      <div class="linha">
-        <span class="suave tiny">Ja tem conta?</span>
-        <button class="botao fantasma" (click)="openLoginModal()">Entrar</button>
+      <div class="row">
+        <span class="muted tiny">Ja tem conta?</span>
+        <button class="btn ghost" (click)="openLoginModal()">Entrar</button>
       </div>
     </div>
   </div>
