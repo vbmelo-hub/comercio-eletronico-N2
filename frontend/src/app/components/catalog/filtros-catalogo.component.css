@@ -1,7 +1,28 @@
 .barra-filtros {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 14px;
+  gap: 12px;
   align-items: end;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
+}
+
+.barra-filtros label {
+  display: grid;
+  gap: 6px;
+  font-weight: 600;
+  color: #2b1e4a;
+}
+
+.barra-filtros select {
+  height: 42px;
+  border-radius: 12px;
+  border: 1px solid rgba(31, 21, 55, 0.16);
+  padding: 0 12px;
+  background: #f7f8fb;
+  color: #2b1e4a;
+}
+
+.barra-filtros .suave {
+  color: #6f6680;
+  font-size: 0.88rem;
 }

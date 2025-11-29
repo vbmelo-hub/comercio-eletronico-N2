@@ -1,19 +1,90 @@
-.produto img {
+.cartao.produto {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: #ffffff;
+  border: 1px solid rgba(31, 21, 55, 0.12);
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 10px 22px rgba(17, 12, 40, 0.08);
+  height: 100%;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+  overflow: hidden;
+}
+
+.cartao.produto:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 30px rgba(17, 12, 40, 0.12);
+  border-color: rgba(92, 74, 216, 0.2);
+}
+
+.cartao.produto img {
   width: 100%;
   aspect-ratio: 4/3;
   object-fit: cover;
-  border-radius: 14px;
-  border: 1px solid rgba(255,255,255,0.12);
-  box-shadow: 0 12px 25px rgba(0,0,0,0.35);
+  border-radius: 12px;
+  border: 1px solid rgba(31, 21, 55, 0.08);
 }
-.cartao.produto { display: flex; flex-direction: column; gap: 8px; height: 100%; }
-.produto h3 { margin: 6px 0 6px; }
-.produto .preco { font-size: 1.05rem; }
-.produto .rodape-cartao {
-  margin-top: 10px;
+
+.cartao.produto .linha,
+.cartao.produto .rodape-cartao {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
+  flex-wrap: wrap;
 }
-.produto .acao { display: block; width: 100%; margin-top: auto; }
+
+.cartao.produto .selo {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(92, 74, 216, 0.08);
+  color: #2b1e4a;
+  font-size: 0.85rem;
+  border: 1px solid rgba(31, 21, 55, 0.08);
+}
+
+.cartao.produto h3 {
+  margin: 4px 0;
+  font-size: 1.05rem;
+}
+
+.cartao.produto p {
+  margin: 0;
+  color: #6f6680;
+  line-height: 1.4;
+}
+
+.cartao.produto .suave {
+  color: #6f6680;
+  font-size: 0.9rem;
+}
+
+.cartao.produto .preco {
+  font-size: 1.08rem;
+  font-weight: 700;
+  color: #2b1e4a;
+}
+
+.cartao.produto .rodape-cartao {
+  margin-top: 8px;
+}
+
+.cartao.produto .acao {
+  display: block;
+  width: 100%;
+  margin-top: auto;
+}
+
+.cartao.produto .sem-estoque {
+  color: #b3261e;
+  font-weight: 700;
+}
+
+.cartao.produto button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

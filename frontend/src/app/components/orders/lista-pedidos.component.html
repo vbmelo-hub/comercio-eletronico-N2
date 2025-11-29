@@ -1,15 +1,42 @@
 <div class="grade lista-pedidos">
   <div class="cartao-pedido cartao" *ngFor="let o of orders">
-    <div class="linha">
-      <strong>#{{o.id}}</strong>
-      <span class="suave">{{o.criadoEm | date:'short'}}</span>
+    <div class="linha topo">
+      <div class="id-bloco">
+        <strong>#{{o.id}}</strong>
+        <span class="suave">{{o.criadoEm | date:'short'}}</span>
+      </div>
+      <span class="status-pill">{{labelOrderStatus(o.status)}}</span>
     </div>
-    <div class="linha">
-      <span>{{o.itens.length}} itens</span>
+
+    <div class="linha valores">
+      <span class="destaque">{{o.itens.length}} itens</span><br>
       <span class="preco">{{o.total | currency:'BRL':'symbol'}}</span>
     </div>
-    <div class="suave">Pagamento: {{labelPaymentMethod(o.metodoPagamento)}} - Status: {{labelOrderStatus(o.status)}}</div>
-    <button class="botao fantasma cheio" (click)="viewPayment.emit(o)">Ver pagamento</button>
+
+    <div class="detalhes">
+      <div class="col">
+        <span class="suave">Pagamento</span>
+        <strong>{{labelPaymentMethod(o.metodoPagamento)}}</strong>
+      </div>
+      <div class="col">
+        <span class="suave">Regra</span>
+        <strong>{{paymentRule(o.metodoPagamento, o.retirada)}}</strong>
+      </div>
+      <div class="col">
+        <span class="suave">Modo</span>
+        <strong>{{o.retirada ? 'Retirada' : 'Entrega'}}</strong>
+      </div>
+    </div>
+
+    <div class="timeline" *ngIf="expandedOrderId === o.id">
+      <div class="step" *ngFor="let s of timelineSteps(o)" [class.done]="s.state==='done'" [class.current]="s.state==='current'" [class.canceled]="s.state==='canceled'">
+        <span class="dot"></span>
+        <span class="label">{{s.label}}</span>
+      </div>
+      <div class="warning" *ngIf="isExpired(o)">Prazo excedido. Pedido cancelado.</div>
+    </div>
+
+    <button class="botao fantasma cheio" (click)="toggleTimeline(o)">Ver andamento</button>
   </div>
   <p class="suave" *ngIf="!orders || orders.length===0">Sem pedidos ainda.</p>
 </div>

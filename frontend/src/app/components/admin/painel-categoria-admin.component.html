@@ -4,19 +4,18 @@
       <p class="sobrancelha">Categorias</p>
       <h3>Gerenciar</h3>
     </div>
-    <button class="botao fantasma" (click)="refresh.emit()">Atualizar</button>
   </div>
   <div class="grade-mini">
     <label>Nome<input [(ngModel)]="category.nome"></label>
     <label>Pet
       <select [(ngModel)]="category.tipoPet">
-        <option value="CAO">Caes</option>
+        <option value="CAO">Cães</option>
         <option value="GATO">Gatos</option>
-        <option value="ACESSORIO">Acessorios</option>
+        <option value="ACESSORIO">Acessórios</option>
       </select>
     </label>
   </div>
-  <button class="botao fantasma" (click)="save.emit(category)">Salvar categoria</button>
+  <button class="botao primario" (click)="save.emit(category)">Salvar categoria</button>
   <div class="colecao-selos">
     <span class="selo" *ngFor="let c of categories">
       {{c.nome}} - {{labelPetType(c.tipoPet)}}

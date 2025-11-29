@@ -15,7 +15,6 @@ export class CheckoutSummaryComponent {
   @Input() cartTotal = 0;
   @Input() deliveryFee = 0;
   @Input() totalWithDelivery = 0;
-  @Input() cupom = '';
   @Input() retirada = false;
   @Input() nome = '';
   @Input() email = '';
@@ -26,8 +25,6 @@ export class CheckoutSummaryComponent {
   @Input() metodoPagamento: MetodoPagamento = 'PIX';
   @Input() formError = '';
 
-  @Output() cupomChange = new EventEmitter<string>();
-  @Output() applyCoupon = new EventEmitter<void>();
   @Output() retiradaChange = new EventEmitter<boolean>();
   @Output() nomeChange = new EventEmitter<string>();
   @Output() emailChange = new EventEmitter<string>();

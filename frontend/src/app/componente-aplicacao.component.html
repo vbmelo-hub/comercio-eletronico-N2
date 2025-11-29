@@ -6,7 +6,7 @@
           <div class="brand-mark">PH</div>
           <div>
             <p class="eyebrow">PetHouse</p>
-            <strong>Cuidado e conveniencia</strong>
+            <strong>Cuidado e conveniência</strong>
           </div>
         </div>
 
@@ -21,12 +21,12 @@
         </div>
 
         <div class="nav-icons">
-          <button class="icon-btn" (click)="setTab('orders')" title="Pedidos">📦</button>
-          <button class="icon-btn" (click)="setTab('profile')" title="Perfil">👤</button>
-          <button class="icon-btn" (click)="setTab('cart')" title="Carrinho">🛒</button>
-          <button class="icon-btn" *ngIf="isAdmin" (click)="setTab('admin')" title="Admin">⚙️</button>
-          <button class="icon-btn" *ngIf="!user" (click)="openLoginModal()" title="Entrar">⋯</button>
-          <button class="icon-btn" *ngIf="user" (click)="logout()" title="Sair">⨯</button>
+          <button class="icon-btn" (click)="setTab('catalog')" title="Catálogo">Catálogo</button>
+          <button class="icon-btn" (click)="setTab('orders')" title="Histórico">Histórico</button>
+          <button class="icon-btn" (click)="setTab('cart')" title="Carrinho">Carrinho</button>
+          <button class="icon-btn" *ngIf="isAdmin" (click)="setTab('admin')" title="Administração">Administração</button>
+          <button class="icon-btn" *ngIf="!user" (click)="openLoginModal()" title="Entrar">Entrar</button>
+          <button class="icon-btn" *ngIf="user" (click)="logout()" title="Sair">Logout</button>
         </div>
       </nav>
       <div class="color-band"></div>
@@ -36,6 +36,7 @@
     <div class="toast" *ngIf="toast" [class.error]="toast.type==='error'">{{toast.message}}</div>
 
     <main class="content">
+      
       <!-- CATALOGO -->
       <section *ngIf="activeTab==='catalog'" class="panel catalog-panel">
         <div class="panel-head">
@@ -43,25 +44,23 @@
             <p class="eyebrow">Produtos</p>
             <h2>Escolha pelo pet</h2>
           </div>
-          <div class="pill muted">Itens disponiveis: {{products.length}}</div>
+          <div class="pill muted">Itens disponíveis: {{products.length}}</div>
         </div>
 
-        <app-catalog-filters
+        <app-filtros-catalogo
           [categories]="categories"
-          [searchTerm]="searchTerm"
           [petFilter]="petFilter"
           [categoryFilter]="categoryFilter"
-          (searchChange)="onSearch($event)"
           (petChange)="onPetChange($event)"
           (categoryChange)="onCategoryChange($event)">
-        </app-catalog-filters>
+        </app-filtros-catalogo>
 
         <div class="product-grid">
-          <app-product-card
+          <app-cartao-produto
             *ngFor="let p of products"
             [product]="p"
             (add)="addToCart($event)">
-          </app-product-card>
+          </app-cartao-produto>
         </div>
       </section>
 
@@ -71,44 +70,41 @@
           <div>
             <p class="eyebrow">Pagamento</p>
             <h2>Carrinho e checkout</h2>
+            <p>Importante: Caso deseje devolver algum produto, você tem o prazo de 7 dias a partir do momento da compra! Entre em contato diretamente com a loja: (68) 99999-9999</p>
           </div>
           <button class="btn ghost" (click)="clearCart()">Esvaziar</button>
         </div>
         <div class="cart-wrap">
-          <app-cart-items
+          <app-itens-carrinho
             [cartItems]="cartItems"
             (qtyChange)="updateQty($event.id, $event.qty)"
             (removeItem)="removeItem($event)">
-          </app-cart-items>
+          </app-itens-carrinho>
 
-          <app-checkout-summary
+          <app-resumo-checkout
             [itemsCount]="cartItems.length"
             [cartTotal]="cartTotal"
             [deliveryFee]="deliveryFee"
             [totalWithDelivery]="totalWithDelivery"
-            [coupon]="checkoutForm.coupon"
-            [pickup]="checkoutForm.pickup"
-            [name]="checkoutForm.name"
+            [retirada]="checkoutForm.retirada"
+            [nome]="checkoutForm.nome"
             [email]="checkoutForm.email"
-            [street]="checkoutForm.street"
-            [city]="checkoutForm.city"
-            [state]="checkoutForm.state"
-            [zip]="checkoutForm.zip"
-            [paymentMethod]="checkoutForm.paymentMethod"
-            [loggedIn]="!!user"
+            [rua]="checkoutForm.rua"
+            [cidade]="checkoutForm.cidade"
+            [estado]="checkoutForm.estado"
+            [cep]="checkoutForm.cep"
+            [metodoPagamento]="checkoutForm.metodoPagamento"
             [formError]="formError"
-            (couponChange)="checkoutForm.coupon = $event"
-            (applyCoupon)="applyCoupon()"
-            (pickupChange)="setPickup($event)"
-            (nameChange)="setName($event)"
+            (retiradaChange)="setRetirada($event)"
+            (nomeChange)="setNome($event)"
             (emailChange)="setEmail($event)"
-            (streetChange)="setStreet($event)"
-            (cityChange)="setCity($event)"
-            (stateChange)="setState($event)"
-            (zipChange)="setZip($event)"
-            (paymentMethodChange)="setPaymentMethod($event)"
+            (ruaChange)="setRua($event)"
+            (cidadeChange)="setCidade($event)"
+            (estadoChange)="setEstado($event)"
+            (cepChange)="setCep($event)"
+            (metodoPagamentoChange)="setMetodoPagamento($event)"
             (checkout)="checkout()">
-          </app-checkout-summary>
+          </app-resumo-checkout>
         </div>
       </section>
 
@@ -116,12 +112,12 @@
       <section class="panel" *ngIf="activeTab==='orders'">
         <div class="panel-head">
           <div>
-            <p class="eyebrow">Historico</p>
+            <p class="eyebrow">Histórico</p>
             <h2>Pedidos simulados</h2>
           </div>
           <button class="btn ghost" (click)="loadOrders()">Atualizar</button>
         </div>
-        <app-order-list [orders]="orders" (viewPayment)="openPaymentModalFromOrder($event)"></app-order-list>
+        <app-lista-pedidos [orders]="orders" (viewPayment)="openPaymentModalFromOrder($event)"></app-lista-pedidos>
       </section>
 
       <!-- PERFIL -->
@@ -129,72 +125,49 @@
         <div class="panel-head">
           <div>
             <p class="eyebrow">Conta</p>
-            <h2>Perfil e preferencias</h2>
+            <h2>Perfil e preferências</h2>
           </div>
         </div>
         <ng-container *ngIf="user; else authPrompt">
-          <div class="split profile-grid">
-            <div class="card stack highlight">
-              <p class="eyebrow">Resumo da conta</p>
-              <h3>{{user?.name}}</h3>
-              <div class="compact-stats">
-                <span class="pill muted">Email: {{user?.email}}</span>
-                <span class="pill muted">Perfil: {{roleLabel(user?.role)}}</span>
-              </div>
-              <div class="compact-stats">
-                <span class="pill">Pets: {{user?.pets?.length || 0}}</span>
-                <span class="pill">Pedidos: {{orders.length}}</span>
-                <span class="pill">ID: #{{user?.id}}</span>
-              </div>
-              <p class="muted tiny">Use esses dados para agilizar o checkout e manter o historico organizado.</p>
+          <div class="card stack">
+            <div class="row">
+              <h3>Dados de contato e entrega</h3>
+              <span class="pill muted">Aplicado no checkout</span>
             </div>
-
-            <div class="card stack">
-              <div class="row">
-                <h3>Dados de contato e entrega</h3>
-                <span class="pill muted">Aplicado no checkout</span>
-              </div>
-              <div class="field-grid">
-                <label>Nome completo
-                  <input [(ngModel)]="contactForm.name" placeholder="Seu nome">
-                </label>
-                <label>Email
-                  <input type="email" [(ngModel)]="contactForm.email" placeholder="email@exemplo.com">
-                </label>
-                <label>Rua / numero
-                  <input [(ngModel)]="contactForm.street" placeholder="Av. Exemplo, 123">
-                </label>
-                <label>Cidade
-                  <input [(ngModel)]="contactForm.city" placeholder="Sao Paulo">
-                </label>
-                <label>Estado
-                  <input [(ngModel)]="contactForm.state" placeholder="SP">
-                </label>
-                <label>CEP
-                  <input [(ngModel)]="contactForm.zip" placeholder="00000-000">
-                </label>
-              </div>
-              <div class="row">
-                <button class="btn primary" (click)="saveProfileContact()">Salvar dados</button>
-                <span class="muted tiny">Gravamos no navegador para preencher o checkout automaticamente.</span>
-              </div>
-              <p class="muted danger" *ngIf="profileError">{{profileError}}</p>
+            <div class="field-grid">
+              <label>Nome completo
+                <input [(ngModel)]="contactForm.name" placeholder="Seu nome">
+              </label>
+              <label>Email
+                <input type="email" [(ngModel)]="contactForm.email" placeholder="email@exemplo.com">
+              </label>
+              <label>Rua / número
+                <input [(ngModel)]="contactForm.street" placeholder="Av. Exemplo, 123">
+              </label>
+              <label>Cidade
+                <input [(ngModel)]="contactForm.city" placeholder="São Paulo">
+              </label>
+              <label>Estado
+                <input [(ngModel)]="contactForm.state" placeholder="SP">
+              </label>
+              <label>CEP
+                <input [(ngModel)]="contactForm.zip" placeholder="00000-000">
+              </label>
             </div>
+            <div class="row">
+              <button class="btn primary" (click)="saveProfileContact()">Salvar dados</button>
+              <span class="muted tiny">Gravamos no navegador para preencher o checkout automaticamente.</span>
+            </div>
+            <p class="muted danger" *ngIf="profileError">{{profileError}}</p>
           </div>
 
-          <app-pet-list
-            [enabled]="!!user"
-            [ownerName]="user?.name || ''"
-            [pets]="user?.pets || []"
-            (add)="petForm = $event; addPet()">
-          </app-pet-list>
         </ng-container>
 
         <ng-template #authPrompt>
           <div class="card stack auth-cta">
             <p class="eyebrow">Acesso</p>
             <h3>Entre para ver seu perfil</h3>
-            <p class="muted">Faca login para acessar pedidos, dados salvos e cadastro de pets. Se ainda nao tem conta, cadastre-se em segundos.</p>
+            <p class="muted">Faça login para acessar pedidos, dados salvos e cadastro de pets. Se ainda não tem conta, cadastre-se em segundos.</p>
             <div class="row">
               <button class="btn primary" (click)="openLoginModal()">Entrar</button>
               <button class="btn ghost" (click)="openSignupModal()">Criar conta</button>
@@ -208,114 +181,54 @@
         <div class="panel-head">
           <div>
             <p class="eyebrow">Painel</p>
-            <h2>Administracao</h2>
+            <h2>Administração</h2>
           </div>
         </div>
 
-        <app-admin-product-form
+        <app-formulario-produto-admin
           [product]="adminProduct"
+          [products]="products"
           [categories]="categories"
           (refresh)="loadProducts()"
-          (save)="adminProduct=$event; saveProduct()">
-        </app-admin-product-form>
+          (select)="adminProduct=$event"
+          (save)="adminProduct=$event; saveProduct()"
+          (remove)="deleteProduct($event)">
+        </app-formulario-produto-admin>
 
         <div class="admin-duo">
-          <app-admin-category-panel
+          <app-painel-categoria-admin
             [category]="adminCategory"
             [categories]="categories"
             (save)="adminCategory=$event; saveCategory()"
             (remove)="deleteCategory($event)"
             (refresh)="loadCategories()">
-          </app-admin-category-panel>
-
-          <app-admin-coupon-panel
-            [coupon]="couponForm"
-            [coupons]="coupons"
-            (save)="couponForm=$event; saveCoupon()"
-            (refresh)="loadCoupons()">
-          </app-admin-coupon-panel>
+          </app-painel-categoria-admin>
         </div>
 
-        <app-admin-orders-panel
+        <app-painel-pedidos-admin
           [orders]="orders"
           (refresh)="loadOrders()">
-        </app-admin-orders-panel>
+        </app-painel-pedidos-admin>
       </section>
     </main>
   </div>
 
-  <div class="modal-backdrop" *ngIf="paymentModal">
-    <div class="modal-card">
-      <div class="row modal-header">
-        <h3>Pagamento</h3>
-        <button class="btn ghost danger modal-close" (click)="paymentModal=false" aria-label="Fechar modal">X</button>
-      </div>
-      <p class="muted" *ngIf="paymentDetails">{{paymentDetails?.info}}</p>
-      <div *ngIf="paymentDetails?.pixKey">
-        <div class="row">
-          <span>Chave PIX:</span>
-          <strong>{{paymentDetails.pixKey}}</strong>
-        </div>
-        <img *ngIf="paymentDetails.qrCodeUrl" [src]="paymentDetails.qrCodeUrl" alt="QR Code PIX" class="qr">
-        <button class="btn primary full" (click)="copyPix(paymentDetails.pixKey)">Copiar chave</button>
-      </div>
-      <div *ngIf="paymentDetails?.boleto">
-        <div class="row">
-          <span>Boleto:</span>
-          <strong>{{paymentDetails.boleto}}</strong>
-        </div>
-        <p class="muted tiny">Pague em ate 48h.</p>
-      </div>
-    </div>
-  </div>
+  <app-modal-login
+    [visible]="loginModal"
+    [email]="loginForm.email"
+    [senha]="loginForm.senha"
+    (login)="loginForm = { email: $event.email, senha: $event.senha }; login(); closeAuthModals()"
+    (close)="closeAuthModals()"
+    (openSignup)="openSignupModal()">
+  </app-modal-login>
 
-  <div class="modal-backdrop" *ngIf="loginModal">
-    <div class="modal-card auth-modal login-modal">
-      <button class="btn ghost danger modal-close" (click)="closeAuthModals()" aria-label="Fechar modal">X</button>
-      <div class="auth-visual">
-        <p class="eyebrow">Acesso seguro</p>
-        <h2>Bem-vindo de volta</h2>
-        <p class="muted">Entre para acompanhar pedidos, salvar dados e gerenciar seus pets.</p>
-        <div class="pill-collection">
-          <span class="pill">Checkout rapido</span>
-          <span class="pill">Dados salvos</span>
-          <span class="pill">Historico organizado</span>
-        </div>
-      </div>
-      <div class="auth-form">
-        <app-login-panel
-          [email]="loginForm.email"
-          [password]="loginForm.password"
-          (login)="loginForm = { email: $event.email, password: $event.password }; login(); closeAuthModals()">
-        </app-login-panel>
-        <div class="row auth-switch">
-          <span class="muted tiny">Ainda nao tem conta?</span>
-          <button class="btn ghost" (click)="openSignupModal()">Criar conta</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal-backdrop" *ngIf="signupModal">
-    <div class="modal-card auth-modal">
-      <div class="row modal-header">
-        <div>
-          <p class="eyebrow">Cadastro</p>
-          <h3>Criar conta</h3>
-        </div>
-        <button class="btn ghost danger modal-close" (click)="closeAuthModals()" aria-label="Fechar modal">X</button>
-      </div>
-      <p class="muted tiny">Ganhe historico, cupons e cadastro de pets.</p>
-      <app-signup-panel
-        [name]="signupForm.name"
-        [email]="signupForm.email"
-        [password]="signupForm.password"
-        (signup)="signupForm = { name: $event.name, email: $event.email, password: $event.password }; signup(); closeAuthModals()">
-      </app-signup-panel>
-      <div class="row">
-        <span class="muted tiny">Ja tem conta?</span>
-        <button class="btn ghost" (click)="openLoginModal()">Entrar</button>
-      </div>
-    </div>
-  </div>
+  <app-modal-signup
+    [visible]="signupModal"
+    [name]="signupForm.nome"
+    [email]="signupForm.email"
+    [password]="signupForm.senha"
+    (signup)="signupForm = { nome: $event.nome, email: $event.email, senha: $event.senha }; signup(); closeAuthModals()"
+    (close)="closeAuthModals()"
+    (openLogin)="openLoginModal()">
+  </app-modal-signup>
 </div>

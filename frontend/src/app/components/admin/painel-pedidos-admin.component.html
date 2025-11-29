@@ -4,19 +4,31 @@
       <p class="sobrancelha">Pedidos</p>
       <h3>Pedidos recentes</h3>
     </div>
-    <button class="botao fantasma" (click)="refresh.emit()">Atualizar</button>
   </div>
   <div class="lista-pedidos">
     <div class="linha-pedido" *ngFor="let o of orders">
       <div class="linha">
-        <strong>#{{o.id}}</strong>
+        <strong>#{{o.id}}</strong><br>
         <span class="suave">{{o.criadoEm | date:'short'}}</span>
       </div>
       <div class="linha">
-        <span>{{o.itens.length}} itens</span>
+        <span>{{o.itens.length}} itens</span><br>
         <span class="preco">{{o.total | currency:'BRL':'symbol'}}</span>
       </div>
       <div class="suave">Cliente: {{o.usuario?.nome || 'Visitante'}}</div>
+
+      <div class="linha controle">
+        <label>
+          Atualizar status
+          <select>
+            <option>Confirmado</option>
+            <option>Aguardando retirada/entrega</option>
+            <option>Concluído</option>
+            <option>Cancelado</option>
+          </select>
+        </label>
+        <button class="botao fantasma" type="button">Salvar alteração</button>
+      </div>
     </div>
   </div>
 </div>

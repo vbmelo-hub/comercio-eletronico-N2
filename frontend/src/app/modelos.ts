@@ -1,5 +1,5 @@
 export type TipoPet = 'CAO' | 'GATO' | 'ACESSORIO';
-export type MetodoPagamento = 'CARTAO_CREDITO' | 'PIX' | 'BOLETO' | 'DINHEIRO';
+export type MetodoPagamento = 'CARTAO_CREDITO' | 'PIX' | 'BOLETO' | 'DINHEIRO' | 'CARTAO_ENTREGA' | 'CARTAO_RETIRADA';
 export type StatusPedido = 'CONFIRMADO' | 'PROCESSANDO' | 'ENVIADO' | 'CANCELADO';
 
 export interface Categoria {

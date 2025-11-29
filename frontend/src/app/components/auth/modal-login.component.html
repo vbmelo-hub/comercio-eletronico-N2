@@ -1,0 +1,21 @@
+<div class="modal-backdrop" *ngIf="visible">
+  <div class="modal-card auth-modal login-modal">
+    <button class="btn ghost danger modal-close" (click)="close.emit()" aria-label="Fechar modal">X</button>
+    <div class="auth-visual">
+      <p class="eyebrow">Acesso seguro</p>
+      <h2>Bem-vindo de volta</h2>
+      <p class="muted">Entre para acompanhar pedidos e realizar compras.</p>
+    </div>
+    <div class="auth-form">
+      <app-painel-login
+        [email]="email"
+        [senha]="senha"
+        (login)="login.emit($event)">
+      </app-painel-login>
+      <div class="row auth-switch">
+        <span class="muted tiny">Ainda não tem conta?</span>
+        <button class="btn ghost" (click)="openSignup.emit()">Criar conta</button>
+      </div>
+    </div>
+  </div>
+</div>

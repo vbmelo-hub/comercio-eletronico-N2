@@ -1,18 +1,34 @@
-.cartao-itens-carrinho { gap: 12px; }
-.lista-carrinho { display: grid; gap: 10px; }
+.cartao-itens-carrinho {
+  gap: 14px;
+  display: grid;
+}
+.lista-carrinho { display: grid; gap: 12px; }
 .linha-carrinho {
-  border: 1px solid var(--border);
+  border: 1px solid rgba(31, 21, 55, 0.12);
   border-radius: 12px;
-  padding: 10px;
+  padding: 12px;
   display: flex;
   justify-content: space-between;
   gap: 10px;
   align-items: center;
+  background: #ffffff;
+  box-shadow: 0 8px 20px rgba(17, 12, 40, 0.06);
 }
+.info-carrinho strong { color: #2b1e4a; }
 .info-carrinho p { margin: 4px 0 0; }
 .acoes-carrinho {
   display: flex;
   gap: 8px;
   align-items: center;
 }
-.acoes-carrinho input { width: 80px; }
+.acoes-carrinho input {
+  width: 68px;
+  height: 38px;
+  border-radius: 10px;
+  border: 1px solid rgba(31, 21, 55, 0.16);
+  padding: 0 8px;
+}
+.acoes-carrinho .botao {
+  padding: 9px 12px;
+  border-radius: 10px;
+}

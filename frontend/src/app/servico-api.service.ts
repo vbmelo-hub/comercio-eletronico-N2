@@ -97,4 +97,8 @@ export class ApiService {
   adminListOrders() {
     return this.http.get<Pedido[]>(`${API_URL}/admin/orders`, { headers: this.authHeaders() });
   }
+
+  adminUpdateOrderStatus(id: number, status: string) {
+    return this.http.put(`${API_URL}/admin/orders/${id}/status`, { status }, { headers: this.authHeaders() });
+  }
 }

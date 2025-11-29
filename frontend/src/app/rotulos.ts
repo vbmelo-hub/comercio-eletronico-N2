@@ -1,13 +1,15 @@
 import { StatusPedido, MetodoPagamento, TipoPet, Usuario } from './modelos';
 
 const petTypeLabels: Record<TipoPet, string> = {
-  CAO: 'Caes',
+  CAO: 'Cães',
   GATO: 'Gatos',
-  ACESSORIO: 'Acessorios'
+  ACESSORIO: 'Acessórios'
 };
 
 const paymentMethodLabels: Record<MetodoPagamento, string> = {
-  CARTAO_CREDITO: 'Cartao de credito',
+  CARTAO_CREDITO: 'Cartão de crédito',
+  CARTAO_ENTREGA: 'Cartão na entrega',
+  CARTAO_RETIRADA: 'Cartão na retirada',
   PIX: 'PIX',
   BOLETO: 'Boleto',
   DINHEIRO: 'Dinheiro'

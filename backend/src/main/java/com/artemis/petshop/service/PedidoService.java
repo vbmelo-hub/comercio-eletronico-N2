@@ -92,6 +92,10 @@ public class PedidoService {
             codigoPagamento = "34191." + Instant.now().toEpochMilli();
         } else if (requisicao.getMetodoPagamento() == MetodoPagamento.DINHEIRO) {
             codigoPagamento = "PAGAR-NA-ENTREGA";
+        } else if (requisicao.getMetodoPagamento() == MetodoPagamento.CARTAO_ENTREGA
+                || requisicao.getMetodoPagamento() == MetodoPagamento.CARTAO_RETIRADA
+                || requisicao.getMetodoPagamento() == MetodoPagamento.CARTAO_CREDITO) {
+            codigoPagamento = "CARTAO-LOCAL";
         } else {
             codigoPagamento = "";
         }
@@ -110,5 +114,13 @@ public class PedidoService {
             return List.of();
         }
         return pedidoRepository.findByUsuarioIdOrderByCriadoEmDesc(usuario.getId());
+    }
+
+    @Transactional
+    public Pedido atualizarStatus(Long id, StatusPedido status) {
+        Pedido pedido = pedidoRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Pedido não encontrado: " + id));
+        pedido.setStatus(status);
+        return pedidoRepository.save(pedido);
     }
 }

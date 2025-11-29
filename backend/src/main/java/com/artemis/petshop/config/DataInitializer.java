@@ -57,6 +57,7 @@ public class DataInitializer {
             if (usuarioRepository.count() == 0) {
                 usuarioRepository.save(new Usuario("Equipe Admin", "admin@petshop.com", "admin123", PapelUsuario.ADMIN));
                 usuarioRepository.save(new Usuario("Cliente Demo", "cliente@petshop.com", "cliente123", PapelUsuario.CLIENTE));
+                usuarioRepository.save(new Usuario("Usuário Comum", "usuario@gmail.com", "1234", PapelUsuario.CLIENTE));
             }
         };
     }

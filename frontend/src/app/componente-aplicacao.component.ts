@@ -11,12 +11,12 @@ import { CheckoutSummaryComponent } from './components/cart/resumo-checkout.comp
 import { OrderListComponent } from './components/orders/lista-pedidos.component';
 import { LoginPanelComponent } from './components/auth/painel-login.component';
 import { SignupPanelComponent } from './components/auth/painel-cadastro.component';
-import { PetListComponent } from './components/pets/lista-pets.component';
 import { AdminProductFormComponent } from './components/admin/formulario-produto-admin.component';
 import { AdminCategoryPanelComponent } from './components/admin/painel-categoria-admin.component';
-import { AdminCouponPanelComponent } from './components/admin/painel-cupom-admin.component';
 import { AdminOrdersPanelComponent } from './components/admin/painel-pedidos-admin.component';
 import { labelUserRole } from './rotulos';
+import { ModalLoginComponent } from './components/auth/modal-login.component';
+import { ModalSignupComponent } from './components/auth/modal-signup.component';
 
 @Component({
   selector: 'app-root',
@@ -31,10 +31,10 @@ import { labelUserRole } from './rotulos';
     OrderListComponent,
     LoginPanelComponent,
     SignupPanelComponent,
-    PetListComponent,
+    ModalLoginComponent,
+    ModalSignupComponent,
     AdminProductFormComponent,
     AdminCategoryPanelComponent,
-    AdminCouponPanelComponent,
     AdminOrdersPanelComponent
   ],
   templateUrl: './componente-aplicacao.component.html',
@@ -54,15 +54,10 @@ export class ComponenteAplicacaoComponent implements OnInit {
 
   loginForm = { email: '', senha: '' };
   signupForm = { nome: '', email: '', senha: '' };
-  checkoutForm: { nome: string; email: string; rua: string; cidade: string; estado: string; cep: string; metodoPagamento: MetodoPagamento; cupom: string; retirada: boolean } =
-    { nome: '', email: '', rua: '', cidade: '', estado: '', cep: '', metodoPagamento: 'PIX', cupom: '', retirada: false };
-  petForm = { nome: '', idade: '', raca: '' };
-
+  checkoutForm: { nome: string; email: string; rua: string; cidade: string; estado: string; cep: string; metodoPagamento: MetodoPagamento; retirada: boolean } =
+    { nome: '', email: '', rua: '', cidade: '', estado: '', cep: '', metodoPagamento: 'PIX', retirada: false };
   adminProduct: any = { id: null, nome: '', descricao: '', preco: 0, estoque: 0, avaliacao: 4.5, urlImagem: '', tipoPet: 'CAO', categoriaId: null };
   adminCategory: any = { nome: '', tipoPet: 'CAO' };
-  couponForm: any = { codigo: '', percentualDesconto: 10, ativo: true };
-  coupons: any[] = [];
-
   contactForm = { nome: '', email: '', rua: '', cidade: '', estado: '', cep: '' };
   profileError = '';
 
@@ -116,9 +111,6 @@ export class ComponenteAplicacaoComponent implements OnInit {
           this.user = user;
           this.state.user$.next(user);
           this.api.setToken(this.state.token);
-          if (this.isAdmin) {
-            this.loadCoupons();
-          }
         }
       },
       error: () => {}
@@ -150,10 +142,6 @@ export class ComponenteAplicacaoComponent implements OnInit {
 
   clearCart() {
     this.state.clearCart();
-  }
-
-  applyCoupon() {
-    this.state.setCoupon(this.checkoutForm.cupom || undefined);
   }
 
   get cartTotal(): number {
@@ -189,7 +177,27 @@ export class ComponenteAplicacaoComponent implements OnInit {
   setCidade(v: string) { this.checkoutForm.cidade = v; }
   setEstado(v: string) { this.checkoutForm.estado = v; }
   setCep(v: string) { this.checkoutForm.cep = v; }
-  setRetirada(v: boolean) { this.checkoutForm.retirada = v; }
+  setRetirada(v: boolean) {
+    this.checkoutForm.retirada = v;
+    // Ajusta método conforme contexto
+    if (v) {
+      if (this.checkoutForm.metodoPagamento === 'CARTAO_ENTREGA') {
+        this.checkoutForm.metodoPagamento = 'CARTAO_RETIRADA';
+      }
+      const allowed: MetodoPagamento[] = ['PIX', 'DINHEIRO', 'CARTAO_RETIRADA'];
+      if (!allowed.includes(this.checkoutForm.metodoPagamento)) {
+        this.checkoutForm.metodoPagamento = 'PIX';
+      }
+    } else {
+      if (this.checkoutForm.metodoPagamento === 'CARTAO_RETIRADA') {
+        this.checkoutForm.metodoPagamento = 'CARTAO_ENTREGA';
+      }
+      const allowed: MetodoPagamento[] = ['PIX', 'DINHEIRO', 'CARTAO_ENTREGA'];
+      if (!allowed.includes(this.checkoutForm.metodoPagamento)) {
+        this.checkoutForm.metodoPagamento = 'PIX';
+      }
+    }
+  }
   setMetodoPagamento(v: MetodoPagamento) { this.checkoutForm.metodoPagamento = v; }
 
   login() {
@@ -274,6 +282,8 @@ export class ComponenteAplicacaoComponent implements OnInit {
     this.state.logout();
     this.orders = [];
     this.activeTab = 'catalog';
+    this.paymentModal = false;
+    this.paymentDetails = null;
     this.showToast('Sessao encerrada', 'info');
   }
 
@@ -288,6 +298,7 @@ export class ComponenteAplicacaoComponent implements OnInit {
     }
     this.api.listOrders().subscribe(data => (this.orders = data));
   }
+
 
   checkout() {
     this.formError = '';
@@ -310,7 +321,7 @@ export class ComponenteAplicacaoComponent implements OnInit {
     const itens = this.cartItems.map(i => ({ produtoId: i.produto.id, quantidade: i.quantidade }));
     const payload = {
       itens,
-      codigoCupom: this.checkoutForm.cupom || undefined,
+      codigoCupom: undefined,
       metodoPagamento: this.checkoutForm.metodoPagamento,
       nome: this.checkoutForm.nome,
       email: this.checkoutForm.email,
@@ -324,6 +335,9 @@ export class ComponenteAplicacaoComponent implements OnInit {
       next: order => {
         this.showToast(`Pedido ${order.id} confirmado`, 'info');
         this.state.clearCart();
+        const tempoLimite = this.checkoutForm.retirada
+          ? (this.checkoutForm.metodoPagamento === 'PIX' ? '' : 'Retire em até 2h na loja.')
+          : (this.checkoutForm.metodoPagamento === 'PIX' ? '' : 'Entrega estimada em até 1h30 com pagamento no local.');
         if (this.checkoutForm.metodoPagamento === 'PIX') {
           this.paymentDetails = {
             metodo: 'PIX',
@@ -331,17 +345,14 @@ export class ComponenteAplicacaoComponent implements OnInit {
             qrCodeUrl: this.buildPixQr(this.pixKey),
             info: 'Use a chave PIX ou o QR Code para pagar.'
           };
-        } else if (this.checkoutForm.metodoPagamento === 'BOLETO') {
-          const boleto = `34191.${Date.now().toString().slice(-10)}`;
-          this.paymentDetails = { metodo: 'BOLETO', boleto, info: 'Boleto gerado. Pague em ate 48h.' };
         } else {
-          this.paymentDetails = { metodo: 'DINHEIRO', info: 'Pague em dinheiro na entrega/retirada.' };
+          this.paymentDetails = { metodo: this.checkoutForm.metodoPagamento, info: tempoLimite || 'Pagamento no local.' };
         }
         this.paymentModal = true;
         if (this.user) {
           this.loadOrders();
         } else {
-          this.showToast('Crie uma conta para salvar o historico.', 'info');
+        this.showToast('Crie uma conta para salvar o histórico.', 'info');
           this.orders = [];
         }
         this.loadProducts();
@@ -352,6 +363,11 @@ export class ComponenteAplicacaoComponent implements OnInit {
         this.showToast(this.formError, 'error');
       }
     });
+  }
+
+  closePaymentModal() {
+    this.paymentModal = false;
+    this.paymentDetails = null;
   }
 
   copyPix(key: string) {
@@ -375,20 +391,6 @@ export class ComponenteAplicacaoComponent implements OnInit {
       this.paymentDetails = { metodo: 'DINHEIRO', info: 'Pague em dinheiro na entrega/retirada.' };
     }
     this.paymentModal = true;
-  }
-
-  addPet() {
-    if (!this.user) return;
-    this.api.addPet(this.petForm.nome, this.petForm.idade, this.petForm.raca).subscribe(() => {
-      this.showToast('Pet adicionado', 'info');
-      this.petForm = { nome: '', idade: '', raca: '' };
-      this.refreshUser();
-    });
-  }
-
-  // Admin
-  loadCoupons() {
-    this.api.adminListCoupons().subscribe(c => (this.coupons = c));
   }
 
   saveProduct() {
@@ -418,14 +420,6 @@ export class ComponenteAplicacaoComponent implements OnInit {
     this.api.adminDeleteCategory(id).subscribe(() => {
       this.showToast('Categoria removida', 'info');
       this.loadCategories();
-    });
-  }
-
-  saveCoupon() {
-    this.api.adminSaveCoupon(this.couponForm).subscribe(() => {
-      this.showToast('Cupom salvo', 'info');
-      this.couponForm = { codigo: '', percentualDesconto: 10, ativo: true };
-      this.loadCoupons();
     });
   }
 

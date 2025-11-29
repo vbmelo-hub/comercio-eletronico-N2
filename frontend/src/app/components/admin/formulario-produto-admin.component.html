@@ -4,23 +4,32 @@
       <p class="sobrancelha">Produtos</p>
       <h3>Cadastrar / editar</h3>
     </div>
-    <button class="botao fantasma" (click)="refresh.emit()">Atualizar lista</button>
+    <div class="linha acoes-topo">
+      <label>Selecionar
+        <select (ngModelChange)="selectProduct($event)" [ngModel]="product?.id || ''">
+          <option value="">Novo produto</option>
+          <option *ngFor="let p of products" [ngValue]="p.id">{{p.nome}}</option>
+        </select>
+      </label>
+      <button class="botao fantasma" type="button" (click)="novoProduto()">Limpar</button>
+      <button class="botao perigo" type="button" [disabled]="!product?.id" (click)="excluirProduto()">Excluir</button>
+    </div>
   </div>
   <div class="grade-mini">
     <label>Nome<input [(ngModel)]="product.nome"></label>
-    <label>Descricao<input [(ngModel)]="product.descricao"></label>
-    <label>Preco<input type="number" [(ngModel)]="product.preco"></label>
+    <label>Descrição<input [(ngModel)]="product.descricao"></label>
+    <label>Preço<input type="number" [(ngModel)]="product.preco"></label>
     <label>Estoque<input type="number" [(ngModel)]="product.estoque"></label>
     <label>Categoria
       <select [(ngModel)]="product.categoriaId">
         <option *ngFor="let c of categories" [ngValue]="c.id">{{c.nome}}</option>
       </select>
     </label>
-    <label>Tipo pet
+    <label>Tipo de pet
       <select [(ngModel)]="product.tipoPet">
-        <option value="CAO">Caes</option>
+        <option value="CAO">Cães</option>
         <option value="GATO">Gatos</option>
-        <option value="ACESSORIO">Acessorios</option>
+        <option value="ACESSORIO">Acessórios</option>
       </select>
     </label>
     <label>Imagem<input [(ngModel)]="product.urlImagem"></label>

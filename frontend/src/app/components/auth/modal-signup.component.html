@@ -1,0 +1,22 @@
+<div class="modal-backdrop" *ngIf="visible">
+  <div class="modal-card auth-modal">
+    <div class="row modal-header">
+      <div>
+        <p class="eyebrow">Cadastro</p>
+        <h3>Criar conta</h3>
+      </div>
+      <button class="btn ghost danger modal-close" (click)="close.emit()" aria-label="Fechar modal">X</button>
+    </div>
+    <p class="muted tiny">Ganhe histórico, cupons e cadastro de pets.</p>
+    <app-painel-cadastro
+      [nome]="name"
+      [email]="email"
+      [senha]="password"
+      (signup)="signup.emit($event)">
+    </app-painel-cadastro>
+    <div class="row">
+      <span class="muted tiny">Já tem conta?</span>
+      <button class="btn ghost" (click)="openLogin.emit()">Entrar</button>
+    </div>
+  </div>
+</div>

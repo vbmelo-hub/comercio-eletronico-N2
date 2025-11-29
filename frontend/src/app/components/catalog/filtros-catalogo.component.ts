@@ -12,15 +12,12 @@ import { Categoria } from '../../modelos';
 })
 export class CatalogFiltersComponent {
   @Input() categories: Categoria[] = [];
-  @Input() searchTerm = '';
   @Input() petFilter = '';
   @Input() categoryFilter: number | null = null;
 
-  @Output() searchChange = new EventEmitter<string>();
   @Output() petChange = new EventEmitter<string>();
   @Output() categoryChange = new EventEmitter<number | null>();
 
-  onSearch(v: string) { this.searchChange.emit(v); }
   onPet(v: string) { this.petChange.emit(v); }
   onCategory(v: number | null) { this.categoryChange.emit(v); }
 }

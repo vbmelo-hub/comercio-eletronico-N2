@@ -1,9 +1,28 @@
-.pedidos-admin { gap: 12px; }
+.pedidos-admin { gap: 16px; }
 .lista-pedidos { display: grid; gap: 14px; }
 .linha-pedido {
-  border: 1px solid var(--border);
+  border: 1px solid rgba(31, 21, 55, 0.12);
   border-radius: 12px;
   padding: 14px;
-  background: rgba(255,255,255,0.03);
+  background: #ffffff;
+  box-shadow: 0 10px 24px rgba(17, 12, 40, 0.08);
 }
 .linha-pedido .linha { margin-bottom: 6px; }
+.linha-pedido .controle {
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.linha-pedido .controle select {
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid rgba(31, 21, 55, 0.16);
+  padding: 0 10px;
+  background: #f7f8fb;
+  color: #2b1e4a;
+}
+
+.suave  {
+  display: inline-block;
+  padding-bottom: 12px;
+}

@@ -3,6 +3,7 @@ package com.artemis.petshop.controller;
 import com.artemis.petshop.dto.CategoriaRequisicao;
 import com.artemis.petshop.dto.CupomRequisicao;
 import com.artemis.petshop.dto.ProdutoRequisicao;
+import com.artemis.petshop.dto.StatusPedidoRequisicao;
 import com.artemis.petshop.model.Usuario;
 import com.artemis.petshop.model.Categoria;
 import com.artemis.petshop.model.Cupom;
@@ -82,5 +83,13 @@ public class AdminController {
     public List<Pedido> allOrders(@RequestHeader("X-Auth-Token") String token) {
         Usuario admin = authService.requireAdmin(token);
         return pedidoService.listForUser(admin);
+    }
+
+    @PutMapping("/orders/{id}/status")
+    public Pedido updateOrderStatus(@RequestHeader("X-Auth-Token") String token,
+                                    @PathVariable Long id,
+                                    @Valid @RequestBody StatusPedidoRequisicao request) {
+        authService.requireAdmin(token);
+        return pedidoService.atualizarStatus(id, request.getStatus());
     }
 }

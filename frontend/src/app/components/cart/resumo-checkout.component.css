@@ -1,41 +1,80 @@
-.resumo-carrinho { gap: 12px; }
-.linhas-resumo { display: grid; gap: 6px; }
+.resumo-carrinho {
+  gap: 14px;
+  display: grid;
+}
+.linhas-resumo {
+  display: grid;
+  gap: 6px;
+  background: #f8f6ff;
+  border: 1px solid rgba(31, 21, 55, 0.1);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+.linhas-resumo .linha {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 .alternancia-entrega {
   display: flex;
-  gap: 8px;
+  gap: 10px;
   flex-wrap: wrap;
 }
 .alternancia-entrega label {
   flex: 1;
   display: inline-flex;
   align-items: center;
-  padding: 10px 14px;
-  background: rgba(255,255,255,0.04);
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 14px;
+  background: #f8f6ff;
+  border: 1px solid rgba(31, 21, 55, 0.12);
+  border-radius: 12px;
   cursor: pointer;
+  font-weight: 600;
+  color: #2b1e4a;
 }
-.alternancia-entrega input {
+.alternancia-entrega input[type="radio"] {
   flex: 0 0 auto;
   width: 14px;
-  height: auto;
+  height: 14px;
   box-sizing: border-box;
   appearance: none;
-  border-radius: 100%;
-  border: 2px solid var(--accent);
-  background: transparent;
+  border-radius: 999px;
+  border: 2px solid rgba(92, 74, 216, 0.9);
+  background: #ffffff;
   display: inline-block;
   vertical-align: middle;
+  transition: box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+  cursor: pointer;
 }
-.alternancia-entrega input:checked {
-  background: var(--accent);
-  box-shadow: 0 0 0 3px rgba(246, 195, 67, 0.25);
+.alternancia-entrega input[type="radio"]:checked {
+  background: radial-gradient(circle at center, rgba(92, 74, 216, 0.95) 0 60%, transparent 60%);
+  box-shadow: 0 0 0 3px rgba(92, 74, 216, 0.22);
+  border-color: rgba(92, 74, 216, 1);
 }
 .grade-mini {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
 }
-.divisor {
-  height: 1px;
-  background: var(--border);
-  margin: 6px 0 4px;
+.divisor { height: 1px; background: var(--border); margin: 6px 0 4px; }
+
+.resumo-carrinho label {
+  display: grid;
+  gap: 6px;
+  font-weight: 600;
+  color: #2b1e4a;
 }
+.resumo-carrinho input,
+.resumo-carrinho select {
+  height: 42px;
+  border-radius: 12px;
+  border: 1px solid rgba(31, 21, 55, 0.16);
+  padding: 0 12px;
+  background: #f7f8fb;
+  color: #2b1e4a;
+}
+.resumo-carrinho .linha .suave { color: #6f6680; }
+
+/* Radio custom */
