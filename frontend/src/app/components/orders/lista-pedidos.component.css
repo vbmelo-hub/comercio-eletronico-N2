@@ -1,0 +1,3 @@
+.lista-pedidos { gap: 18px; }
+.cartao-pedido { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 12px; padding: 12px; }
+.cartao-pedido .linha { margin-bottom: 6px; }

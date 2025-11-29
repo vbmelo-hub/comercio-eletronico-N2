@@ -1,0 +1,19 @@
+.produto img {
+  width: 100%;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow: 0 12px 25px rgba(0,0,0,0.35);
+}
+.cartao.produto { display: flex; flex-direction: column; gap: 8px; height: 100%; }
+.produto h3 { margin: 6px 0 6px; }
+.produto .preco { font-size: 1.05rem; }
+.produto .rodape-cartao {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.produto .acao { display: block; width: 100%; margin-top: auto; }

@@ -1,0 +1,18 @@
+.cartao-itens-carrinho { gap: 12px; }
+.lista-carrinho { display: grid; gap: 10px; }
+.linha-carrinho {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+}
+.info-carrinho p { margin: 4px 0 0; }
+.acoes-carrinho {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.acoes-carrinho input { width: 80px; }

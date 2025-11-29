@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { ApiService } from './api.service';
-import { RespostaAuth, ItemCarrinho, Pedido, Produto, Usuario } from './models';
+import { ApiService } from './servico-api.service';
+import { RespostaAuth, ItemCarrinho, Pedido, Produto, Usuario } from './modelos';
 
 interface CartState {
   items: ItemCarrinho[];

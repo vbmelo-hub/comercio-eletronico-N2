@@ -1,0 +1,17 @@
+<div class="cartao pilha lista-pets" *ngIf="enabled">
+  <div class="linha">
+    <div>
+      <p class="sobrancelha">Pets</p>
+      <h3>{{ownerName}}</h3>
+    </div>
+  </div>
+  <div class="colecao-selos">
+    <span class="selo" *ngFor="let p of pets">{{p.nome}} - {{p.idade}} - {{p.raca}}</span>
+  </div>
+  <div class="grade-mini">
+    <label>Nome<input [(ngModel)]="petForm.nome"></label>
+    <label>Idade<input [(ngModel)]="petForm.idade"></label>
+    <label>Raca<input [(ngModel)]="petForm.raca"></label>
+  </div>
+  <button class="botao fantasma" (click)="addPet()">Adicionar pet</button>
+</div>

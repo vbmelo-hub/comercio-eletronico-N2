@@ -1,0 +1,9 @@
+.pedidos-admin { gap: 12px; }
+.lista-pedidos { display: grid; gap: 14px; }
+.linha-pedido {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+  background: rgba(255,255,255,0.03);
+}
+.linha-pedido .linha { margin-bottom: 6px; }

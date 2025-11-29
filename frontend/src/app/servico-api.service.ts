@@ -9,7 +9,7 @@ import {
   PedidoRequisicao,
   Produto,
   Usuario
-} from './models';
+} from './modelos';
 
 const API_URL = 'http://localhost:8080/api';
 
