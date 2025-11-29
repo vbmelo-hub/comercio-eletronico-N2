@@ -8,20 +8,20 @@ import { labelOrderStatus, labelPaymentMethod } from '../../labels';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="grid">
-      <div class="order-card card" *ngFor="let o of orders">
-        <div class="row">
+    <div class="grade">
+      <div class="cartao-pedido cartao" *ngFor="let o of orders">
+        <div class="linha">
           <strong>#{{o.id}}</strong>
-          <span class="muted">{{o.criadoEm | date:'short'}}</span>
+          <span class="suave">{{o.criadoEm | date:'short'}}</span>
         </div>
-        <div class="row">
+        <div class="linha">
           <span>{{o.itens.length}} itens</span>
-          <span class="price">{{o.total | currency:'BRL':'symbol'}}</span>
+          <span class="preco">{{o.total | currency:'BRL':'symbol'}}</span>
         </div>
-        <div class="muted">Pagamento: {{labelPaymentMethod(o.metodoPagamento)}} - Status: {{labelOrderStatus(o.status)}}</div>
-        <button class="btn ghost full" (click)="viewPayment.emit(o)">Ver pagamento</button>
+        <div class="suave">Pagamento: {{labelPaymentMethod(o.metodoPagamento)}} - Status: {{labelOrderStatus(o.status)}}</div>
+        <button class="botao fantasma cheio" (click)="viewPayment.emit(o)">Ver pagamento</button>
       </div>
-      <p class="muted" *ngIf="!orders || orders.length===0">Sem pedidos ainda.</p>
+      <p class="suave" *ngIf="!orders || orders.length===0">Sem pedidos ainda.</p>
     </div>
   `
 })

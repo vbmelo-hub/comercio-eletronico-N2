@@ -7,25 +7,25 @@ import { Pedido } from '../../models';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="card stack admin-orders">
-      <div class="row">
+    <div class="cartao pilha pedidos-admin">
+      <div class="linha">
         <div>
-          <p class="eyebrow">Pedidos</p>
+          <p class="sobrancelha">Pedidos</p>
           <h3>Pedidos recentes</h3>
         </div>
-        <button class="btn ghost" (click)="refresh.emit()">Atualizar</button>
+        <button class="botao fantasma" (click)="refresh.emit()">Atualizar</button>
       </div>
-      <div class="order-list">
-        <div class="order-row" *ngFor="let o of orders">
-          <div class="row">
+      <div class="lista-pedidos">
+        <div class="linha-pedido" *ngFor="let o of orders">
+          <div class="linha">
             <strong>#{{o.id}}</strong>
-            <span class="muted">{{o.criadoEm | date:'short'}}</span>
+            <span class="suave">{{o.criadoEm | date:'short'}}</span>
           </div>
-          <div class="row">
+          <div class="linha">
             <span>{{o.itens.length}} itens</span>
-            <span class="price">{{o.total | currency:'BRL':'symbol'}}</span>
+            <span class="preco">{{o.total | currency:'BRL':'symbol'}}</span>
           </div>
-          <div class="muted">Cliente: {{o.usuario?.nome || 'Visitante'}}</div>
+          <div class="suave">Cliente: {{o.usuario?.nome || 'Visitante'}}</div>
         </div>
       </div>
     </div>

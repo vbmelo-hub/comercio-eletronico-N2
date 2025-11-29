@@ -8,9 +8,9 @@ import { Categoria } from '../../models';
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
-    <div class="filters-bar">
+    <div class="barra-filtros">
       <label>
-        <span class="muted tiny">Buscar</span>
+        <span class="suave tiny">Buscar</span>
         <input
           placeholder="Racao, brinquedo, petisco..."
           [(ngModel)]="searchTerm"
@@ -18,7 +18,7 @@ import { Categoria } from '../../models';
         >
       </label>
       <label>
-        <span class="muted tiny">Tipo de pet</span>
+        <span class="suave tiny">Tipo de pet</span>
         <select [(ngModel)]="petFilter" (ngModelChange)="onPet($event)">
           <option value="">Todos</option>
           <option value="CAO">Caes</option>
@@ -27,7 +27,7 @@ import { Categoria } from '../../models';
         </select>
       </label>
       <label>
-        <span class="muted tiny">Categoria</span>
+        <span class="suave tiny">Categoria</span>
         <select [(ngModel)]="categoryFilter" (ngModelChange)="onCategory($event)">
           <option [ngValue]="null">Todas</option>
           <option *ngFor="let c of categories" [ngValue]="c.id">{{c.nome}}</option>

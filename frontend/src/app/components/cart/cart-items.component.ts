@@ -8,28 +8,28 @@ import { ItemCarrinho } from '../../models';
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
-    <div class="card stack cart-items-card">
-      <div class="row">
+    <div class="cartao pilha cartao-itens-carrinho">
+      <div class="linha">
         <h3>Itens</h3>
-        <span class="pill muted">Total: {{cartItems?.length || 0}}</span>
+        <span class="selo suave">Total: {{cartItems?.length || 0}}</span>
       </div>
-      <div class="cart-list">
-        <div class="cart-row" *ngFor="let item of cartItems">
-          <div class="cart-info">
+      <div class="lista-carrinho">
+        <div class="linha-carrinho" *ngFor="let item of cartItems">
+          <div class="info-carrinho">
             <strong>{{item.produto.nome}}</strong>
-            <p class="muted">{{item.produto.preco | currency:'BRL':'symbol'}} - Estoque: {{item.produto.estoque}}</p>
+            <p class="suave">{{item.produto.preco | currency:'BRL':'symbol'}} - Estoque: {{item.produto.estoque}}</p>
           </div>
-          <div class="cart-actions">
+          <div class="acoes-carrinho">
             <input
               type="number"
               min="1"
               [max]="item.produto.estoque"
               [(ngModel)]="item.quantidade"
               (ngModelChange)="qtyChange.emit({ id: item.produto.id, qty: $event })">
-            <button class="btn ghost danger" (click)="removeItem.emit(item.produto.id)">Remover</button>
+            <button class="botao fantasma perigo" (click)="removeItem.emit(item.produto.id)">Remover</button>
           </div>
         </div>
-        <p class="muted" *ngIf="!cartItems || cartItems.length===0">Carrinho vazio.</p>
+        <p class="suave" *ngIf="!cartItems || cartItems.length===0">Carrinho vazio.</p>
       </div>
     </div>
   `

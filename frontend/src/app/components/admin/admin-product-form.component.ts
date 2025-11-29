@@ -8,15 +8,15 @@ import { Categoria } from '../../models';
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
-    <div class="card stack admin-block">
-      <div class="row">
+    <div class="cartao pilha bloco-admin">
+      <div class="linha">
         <div>
-          <p class="eyebrow">Produtos</p>
+          <p class="sobrancelha">Produtos</p>
           <h3>Cadastrar / editar</h3>
         </div>
-        <button class="btn ghost" (click)="refresh.emit()">Atualizar lista</button>
+        <button class="botao fantasma" (click)="refresh.emit()">Atualizar lista</button>
       </div>
-      <div class="mini-grid">
+      <div class="grade-mini">
         <label>Nome<input [(ngModel)]="product.nome"></label>
         <label>Descricao<input [(ngModel)]="product.descricao"></label>
         <label>Preco<input type="number" [(ngModel)]="product.preco"></label>
@@ -35,7 +35,7 @@ import { Categoria } from '../../models';
         </label>
         <label>Imagem<input [(ngModel)]="product.urlImagem"></label>
       </div>
-      <button class="btn primary" (click)="save.emit(product)">Salvar produto</button>
+      <button class="botao primario" (click)="save.emit(product)">Salvar produto</button>
     </div>
   `
 })

@@ -2,16 +2,19 @@
   margin: 6px 0 2px;
 }
 
-.card h3 {
+.card h3,
+.cartao h3 {
   margin: 4px 0 6px;
 }
 
-button.btn.ghost.danger {
+button.btn.ghost.danger,
+button.botao.fantasma.perigo {
   border-color: rgba(255, 107, 107, 0.5);
   color: #ff6b6b;
 }
 
-.pill button {
+.pill button,
+.selo button {
   background: transparent;
   border: none;
   color: inherit;

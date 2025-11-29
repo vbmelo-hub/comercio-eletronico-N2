@@ -8,19 +8,19 @@ import { labelPetType } from '../../labels';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <article class="card product">
+    <article class="cartao produto">
       <img [src]="product?.urlImagem" [alt]="product?.nome">
-      <div class="row">
-        <span class="pill">{{product?.categoria?.nome}} - {{labelPetType(product?.tipoPet)}}</span>
-        <span class="pill">Nota: {{product?.avaliacao}}</span>
+      <div class="linha">
+        <span class="selo">{{product?.categoria?.nome}} - {{labelPetType(product?.tipoPet)}}</span>
+        <span class="selo">Nota: {{product?.avaliacao}}</span>
       </div>
       <h3>{{product?.nome}}</h3>
-      <p class="muted">{{product?.descricao}}</p>
-      <div class="card-footer">
-        <span class="price">{{product?.preco | currency:'BRL':'symbol'}}</span>
-        <span class="muted">Estoque: {{product?.estoque}}</span>
+      <p class="suave">{{product?.descricao}}</p>
+      <div class="rodape-cartao">
+        <span class="preco">{{product?.preco | currency:'BRL':'symbol'}}</span>
+        <span class="suave">Estoque: {{product?.estoque}}</span>
       </div>
-      <button class="btn primary cta" (click)="add.emit(product)" title="Clique para adicionar ao carrinho">Adicionar ao carrinho</button>
+      <button class="botao primario acao" (click)="add.emit(product)" title="Clique para adicionar ao carrinho">Adicionar ao carrinho</button>
     </article>
   `
 })

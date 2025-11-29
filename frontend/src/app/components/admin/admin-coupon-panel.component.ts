@@ -8,15 +8,15 @@ import { Cupom } from '../../models';
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
-    <div class="card stack">
-      <div class="row">
+    <div class="cartao pilha bloco-admin">
+      <div class="linha">
         <div>
-          <p class="eyebrow">Cupons</p>
+          <p class="sobrancelha">Cupons</p>
           <h3>Descontos</h3>
         </div>
-        <button class="btn ghost" (click)="refresh.emit()">Atualizar</button>
+        <button class="botao fantasma" (click)="refresh.emit()">Atualizar</button>
       </div>
-      <div class="mini-grid">
+      <div class="grade-mini">
         <label>Codigo<input [(ngModel)]="coupon.codigo"></label>
         <label>Desconto %<input type="number" [(ngModel)]="coupon.percentualDesconto"></label>
         <label>Status
@@ -26,9 +26,9 @@ import { Cupom } from '../../models';
           </select>
         </label>
       </div>
-      <button class="btn ghost" (click)="save.emit(coupon)">Salvar cupom</button>
-      <div class="pill-collection">
-        <span class="pill" *ngFor="let c of coupons">{{c.codigo}} - {{c.percentualDesconto}}% - {{c.ativo ? 'ativo' : 'off'}}</span>
+      <button class="botao fantasma" (click)="save.emit(coupon)">Salvar cupom</button>
+      <div class="colecao-selos">
+        <span class="selo" *ngFor="let c of coupons">{{c.codigo}} - {{c.percentualDesconto}}% - {{c.ativo ? 'ativo' : 'off'}}</span>
       </div>
     </div>
   `

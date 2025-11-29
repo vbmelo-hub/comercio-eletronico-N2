@@ -8,22 +8,22 @@ import { MetodoPagamento } from '../../models';
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
-    <div class="card stack cart-summary">
+    <div class="cartao pilha resumo-carrinho">
       <h3>Resumo e pagamento</h3>
-      <div class="row">
+      <div class="linha">
         <label style="flex:1;">Cupom
           <input placeholder="BEMVINDO" [ngModel]="cupom" (ngModelChange)="cupomChange.emit($event)">
         </label>
-        <button class="btn ghost" (click)="applyCoupon.emit()">Aplicar</button>
+        <button class="botao fantasma" (click)="applyCoupon.emit()">Aplicar</button>
       </div>
-      <div class="summary-lines">
-        <div class="row"><span class="muted">Itens</span><strong>{{itemsCount}}</strong></div>
-        <div class="row"><span class="muted">Subtotal</span><strong>{{cartTotal | currency:'BRL':'symbol'}}</strong></div>
-        <div class="row" *ngIf="deliveryFee>0"><span class="muted">Entrega</span><strong>{{deliveryFee | currency:'BRL':'symbol'}}</strong></div>
-        <div class="row"><span class="muted">Total</span><strong>{{totalWithDelivery | currency:'BRL':'symbol'}}</strong></div>
+      <div class="linhas-resumo">
+        <div class="linha"><span class="suave">Itens</span><strong>{{itemsCount}}</strong></div>
+        <div class="linha"><span class="suave">Subtotal</span><strong>{{cartTotal | currency:'BRL':'symbol'}}</strong></div>
+        <div class="linha" *ngIf="deliveryFee>0"><span class="suave">Entrega</span><strong>{{deliveryFee | currency:'BRL':'symbol'}}</strong></div>
+        <div class="linha"><span class="suave">Total</span><strong>{{totalWithDelivery | currency:'BRL':'symbol'}}</strong></div>
       </div>
-      <div class="divider"></div>
-      <div class="delivery-toggle">
+      <div class="divisor"></div>
+      <div class="alternancia-entrega">
         <label>
           <input type="radio" name="delivery" [checked]="!retirada" (change)="retiradaChange.emit(false)">
           <span>Entrega (+ R$15,00)</span>
@@ -33,16 +33,16 @@ import { MetodoPagamento } from '../../models';
           <span>Retirar na loja</span>
         </label>
       </div>
-      <div class="mini-grid">
+      <div class="grade-mini">
         <label class="required">Nome<input [ngModel]="nome" (ngModelChange)="nomeChange.emit($event)" [class.filled]="nome"></label>
         <label class="required">Email<input [ngModel]="email" (ngModelChange)="emailChange.emit($event)" [class.filled]="email"></label>
       </div>
       <label [class.required]="!retirada">Endereco<input [disabled]="retirada" [ngModel]="rua" (ngModelChange)="ruaChange.emit($event)" [class.filled]="rua"></label>
-      <div class="mini-grid">
+      <div class="grade-mini">
         <label [class.required]="!retirada">Cidade<input [disabled]="retirada" [ngModel]="cidade" (ngModelChange)="cidadeChange.emit($event)" [class.filled]="cidade"></label>
         <label [class.required]="!retirada">Estado<input [disabled]="retirada" [ngModel]="estado" (ngModelChange)="estadoChange.emit($event)" [class.filled]="estado"></label>
       </div>
-      <div class="mini-grid">
+      <div class="grade-mini">
         <label [class.required]="!retirada">CEP<input [disabled]="retirada" [ngModel]="cep" (ngModelChange)="cepChange.emit($event)" [class.filled]="cep"></label>
         <label class="required">Pagamento
           <select [ngModel]="metodoPagamento" (ngModelChange)="metodoPagamentoChange.emit($event)" [class.filled]="metodoPagamento">
@@ -52,8 +52,8 @@ import { MetodoPagamento } from '../../models';
           </select>
         </label>
       </div>
-      <div class="muted tiny" *ngIf="formError">{{formError}}</div>
-      <button class="btn primary full" (click)="checkout.emit()">Finalizar</button>
+      <div class="suave tiny" *ngIf="formError">{{formError}}</div>
+      <button class="botao primario cheio" (click)="checkout.emit()">Finalizar</button>
     </div>
   `
 })

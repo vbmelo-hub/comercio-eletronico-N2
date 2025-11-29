@@ -9,15 +9,15 @@ import { labelPetType } from '../../labels';
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
-    <div class="card stack">
-      <div class="row">
+    <div class="cartao pilha bloco-admin">
+      <div class="linha">
         <div>
-          <p class="eyebrow">Categorias</p>
+          <p class="sobrancelha">Categorias</p>
           <h3>Gerenciar</h3>
         </div>
-        <button class="btn ghost" (click)="refresh.emit()">Atualizar</button>
+        <button class="botao fantasma" (click)="refresh.emit()">Atualizar</button>
       </div>
-      <div class="mini-grid">
+      <div class="grade-mini">
         <label>Nome<input [(ngModel)]="category.nome"></label>
         <label>Pet
           <select [(ngModel)]="category.tipoPet">
@@ -27,11 +27,11 @@ import { labelPetType } from '../../labels';
           </select>
         </label>
       </div>
-      <button class="btn ghost" (click)="save.emit(category)">Salvar categoria</button>
-      <div class="pill-collection">
-        <span class="pill" *ngFor="let c of categories">
+      <button class="botao fantasma" (click)="save.emit(category)">Salvar categoria</button>
+      <div class="colecao-selos">
+        <span class="selo" *ngFor="let c of categories">
           {{c.nome}} - {{labelPetType(c.tipoPet)}}
-          <button class="btn ghost danger" (click)="remove.emit(c.id)">x</button>
+          <button class="botao fantasma perigo" (click)="remove.emit(c.id)">x</button>
         </span>
       </div>
     </div>

@@ -7,12 +7,12 @@ import { FormsModule } from '@angular/forms';
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
-    <div class="card stack">
+    <div class="cartao pilha">
       <h3>Novo cadastro</h3>
       <label>Nome<input [(ngModel)]="nome"></label>
       <label>Email<input [(ngModel)]="email"></label>
       <label>Senha<input type="password" [(ngModel)]="senha"></label>
-      <button class="btn ghost full" (click)="signup.emit({ nome, email, senha })">Cadastrar</button>
+      <button class="botao fantasma cheio" (click)="signup.emit({ nome, email, senha })">Cadastrar</button>
     </div>
   `
 })

@@ -1,41 +1,41 @@
-<div class="layout">
-  <nav class="navbar">
-    <div class="brand">
-      <div class="brand-mark">AP</div>
+<div class="estrutura">
+  <nav class="barra-navegacao">
+    <div class="marca">
+      <div class="marca-selo">AP</div>
       <div>
-        <p class="eyebrow">Artemis Pets</p>
+        <p class="sobrancelha">Artemis Pets</p>
         <strong>Loja completa para seu pet</strong>
       </div>
     </div>
 
-    <div class="nav-links">
-      <button class="nav-btn" [class.active]="activeTab==='catalog'" (click)="setTab('catalog')">Catalogo</button>
-      <button class="nav-btn" [class.active]="activeTab==='cart'" (click)="setTab('cart')">Carrinho</button>
-      <button class="nav-btn" [class.active]="activeTab==='orders'" (click)="setTab('orders')">Pedidos</button>
-      <button class="nav-btn" [class.active]="activeTab==='profile'" (click)="setTab('profile')">Perfil</button>
-      <button class="nav-btn" *ngIf="isAdmin" [class.active]="activeTab==='admin'" (click)="setTab('admin')">Administracao</button>
+    <div class="links-navegacao">
+      <button class="botao-navegacao" [class.ativo]="activeTab==='catalog'" (click)="setTab('catalog')">Catalogo</button>
+      <button class="botao-navegacao" [class.ativo]="activeTab==='cart'" (click)="setTab('cart')">Carrinho</button>
+      <button class="botao-navegacao" [class.ativo]="activeTab==='orders'" (click)="setTab('orders')">Pedidos</button>
+      <button class="botao-navegacao" [class.ativo]="activeTab==='profile'" (click)="setTab('profile')">Perfil</button>
+      <button class="botao-navegacao" *ngIf="isAdmin" [class.ativo]="activeTab==='admin'" (click)="setTab('admin')">Administracao</button>
     </div>
 
-    <div class="nav-user">
-      <span class="pill" *ngIf="user; else guest">{{user?.nome}} / {{roleLabel(user?.papel)}}</span>
-      <ng-template #guest><span class="pill muted">Visitante</span></ng-template>
-      <button class="btn ghost" *ngIf="!user" (click)="openLoginModal()">Entrar</button>
-      <button class="btn ghost danger" *ngIf="user" (click)="logout()">Sair</button>
+    <div class="usuario-navegacao">
+      <span class="selo" *ngIf="user; else guest">{{user?.nome}} / {{roleLabel(user?.papel)}}</span>
+      <ng-template #guest><span class="selo suave">Visitante</span></ng-template>
+      <button class="botao fantasma" *ngIf="!user" (click)="openLoginModal()">Entrar</button>
+      <button class="botao fantasma perigo" *ngIf="user" (click)="logout()">Sair</button>
     </div>
   </nav>
 
-  <div class="status" *ngIf="statusMessage">{{statusMessage}}</div>
-  <div class="toast" *ngIf="toast" [class.error]="toast.type==='error'">{{toast.message}}</div>
+  <div class="estado" *ngIf="statusMessage">{{statusMessage}}</div>
+  <div class="aviso" *ngIf="toast" [class.erro]="toast.type==='error'">{{toast.message}}</div>
 
   <main>
     <!-- CATALOGO -->
-    <section *ngIf="activeTab==='catalog'" class="panel catalog-panel">
-      <div class="panel-head">
+    <section *ngIf="activeTab==='catalog'" class="painel painel-catalogo">
+      <div class="cabecalho-painel">
         <div>
-          <p class="eyebrow">Produtos</p>
+          <p class="sobrancelha">Produtos</p>
           <h2>Catalogo premium</h2>
         </div>
-        <div class="pill muted">Itens disponiveis: {{products.length}}</div>
+        <div class="selo suave">Itens disponiveis: {{products.length}}</div>
       </div>
 
       <app-catalog-filters
@@ -48,7 +48,7 @@
         (categoryChange)="onCategoryChange($event)">
       </app-catalog-filters>
 
-      <div class="product-grid">
+      <div class="grade-produtos">
         <app-product-card
           *ngFor="let p of products"
           [product]="p"
@@ -58,15 +58,15 @@
     </section>
 
     <!-- CARRINHO -->
-    <section class="panel" *ngIf="activeTab==='cart'">
-      <div class="panel-head">
+    <section class="painel" *ngIf="activeTab==='cart'">
+      <div class="cabecalho-painel">
         <div>
-          <p class="eyebrow">Pagamento</p>
+          <p class="sobrancelha">Pagamento</p>
           <h2>Carrinho e pagamento</h2>
         </div>
-        <button class="btn ghost" (click)="clearCart()">Esvaziar</button>
+        <button class="botao fantasma" (click)="clearCart()">Esvaziar</button>
       </div>
-      <div class="cart-wrap">
+      <div class="conjunto-carrinho">
         <app-cart-items
           [cartItems]="cartItems"
           (qtyChange)="updateQty($event.id, $event.qty)"
@@ -104,48 +104,48 @@
     </section>
 
     <!-- PEDIDOS -->
-    <section class="panel" *ngIf="activeTab==='orders'">
-      <div class="panel-head">
+    <section class="painel" *ngIf="activeTab==='orders'">
+      <div class="cabecalho-painel">
         <div>
-          <p class="eyebrow">Historico</p>
+          <p class="sobrancelha">Historico</p>
           <h2>Pedidos simulados</h2>
         </div>
-        <button class="btn ghost" (click)="loadOrders()">Atualizar</button>
+        <button class="botao fantasma" (click)="loadOrders()">Atualizar</button>
       </div>
       <app-order-list [orders]="orders" (viewPayment)="openPaymentModalFromOrder($event)"></app-order-list>
     </section>
 
     <!-- PERFIL -->
-    <section class="panel" *ngIf="activeTab==='profile'">
-      <div class="panel-head">
+    <section class="painel" *ngIf="activeTab==='profile'">
+      <div class="cabecalho-painel">
         <div>
-          <p class="eyebrow">Conta</p>
+          <p class="sobrancelha">Conta</p>
           <h2>Perfil e preferencias</h2>
         </div>
       </div>
       <ng-container *ngIf="user; else authPrompt">
         <div class="split profile-grid">
-          <div class="card stack highlight">
-            <p class="eyebrow">Resumo da conta</p>
+          <div class="cartao pilha destaque">
+            <p class="sobrancelha">Resumo da conta</p>
             <h3>{{user?.nome}}</h3>
-            <div class="compact-stats">
-              <span class="pill muted">Email: {{user?.email}}</span>
-              <span class="pill muted">Perfil: {{roleLabel(user?.papel)}}</span>
+            <div class="estatisticas-compactas">
+              <span class="selo suave">Email: {{user?.email}}</span>
+              <span class="selo suave">Perfil: {{roleLabel(user?.papel)}}</span>
             </div>
-            <div class="compact-stats">
-              <span class="pill">Pets: {{user?.pets?.length || 0}}</span>
-              <span class="pill">Pedidos: {{orders.length}}</span>
-              <span class="pill">ID: #{{user?.id}}</span>
+            <div class="estatisticas-compactas">
+              <span class="selo">Pets: {{user?.pets?.length || 0}}</span>
+              <span class="selo">Pedidos: {{orders.length}}</span>
+              <span class="selo">ID: #{{user?.id}}</span>
             </div>
-            <p class="muted tiny">Use esses dados para agilizar o checkout e manter o historico organizado.</p>
+            <p class="suave tiny">Use esses dados para agilizar o checkout e manter o historico organizado.</p>
           </div>
 
-          <div class="card stack">
-            <div class="row">
+          <div class="cartao pilha">
+            <div class="linha">
               <h3>Dados de contato e entrega</h3>
-              <span class="pill muted">Aplicado no checkout</span>
+              <span class="selo suave">Aplicado no checkout</span>
             </div>
-            <div class="field-grid">
+            <div class="grade-campos">
               <label>Nome completo
                 <input [(ngModel)]="contactForm.nome" placeholder="Seu nome">
               </label>
@@ -166,10 +166,10 @@
               </label>
             </div>
             <div class="row">
-              <button class="btn primary" (click)="saveProfileContact()">Salvar dados</button>
-              <span class="muted tiny">Gravamos no navegador para preencher o checkout automaticamente.</span>
+              <button class="botao primario" (click)="saveProfileContact()">Salvar dados</button>
+              <span class="suave tiny">Gravamos no navegador para preencher o checkout automaticamente.</span>
             </div>
-            <p class="muted danger" *ngIf="profileError">{{profileError}}</p>
+            <p class="suave perigo" *ngIf="profileError">{{profileError}}</p>
           </div>
         </div>
 
@@ -182,23 +182,23 @@
       </ng-container>
 
       <ng-template #authPrompt>
-        <div class="card stack auth-cta">
-          <p class="eyebrow">Acesso</p>
+        <div class="cartao pilha cta-autenticacao">
+          <p class="sobrancelha">Acesso</p>
           <h3>Entre para ver seu perfil</h3>
-          <p class="muted">Faca login para acessar pedidos, dados salvos e cadastro de pets. Se ainda nao tem conta, cadastre-se em segundos.</p>
-          <div class="row">
-            <button class="btn primary" (click)="openLoginModal()">Entrar</button>
-            <button class="btn ghost" (click)="openSignupModal()">Criar conta</button>
+          <p class="suave">Faca login para acessar pedidos, dados salvos e cadastro de pets. Se ainda nao tem conta, cadastre-se em segundos.</p>
+          <div class="linha">
+            <button class="botao primario" (click)="openLoginModal()">Entrar</button>
+            <button class="botao fantasma" (click)="openSignupModal()">Criar conta</button>
           </div>
         </div>
       </ng-template>
     </section>
 
     <!-- ADMIN -->
-    <section class="panel" *ngIf="activeTab==='admin' && isAdmin">
-      <div class="panel-head">
+    <section class="painel" *ngIf="activeTab==='admin' && isAdmin">
+      <div class="cabecalho-painel">
         <div>
-          <p class="eyebrow">Painel</p>
+          <p class="sobrancelha">Painel</p>
           <h2>Administracao</h2>
         </div>
       </div>
@@ -210,7 +210,7 @@
         (save)="adminProduct=$event; saveProduct()">
       </app-admin-product-form>
 
-      <div class="admin-duo">
+      <div class="dupla-admin">
         <app-admin-category-panel
           [category]="adminCategory"
           [categories]="categories"
@@ -234,72 +234,72 @@
     </section>
   </main>
 
-  <div class="modal-backdrop" *ngIf="paymentModal">
-    <div class="modal-card">
-      <div class="row modal-header">
+  <div class="fundo-modal" *ngIf="paymentModal">
+    <div class="cartao-modal">
+      <div class="linha cabecalho-modal">
         <h3>Pagamento</h3>
-        <button class="btn ghost danger modal-close" (click)="paymentModal=false" aria-label="Fechar modal">X</button>
+        <button class="botao fantasma perigo fechar-modal" (click)="paymentModal=false" aria-label="Fechar modal">X</button>
       </div>
-      <p class="muted" *ngIf="paymentDetails">{{paymentDetails?.info}}</p>
+      <p class="suave" *ngIf="paymentDetails">{{paymentDetails?.info}}</p>
       <div *ngIf="paymentDetails?.chavePix">
-        <div class="row">
+        <div class="linha">
           <span>Chave PIX:</span>
           <strong>{{paymentDetails.chavePix}}</strong>
         </div>
-        <img *ngIf="paymentDetails.qrCodeUrl" [src]="paymentDetails.qrCodeUrl" alt="QR Code PIX" class="qr">
-        <button class="btn primary full" (click)="copyPix(paymentDetails.chavePix)">Copiar chave</button>
+        <img *ngIf="paymentDetails.qrCodeUrl" [src]="paymentDetails.qrCodeUrl" alt="QR Code PIX" class="codigo-qr">
+        <button class="botao primario cheio" (click)="copyPix(paymentDetails.chavePix)">Copiar chave</button>
       </div>
       <div *ngIf="paymentDetails?.boleto">
-        <div class="row">
+        <div class="linha">
           <span>Boleto:</span>
           <strong>{{paymentDetails.boleto}}</strong>
         </div>
-        <p class="muted tiny">Pague em ate 48h.</p>
+        <p class="suave tiny">Pague em ate 48h.</p>
       </div>
     </div>
   </div>
 
-  <div class="modal-backdrop" *ngIf="loginModal">
-    <div class="modal-card auth-modal">
-      <div class="row modal-header">
+  <div class="fundo-modal" *ngIf="loginModal">
+    <div class="cartao-modal modal-autenticacao">
+      <div class="linha cabecalho-modal">
         <div>
-          <p class="eyebrow">Acesso seguro</p>
+          <p class="sobrancelha">Acesso seguro</p>
           <h3>Entrar</h3>
         </div>
-        <button class="btn ghost danger modal-close" (click)="closeAuthModals()" aria-label="Fechar modal">X</button>
+        <button class="botao fantasma perigo fechar-modal" (click)="closeAuthModals()" aria-label="Fechar modal">X</button>
       </div>
-      <p class="muted tiny">Use seu email e senha para continuar.</p>
+      <p class="suave tiny">Use seu email e senha para continuar.</p>
       <app-login-panel
         [email]="loginForm.email"
         [senha]="loginForm.senha"
         (login)="loginForm = { email: $event.email, senha: $event.senha }; login(); closeAuthModals()">
       </app-login-panel>
-      <div class="row">
-        <span class="muted tiny">Ainda nao tem conta?</span>
-        <button class="btn ghost" (click)="openSignupModal()">Criar conta</button>
+      <div class="linha">
+        <span class="suave tiny">Ainda nao tem conta?</span>
+        <button class="botao fantasma" (click)="openSignupModal()">Criar conta</button>
       </div>
     </div>
   </div>
 
-  <div class="modal-backdrop" *ngIf="signupModal">
-    <div class="modal-card auth-modal">
-      <div class="row modal-header">
+  <div class="fundo-modal" *ngIf="signupModal">
+    <div class="cartao-modal modal-autenticacao">
+      <div class="linha cabecalho-modal">
         <div>
-          <p class="eyebrow">Cadastro</p>
+          <p class="sobrancelha">Cadastro</p>
           <h3>Criar conta</h3>
         </div>
-        <button class="btn ghost danger modal-close" (click)="closeAuthModals()" aria-label="Fechar modal">X</button>
+        <button class="botao fantasma perigo fechar-modal" (click)="closeAuthModals()" aria-label="Fechar modal">X</button>
       </div>
-      <p class="muted tiny">Ganhe historico, cupons e cadastro de pets.</p>
+      <p class="suave tiny">Ganhe historico, cupons e cadastro de pets.</p>
       <app-signup-panel
         [nome]="signupForm.nome"
         [email]="signupForm.email"
         [senha]="signupForm.senha"
         (signup)="signupForm = { nome: $event.nome, email: $event.email, senha: $event.senha }; signup(); closeAuthModals()">
       </app-signup-panel>
-      <div class="row">
-        <span class="muted tiny">Ja tem conta?</span>
-        <button class="btn ghost" (click)="openLoginModal()">Entrar</button>
+      <div class="linha">
+        <span class="suave tiny">Ja tem conta?</span>
+        <button class="botao fantasma" (click)="openLoginModal()">Entrar</button>
       </div>
     </div>
   </div>

@@ -8,22 +8,22 @@ import { PerfilPet } from '../../models';
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
-    <div class="card stack" *ngIf="enabled">
-      <div class="row">
+    <div class="cartao pilha" *ngIf="enabled">
+      <div class="linha">
         <div>
-          <p class="eyebrow">Pets</p>
+          <p class="sobrancelha">Pets</p>
           <h3>{{ownerName}}</h3>
         </div>
       </div>
-      <div class="pill-collection">
-        <span class="pill" *ngFor="let p of pets">{{p.nome}} - {{p.idade}} - {{p.raca}}</span>
+      <div class="colecao-selos">
+        <span class="selo" *ngFor="let p of pets">{{p.nome}} - {{p.idade}} - {{p.raca}}</span>
       </div>
-      <div class="mini-grid">
+      <div class="grade-mini">
         <label>Nome<input [(ngModel)]="petForm.nome"></label>
         <label>Idade<input [(ngModel)]="petForm.idade"></label>
         <label>Raca<input [(ngModel)]="petForm.raca"></label>
       </div>
-      <button class="btn ghost" (click)="addPet()">Adicionar pet</button>
+      <button class="botao fantasma" (click)="addPet()">Adicionar pet</button>
     </div>
   `
 })
