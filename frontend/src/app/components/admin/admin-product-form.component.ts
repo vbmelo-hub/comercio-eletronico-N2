@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Category } from '../../models';
+import { Categoria } from '../../models';
 
 @Component({
   selector: 'app-admin-product-form',
@@ -17,23 +17,23 @@ import { Category } from '../../models';
         <button class="btn ghost" (click)="refresh.emit()">Atualizar lista</button>
       </div>
       <div class="mini-grid">
-        <label>Nome<input [(ngModel)]="product.name"></label>
-        <label>Descricao<input [(ngModel)]="product.description"></label>
-        <label>Preco<input type="number" [(ngModel)]="product.price"></label>
-        <label>Estoque<input type="number" [(ngModel)]="product.stock"></label>
+        <label>Nome<input [(ngModel)]="product.nome"></label>
+        <label>Descricao<input [(ngModel)]="product.descricao"></label>
+        <label>Preco<input type="number" [(ngModel)]="product.preco"></label>
+        <label>Estoque<input type="number" [(ngModel)]="product.estoque"></label>
         <label>Categoria
-          <select [(ngModel)]="product.categoryId">
-            <option *ngFor="let c of categories" [ngValue]="c.id">{{c.name}}</option>
+          <select [(ngModel)]="product.categoriaId">
+            <option *ngFor="let c of categories" [ngValue]="c.id">{{c.nome}}</option>
           </select>
         </label>
         <label>Tipo pet
-          <select [(ngModel)]="product.petType">
-            <option value="DOG">Caes</option>
-            <option value="CAT">Gatos</option>
-            <option value="ACCESSORY">Acessorios</option>
+          <select [(ngModel)]="product.tipoPet">
+            <option value="CAO">Caes</option>
+            <option value="GATO">Gatos</option>
+            <option value="ACESSORIO">Acessorios</option>
           </select>
         </label>
-        <label>Imagem<input [(ngModel)]="product.imageUrl"></label>
+        <label>Imagem<input [(ngModel)]="product.urlImagem"></label>
       </div>
       <button class="btn primary" (click)="save.emit(product)">Salvar produto</button>
     </div>
@@ -41,7 +41,7 @@ import { Category } from '../../models';
 })
 export class AdminProductFormComponent {
   @Input() product: any = {};
-  @Input() categories: Category[] = [];
+  @Input() categories: Categoria[] = [];
   @Output() save = new EventEmitter<any>();
   @Output() refresh = new EventEmitter<void>();
 }

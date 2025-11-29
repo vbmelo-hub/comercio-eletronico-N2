@@ -1,11 +1,11 @@
 package com.artemis.petshop.service;
 
-import com.artemis.petshop.dto.AuthResponse;
-import com.artemis.petshop.dto.LoginRequest;
-import com.artemis.petshop.dto.SignupRequest;
-import com.artemis.petshop.model.AppUser;
-import com.artemis.petshop.model.UserRole;
-import com.artemis.petshop.repository.UserRepository;
+import com.artemis.petshop.dto.RespostaAuth;
+import com.artemis.petshop.dto.LoginRequisicao;
+import com.artemis.petshop.dto.CadastroRequisicao;
+import com.artemis.petshop.model.Usuario;
+import com.artemis.petshop.model.PapelUsuario;
+import com.artemis.petshop.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -15,57 +15,57 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class AuthService {
-    private final UserRepository userRepository;
+    private final UsuarioRepository usuarioRepository;
     private final Map<String, Long> sessions = new ConcurrentHashMap<>();
 
-    public AuthService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public AuthService(UsuarioRepository usuarioRepository) {
+        this.usuarioRepository = usuarioRepository;
     }
 
-    public AuthResponse login(LoginRequest request) {
-        AppUser user = userRepository.findByEmailIgnoreCase(request.getEmail())
-                .filter(u -> u.getPassword().equals(request.getPassword()))
+    public RespostaAuth login(LoginRequisicao requisicao) {
+        Usuario usuario = usuarioRepository.findByEmailIgnoreCase(requisicao.getEmail())
+                .filter(u -> u.getSenha().equals(requisicao.getSenha()))
                 .orElseThrow(() -> new IllegalArgumentException("Credenciais invalidas"));
         String token = UUID.randomUUID().toString();
-        sessions.put(token, user.getId());
-        return new AuthResponse(token, user.getId(), user.getName(), user.getEmail(), user.getRole());
+        sessions.put(token, usuario.getId());
+        return new RespostaAuth(token, usuario.getId(), usuario.getNome(), usuario.getEmail(), usuario.getPapel());
     }
 
-    public AuthResponse signup(SignupRequest request) {
-        Optional<AppUser> existing = userRepository.findByEmailIgnoreCase(request.getEmail());
+    public RespostaAuth signup(CadastroRequisicao requisicao) {
+        Optional<Usuario> existing = usuarioRepository.findByEmailIgnoreCase(requisicao.getEmail());
         if (existing.isPresent()) {
             throw new IllegalArgumentException("Email ja cadastrado");
         }
-        AppUser user = new AppUser(request.getName(), request.getEmail(), request.getPassword(), UserRole.CUSTOMER);
-        userRepository.save(user);
+        Usuario usuario = new Usuario(requisicao.getNome(), requisicao.getEmail(), requisicao.getSenha(), PapelUsuario.CLIENTE);
+        usuarioRepository.save(usuario);
         String token = UUID.randomUUID().toString();
-        sessions.put(token, user.getId());
-        return new AuthResponse(token, user.getId(), user.getName(), user.getEmail(), user.getRole());
+        sessions.put(token, usuario.getId());
+        return new RespostaAuth(token, usuario.getId(), usuario.getNome(), usuario.getEmail(), usuario.getPapel());
     }
 
-    public AppUser requireUser(String token) {
+    public Usuario requireUser(String token) {
         if (token == null || token.isBlank()) {
             throw new IllegalArgumentException("Token ausente");
         }
         Long userId = sessions.get(token);
         if (userId == null) throw new IllegalArgumentException("Sessao invalida");
-        return userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("Usuario nao encontrado"));
+        return usuarioRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("Usuario nao encontrado"));
     }
 
-    public AppUser requireAdmin(String token) {
-        AppUser user = requireUser(token);
-        if (user.getRole() != UserRole.ADMIN) {
+    public Usuario requireAdmin(String token) {
+        Usuario usuario = requireUser(token);
+        if (usuario.getPapel() != PapelUsuario.ADMIN) {
             throw new IllegalArgumentException("Acesso restrito ao admin");
         }
-        return user;
+        return usuario;
     }
 
-    public AppUser me(String token) {
+    public Usuario me(String token) {
         if (token == null || token.isBlank()) {
             return null;
         }
         Long userId = sessions.get(token);
         if (userId == null) return null;
-        return userRepository.findById(userId).orElse(null);
+        return usuarioRepository.findById(userId).orElse(null);
     }
 }

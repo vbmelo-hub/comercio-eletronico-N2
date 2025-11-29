@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {
-  AuthResponse,
-  Category,
-  Coupon,
-  OrderRecord,
-  OrderRequest,
-  Product,
-  User
+  RespostaAuth,
+  Categoria,
+  Cupom,
+  Pedido,
+  PedidoRequisicao,
+  Produto,
+  Usuario
 } from './models';
 
 const API_URL = 'http://localhost:8080/api';
@@ -27,44 +27,44 @@ export class ApiService {
     return this.token ? new HttpHeaders({ 'X-Auth-Token': this.token }) : new HttpHeaders();
   }
 
-  login(email: string, password: string): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${API_URL}/auth/login`, { email, password });
+  login(email: string, senha: string): Observable<RespostaAuth> {
+    return this.http.post<RespostaAuth>(`${API_URL}/auth/login`, { email, senha });
   }
 
-  signup(name: string, email: string, password: string): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${API_URL}/auth/signup`, { name, email, password });
+  signup(nome: string, email: string, senha: string): Observable<RespostaAuth> {
+    return this.http.post<RespostaAuth>(`${API_URL}/auth/signup`, { nome, email, senha });
   }
 
-  me(): Observable<User | null> {
-    return this.http.get<User | null>(`${API_URL}/auth/me`, { headers: this.authHeaders() });
+  me(): Observable<Usuario | null> {
+    return this.http.get<Usuario | null>(`${API_URL}/auth/me`, { headers: this.authHeaders() });
   }
 
-  addPet(name: string, age?: string, breed?: string) {
-    return this.http.post(`${API_URL}/auth/pets`, { name, age, breed }, { headers: this.authHeaders() });
+  addPet(nome: string, idade?: string, raca?: string) {
+    return this.http.post(`${API_URL}/auth/pets`, { nome, idade, raca }, { headers: this.authHeaders() });
   }
 
-  getCategories(): Observable<Category[]> {
-    return this.http.get<Category[]>(`${API_URL}/catalog/categories`);
+  getCategories(): Observable<Categoria[]> {
+    return this.http.get<Categoria[]>(`${API_URL}/catalog/categories`);
   }
 
-  getProducts(categoryId?: number, petType?: string, q?: string): Observable<Product[]> {
+  getProducts(categoryId?: number, petType?: string, q?: string): Observable<Produto[]> {
     let params = new HttpParams();
     if (categoryId) params = params.set('categoryId', categoryId);
     if (petType) params = params.set('petType', petType);
     if (q) params = params.set('q', q);
-    return this.http.get<Product[]>(`${API_URL}/catalog/products`, { params });
+    return this.http.get<Produto[]>(`${API_URL}/catalog/products`, { params });
   }
 
-  getProduct(id: number): Observable<Product> {
-    return this.http.get<Product>(`${API_URL}/catalog/products/${id}`);
+  getProduct(id: number): Observable<Produto> {
+    return this.http.get<Produto>(`${API_URL}/catalog/products/${id}`);
   }
 
-  createOrder(request: OrderRequest): Observable<OrderRecord> {
-    return this.http.post<OrderRecord>(`${API_URL}/orders`, request, { headers: this.authHeaders() });
+  createOrder(request: PedidoRequisicao): Observable<Pedido> {
+    return this.http.post<Pedido>(`${API_URL}/orders`, request, { headers: this.authHeaders() });
   }
 
-  listOrders(): Observable<OrderRecord[]> {
-    return this.http.get<OrderRecord[]>(`${API_URL}/orders`, { headers: this.authHeaders() });
+  listOrders(): Observable<Pedido[]> {
+    return this.http.get<Pedido[]>(`${API_URL}/orders`, { headers: this.authHeaders() });
   }
 
   // Admin endpoints
@@ -87,14 +87,14 @@ export class ApiService {
   }
 
   adminSaveCoupon(payload: any) {
-    return this.http.post<Coupon>(`${API_URL}/admin/coupons`, payload, { headers: this.authHeaders() });
+    return this.http.post<Cupom>(`${API_URL}/admin/coupons`, payload, { headers: this.authHeaders() });
   }
 
   adminListCoupons() {
-    return this.http.get<Coupon[]>(`${API_URL}/admin/coupons`, { headers: this.authHeaders() });
+    return this.http.get<Cupom[]>(`${API_URL}/admin/coupons`, { headers: this.authHeaders() });
   }
 
   adminListOrders() {
-    return this.http.get<OrderRecord[]>(`${API_URL}/admin/orders`, { headers: this.authHeaders() });
+    return this.http.get<Pedido[]>(`${API_URL}/admin/orders`, { headers: this.authHeaders() });
   }
 }

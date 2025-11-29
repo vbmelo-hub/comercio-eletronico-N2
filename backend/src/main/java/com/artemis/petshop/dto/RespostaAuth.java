@@ -1,15 +1,15 @@
 package com.artemis.petshop.dto;
 
-import com.artemis.petshop.model.UserRole;
+import com.artemis.petshop.model.PapelUsuario;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class AuthResponse {
+public class RespostaAuth {
     private String token;
-    private Long userId;
-    private String name;
+    private Long usuarioId;
+    private String nome;
     private String email;
-    private UserRole role;
+    private PapelUsuario papel;
 }

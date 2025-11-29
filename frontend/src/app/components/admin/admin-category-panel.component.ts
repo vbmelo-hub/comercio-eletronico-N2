@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Category } from '../../models';
+import { Categoria } from '../../models';
 import { labelPetType } from '../../labels';
 
 @Component({
@@ -18,19 +18,19 @@ import { labelPetType } from '../../labels';
         <button class="btn ghost" (click)="refresh.emit()">Atualizar</button>
       </div>
       <div class="mini-grid">
-        <label>Nome<input [(ngModel)]="category.name"></label>
+        <label>Nome<input [(ngModel)]="category.nome"></label>
         <label>Pet
-          <select [(ngModel)]="category.petType">
-            <option value="DOG">Caes</option>
-            <option value="CAT">Gatos</option>
-            <option value="ACCESSORY">Acessorios</option>
+          <select [(ngModel)]="category.tipoPet">
+            <option value="CAO">Caes</option>
+            <option value="GATO">Gatos</option>
+            <option value="ACESSORIO">Acessorios</option>
           </select>
         </label>
       </div>
       <button class="btn ghost" (click)="save.emit(category)">Salvar categoria</button>
       <div class="pill-collection">
         <span class="pill" *ngFor="let c of categories">
-          {{c.name}} - {{labelPetType(c.petType)}}
+          {{c.nome}} - {{labelPetType(c.tipoPet)}}
           <button class="btn ghost danger" (click)="remove.emit(c.id)">x</button>
         </span>
       </div>
@@ -39,7 +39,7 @@ import { labelPetType } from '../../labels';
 })
 export class AdminCategoryPanelComponent {
   @Input() category: any = {};
-  @Input() categories: Category[] = [];
+  @Input() categories: Categoria[] = [];
   @Output() save = new EventEmitter<any>();
   @Output() remove = new EventEmitter<number>();
   @Output() refresh = new EventEmitter<void>();

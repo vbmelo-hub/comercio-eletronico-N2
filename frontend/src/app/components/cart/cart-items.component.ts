@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { CartItem } from '../../models';
+import { ItemCarrinho } from '../../models';
 
 @Component({
   selector: 'app-cart-items',
@@ -16,17 +16,17 @@ import { CartItem } from '../../models';
       <div class="cart-list">
         <div class="cart-row" *ngFor="let item of cartItems">
           <div class="cart-info">
-            <strong>{{item.product.name}}</strong>
-            <p class="muted">{{item.product.price | currency:'BRL':'symbol'}} · Estoque: {{item.product.stock}}</p>
+            <strong>{{item.produto.nome}}</strong>
+            <p class="muted">{{item.produto.preco | currency:'BRL':'symbol'}} - Estoque: {{item.produto.estoque}}</p>
           </div>
           <div class="cart-actions">
             <input
               type="number"
               min="1"
-              [max]="item.product.stock"
-              [(ngModel)]="item.quantity"
-              (ngModelChange)="qtyChange.emit({ id: item.product.id, qty: $event })">
-            <button class="btn ghost danger" (click)="removeItem.emit(item.product.id)">Remover</button>
+              [max]="item.produto.estoque"
+              [(ngModel)]="item.quantidade"
+              (ngModelChange)="qtyChange.emit({ id: item.produto.id, qty: $event })">
+            <button class="btn ghost danger" (click)="removeItem.emit(item.produto.id)">Remover</button>
           </div>
         </div>
         <p class="muted" *ngIf="!cartItems || cartItems.length===0">Carrinho vazio.</p>
@@ -35,7 +35,7 @@ import { CartItem } from '../../models';
   `
 })
 export class CartItemsComponent {
-  @Input() cartItems: CartItem[] = [];
+  @Input() cartItems: ItemCarrinho[] = [];
   @Output() qtyChange = new EventEmitter<{ id: number; qty: number }>();
   @Output() removeItem = new EventEmitter<number>();
 }

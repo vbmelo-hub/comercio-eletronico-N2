@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from './api.service';
 import { StateService } from './state.service';
-import { CartItem, Category, OrderRecord, Product, User, PaymentMethod } from './models';
+import { ItemCarrinho, Categoria, Pedido, Produto, Usuario, MetodoPagamento } from './models';
 import { CatalogFiltersComponent } from './components/catalog/catalog-filters.component';
 import { ProductCardComponent } from './components/catalog/product-card.component';
 import { CartItemsComponent } from './components/cart/cart-items.component';
@@ -42,32 +42,32 @@ import { labelUserRole } from './labels';
 })
 export class AppComponent implements OnInit {
   activeTab: 'catalog' | 'cart' | 'orders' | 'profile' | 'admin' = 'catalog';
-  categories: Category[] = [];
-  products: Product[] = [];
+  categories: Categoria[] = [];
+  products: Produto[] = [];
   petFilter = '';
   categoryFilter: number | null = null;
   searchTerm = '';
 
-  cartItems: CartItem[] = [];
-  user: User | null = null;
-  orders: OrderRecord[] = [];
+  cartItems: ItemCarrinho[] = [];
+  user: Usuario | null = null;
+  orders: Pedido[] = [];
 
-  loginForm = { email: '', password: '' };
-  signupForm = { name: '', email: '', password: '' };
-  checkoutForm: { name: string; email: string; street: string; city: string; state: string; zip: string; paymentMethod: PaymentMethod; coupon: string; pickup: boolean } =
-    { name: '', email: '', street: '', city: '', state: '', zip: '', paymentMethod: 'PIX', coupon: '', pickup: false };
-  petForm = { name: '', age: '', breed: '' };
+  loginForm = { email: '', senha: '' };
+  signupForm = { nome: '', email: '', senha: '' };
+  checkoutForm: { nome: string; email: string; rua: string; cidade: string; estado: string; cep: string; metodoPagamento: MetodoPagamento; cupom: string; retirada: boolean } =
+    { nome: '', email: '', rua: '', cidade: '', estado: '', cep: '', metodoPagamento: 'PIX', cupom: '', retirada: false };
+  petForm = { nome: '', idade: '', raca: '' };
 
-  adminProduct: any = { id: null, name: '', description: '', price: 0, stock: 0, rating: 4.5, imageUrl: '', petType: 'DOG', categoryId: null };
-  adminCategory: any = { name: '', petType: 'DOG' };
-  couponForm: any = { code: '', discountPercent: 10, active: true };
+  adminProduct: any = { id: null, nome: '', descricao: '', preco: 0, estoque: 0, avaliacao: 4.5, urlImagem: '', tipoPet: 'CAO', categoriaId: null };
+  adminCategory: any = { nome: '', tipoPet: 'CAO' };
+  couponForm: any = { codigo: '', percentualDesconto: 10, ativo: true };
   coupons: any[] = [];
 
-  contactForm = { name: '', email: '', street: '', city: '', state: '', zip: '' };
+  contactForm = { nome: '', email: '', rua: '', cidade: '', estado: '', cep: '' };
   profileError = '';
 
   statusMessage = '';
-  paymentDetails: { method: PaymentMethod; pixKey?: string; boleto?: string; qrCodeUrl?: string; info: string } | null = null;
+  paymentDetails: { metodo: MetodoPagamento; chavePix?: string; boleto?: string; qrCodeUrl?: string; info: string } | null = null;
   paymentModal = false;
   loginModal = false;
   signupModal = false;
@@ -135,17 +135,17 @@ export class AppComponent implements OnInit {
     });
   }
 
-  addToCart(product: Product) {
-    this.state.addToCart(product, 1);
-    this.showToast(`${product.name} adicionado ao carrinho`, 'info');
+  addToCart(produto: Produto) {
+    this.state.addToCart(produto, 1);
+    this.showToast(`${produto.nome} adicionado ao carrinho`, 'info');
   }
 
-  updateQty(productId: number, qty: number) {
-    this.state.updateQty(productId, qty);
+  updateQty(produtoId: number, quantidade: number) {
+    this.state.updateQty(produtoId, quantidade);
   }
 
-  removeItem(productId: number) {
-    this.state.removeFromCart(productId);
+  removeItem(produtoId: number) {
+    this.state.removeFromCart(produtoId);
   }
 
   clearCart() {
@@ -153,15 +153,15 @@ export class AppComponent implements OnInit {
   }
 
   applyCoupon() {
-    this.state.setCoupon(this.checkoutForm.coupon || undefined);
+    this.state.setCoupon(this.checkoutForm.cupom || undefined);
   }
 
   get cartTotal(): number {
-    return this.cartItems.reduce((sum, i) => sum + i.product.price * i.quantity, 0);
+    return this.cartItems.reduce((sum, i) => sum + i.produto.preco * i.quantidade, 0);
   }
 
   get deliveryFee(): number {
-    return this.checkoutForm.pickup ? 0 : 15;
+    return this.checkoutForm.retirada ? 0 : 15;
   }
 
   get totalWithDelivery(): number {
@@ -183,17 +183,17 @@ export class AppComponent implements OnInit {
     this.loadProducts();
   }
 
-  setName(v: string) { this.checkoutForm.name = v; }
+  setNome(v: string) { this.checkoutForm.nome = v; }
   setEmail(v: string) { this.checkoutForm.email = v; }
-  setStreet(v: string) { this.checkoutForm.street = v; }
-  setCity(v: string) { this.checkoutForm.city = v; }
-  setState(v: string) { this.checkoutForm.state = v; }
-  setZip(v: string) { this.checkoutForm.zip = v; }
-  setPickup(v: boolean) { this.checkoutForm.pickup = v; }
-  setPaymentMethod(v: PaymentMethod) { this.checkoutForm.paymentMethod = v; }
+  setRua(v: string) { this.checkoutForm.rua = v; }
+  setCidade(v: string) { this.checkoutForm.cidade = v; }
+  setEstado(v: string) { this.checkoutForm.estado = v; }
+  setCep(v: string) { this.checkoutForm.cep = v; }
+  setRetirada(v: boolean) { this.checkoutForm.retirada = v; }
+  setMetodoPagamento(v: MetodoPagamento) { this.checkoutForm.metodoPagamento = v; }
 
   login() {
-    this.api.login(this.loginForm.email, this.loginForm.password).subscribe(res => {
+    this.api.login(this.loginForm.email, this.loginForm.senha).subscribe(res => {
       this.state.setUserAuth(res);
       this.refreshUser();
       this.loadOrders();
@@ -203,14 +203,14 @@ export class AppComponent implements OnInit {
   }
 
   signup() {
-    this.api.signup(this.signupForm.name, this.signupForm.email, this.signupForm.password).subscribe(res => {
+    this.api.signup(this.signupForm.nome, this.signupForm.email, this.signupForm.senha).subscribe(res => {
       this.state.setUserAuth(res);
       this.refreshUser();
       this.showToast('Conta criada', 'info');
     });
   }
 
-  prefillContactForm(user: User | null) {
+  prefillContactForm(user: Usuario | null) {
     const stored = localStorage.getItem('petshop-profile-contact');
     let saved: any = null;
     try {
@@ -219,21 +219,21 @@ export class AppComponent implements OnInit {
       saved = null;
     }
     this.contactForm = {
-      name: saved?.name ?? user?.name ?? this.checkoutForm.name ?? '',
+      nome: saved?.nome ?? user?.nome ?? this.checkoutForm.nome ?? '',
       email: saved?.email ?? user?.email ?? this.checkoutForm.email ?? '',
-      street: saved?.street ?? this.checkoutForm.street ?? '',
-      city: saved?.city ?? this.checkoutForm.city ?? '',
-      state: saved?.state ?? this.checkoutForm.state ?? '',
-      zip: saved?.zip ?? this.checkoutForm.zip ?? ''
+      rua: saved?.rua ?? this.checkoutForm.rua ?? '',
+      cidade: saved?.cidade ?? this.checkoutForm.cidade ?? '',
+      estado: saved?.estado ?? this.checkoutForm.estado ?? '',
+      cep: saved?.cep ?? this.checkoutForm.cep ?? ''
     };
     this.checkoutForm = {
       ...this.checkoutForm,
-      name: this.contactForm.name || this.checkoutForm.name,
+      nome: this.contactForm.nome || this.checkoutForm.nome,
       email: this.contactForm.email || this.checkoutForm.email,
-      street: this.contactForm.street || this.checkoutForm.street,
-      city: this.contactForm.city || this.checkoutForm.city,
-      state: this.contactForm.state || this.checkoutForm.state,
-      zip: this.contactForm.zip || this.checkoutForm.zip
+      rua: this.contactForm.rua || this.checkoutForm.rua,
+      cidade: this.contactForm.cidade || this.checkoutForm.cidade,
+      estado: this.contactForm.estado || this.checkoutForm.estado,
+      cep: this.contactForm.cep || this.checkoutForm.cep
     };
   }
 
@@ -243,9 +243,9 @@ export class AppComponent implements OnInit {
       return;
     }
     this.profileError = '';
-    const name = (this.contactForm.name || '').trim();
+    const nome = (this.contactForm.nome || '').trim();
     const email = (this.contactForm.email || '').trim();
-    if (!name) {
+    if (!nome) {
       this.profileError = 'Informe um nome.';
       return;
     }
@@ -254,17 +254,17 @@ export class AppComponent implements OnInit {
       this.profileError = 'Email invalido.';
       return;
     }
-    const updatedUser: User = { ...this.user, name, email };
+    const updatedUser: Usuario = { ...this.user, nome, email };
     this.user = updatedUser;
     this.state.user$.next(updatedUser);
     this.checkoutForm = {
       ...this.checkoutForm,
-      name,
+      nome,
       email,
-      street: this.contactForm.street,
-      city: this.contactForm.city,
-      state: this.contactForm.state,
-      zip: this.contactForm.zip
+      rua: this.contactForm.rua,
+      cidade: this.contactForm.cidade,
+      estado: this.contactForm.estado,
+      cep: this.contactForm.cep
     };
     localStorage.setItem('petshop-profile-contact', JSON.stringify(this.contactForm));
     this.showToast('Dados do perfil atualizados', 'info');
@@ -274,11 +274,11 @@ export class AppComponent implements OnInit {
     this.state.logout();
     this.orders = [];
     this.activeTab = 'catalog';
-    this.showToast('Sessão encerrada', 'info');
+    this.showToast('Sessao encerrada', 'info');
   }
 
   get isAdmin(): boolean {
-    return this.user?.role === 'ADMIN';
+    return this.user?.papel === 'ADMIN';
   }
 
   loadOrders() {
@@ -291,13 +291,7 @@ export class AppComponent implements OnInit {
 
   checkout() {
     this.formError = '';
-    if (!this.user) {
-      this.formError = 'Entre na sua conta para finalizar a compra.';
-      this.showToast(this.formError, 'error');
-      this.openLoginModal();
-      return;
-    }
-    if (!this.checkoutForm.name.trim()) {
+    if (!this.checkoutForm.nome.trim()) {
       this.formError = 'Preencha o nome.';
       return;
     }
@@ -307,47 +301,47 @@ export class AppComponent implements OnInit {
       this.formError = 'Informe um email valido.';
       return;
     }
-    if (!this.checkoutForm.pickup) {
-      if (!this.checkoutForm.street.trim() || !this.checkoutForm.city.trim() || !this.checkoutForm.state.trim() || !this.checkoutForm.zip.trim()) {
+    if (!this.checkoutForm.retirada) {
+      if (!this.checkoutForm.rua.trim() || !this.checkoutForm.cidade.trim() || !this.checkoutForm.estado.trim() || !this.checkoutForm.cep.trim()) {
         this.formError = 'Preencha endereco completo para entrega ou escolha retirar na loja.';
         return;
       }
     }
-    const items = this.cartItems.map(i => ({ productId: i.product.id, quantity: i.quantity }));
+    const itens = this.cartItems.map(i => ({ produtoId: i.produto.id, quantidade: i.quantidade }));
     const payload = {
-      items,
-      couponCode: this.checkoutForm.coupon || undefined,
-      paymentMethod: this.checkoutForm.paymentMethod,
-      name: this.checkoutForm.name,
+      itens,
+      codigoCupom: this.checkoutForm.cupom || undefined,
+      metodoPagamento: this.checkoutForm.metodoPagamento,
+      nome: this.checkoutForm.nome,
       email: this.checkoutForm.email,
-      street: this.checkoutForm.street,
-      city: this.checkoutForm.city,
-      state: this.checkoutForm.state,
-      zip: this.checkoutForm.zip,
-      pickup: this.checkoutForm.pickup
+      rua: this.checkoutForm.rua,
+      cidade: this.checkoutForm.cidade,
+      estado: this.checkoutForm.estado,
+      cep: this.checkoutForm.cep,
+      retirada: this.checkoutForm.retirada
     };
     this.api.createOrder(payload).subscribe({
       next: order => {
         this.showToast(`Pedido ${order.id} confirmado`, 'info');
         this.state.clearCart();
-        if (this.checkoutForm.paymentMethod === 'PIX') {
+        if (this.checkoutForm.metodoPagamento === 'PIX') {
           this.paymentDetails = {
-            method: 'PIX',
-            pixKey: this.pixKey,
+            metodo: 'PIX',
+            chavePix: this.pixKey,
             qrCodeUrl: this.buildPixQr(this.pixKey),
             info: 'Use a chave PIX ou o QR Code para pagar.'
           };
-        } else if (this.checkoutForm.paymentMethod === 'BOLETO') {
+        } else if (this.checkoutForm.metodoPagamento === 'BOLETO') {
           const boleto = `34191.${Date.now().toString().slice(-10)}`;
-          this.paymentDetails = { method: 'BOLETO', boleto, info: 'Boleto gerado. Pague em ate 48h.' };
+          this.paymentDetails = { metodo: 'BOLETO', boleto, info: 'Boleto gerado. Pague em ate 48h.' };
         } else {
-          this.paymentDetails = { method: 'CASH', info: 'Pague em dinheiro na entrega/retirada.' };
+          this.paymentDetails = { metodo: 'DINHEIRO', info: 'Pague em dinheiro na entrega/retirada.' };
         }
         this.paymentModal = true;
         if (this.user) {
           this.loadOrders();
         } else {
-          this.showToast('Crie uma conta para salvar o histórico.', 'info');
+          this.showToast('Crie uma conta para salvar o historico.', 'info');
           this.orders = [];
         }
         this.loadProducts();
@@ -372,22 +366,22 @@ export class AppComponent implements OnInit {
 
   openPaymentModalFromOrder(order: any) {
     if (!order) return;
-    if (order.paymentMethod === 'PIX') {
-      const pixPayload = order.paymentCode || this.pixKey;
-      this.paymentDetails = { method: 'PIX', pixKey: pixPayload, qrCodeUrl: this.buildPixQr(pixPayload), info: 'Use a chave PIX ou o QR Code para pagar.' };
-    } else if (order.paymentMethod === 'BOLETO') {
-      this.paymentDetails = { method: 'BOLETO', boleto: order.paymentCode, info: 'Boleto gerado. Pague em ate 48h.' };
+    if (order.metodoPagamento === 'PIX') {
+      const pixPayload = order.codigoPagamento || this.pixKey;
+      this.paymentDetails = { metodo: 'PIX', chavePix: pixPayload, qrCodeUrl: this.buildPixQr(pixPayload), info: 'Use a chave PIX ou o QR Code para pagar.' };
+    } else if (order.metodoPagamento === 'BOLETO') {
+      this.paymentDetails = { metodo: 'BOLETO', boleto: order.codigoPagamento, info: 'Boleto gerado. Pague em ate 48h.' };
     } else {
-      this.paymentDetails = { method: 'CASH', info: 'Pague em dinheiro na entrega/retirada.' };
+      this.paymentDetails = { metodo: 'DINHEIRO', info: 'Pague em dinheiro na entrega/retirada.' };
     }
     this.paymentModal = true;
   }
 
   addPet() {
     if (!this.user) return;
-    this.api.addPet(this.petForm.name, this.petForm.age, this.petForm.breed).subscribe(() => {
+    this.api.addPet(this.petForm.nome, this.petForm.idade, this.petForm.raca).subscribe(() => {
       this.showToast('Pet adicionado', 'info');
-      this.petForm = { name: '', age: '', breed: '' };
+      this.petForm = { nome: '', idade: '', raca: '' };
       this.refreshUser();
     });
   }
@@ -400,7 +394,7 @@ export class AppComponent implements OnInit {
   saveProduct() {
     this.api.adminSaveProduct(this.adminProduct).subscribe(() => {
       this.showToast('Produto salvo', 'info');
-      this.adminProduct = { id: null, name: '', description: '', price: 0, stock: 0, rating: 4.5, imageUrl: '', petType: 'DOG', categoryId: null };
+      this.adminProduct = { id: null, nome: '', descricao: '', preco: 0, estoque: 0, avaliacao: 4.5, urlImagem: '', tipoPet: 'CAO', categoriaId: null };
       this.loadProducts();
     });
   }
@@ -415,7 +409,7 @@ export class AppComponent implements OnInit {
   saveCategory() {
     this.api.adminCreateCategory(this.adminCategory).subscribe(() => {
       this.showToast('Categoria salva', 'info');
-      this.adminCategory = { name: '', petType: 'DOG' };
+      this.adminCategory = { nome: '', tipoPet: 'CAO' };
       this.loadCategories();
     });
   }
@@ -430,7 +424,7 @@ export class AppComponent implements OnInit {
   saveCoupon() {
     this.api.adminSaveCoupon(this.couponForm).subscribe(() => {
       this.showToast('Cupom salvo', 'info');
-      this.couponForm = { code: '', discountPercent: 10, active: true };
+      this.couponForm = { codigo: '', percentualDesconto: 10, ativo: true };
       this.loadCoupons();
     });
   }

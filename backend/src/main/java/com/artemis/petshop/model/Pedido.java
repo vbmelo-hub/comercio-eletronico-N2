@@ -22,47 +22,46 @@ import java.util.List;
 @Entity
 @Data
 @NoArgsConstructor
-public class OrderRecord {
+public class Pedido {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(optional = true)
     @JoinColumn(name = "user_id", nullable = true)
-    private AppUser user;
+    private Usuario usuario;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderItem> items = new ArrayList<>();
+    private List<ItemPedido> itens = new ArrayList<>();
 
     @Embedded
-    private Address address;
+    private Endereco endereco;
 
     @Enumerated(EnumType.STRING)
-    private PaymentMethod paymentMethod;
+    private MetodoPagamento metodoPagamento;
 
     @Enumerated(EnumType.STRING)
-    private OrderStatus status;
+    private StatusPedido status;
 
-    private String couponCode;
+    private String codigoCupom;
     private BigDecimal subtotal;
-    private BigDecimal discount;
+    private BigDecimal desconto;
     private BigDecimal total;
-    private Instant createdAt;
+    private Instant criadoEm;
 
-    // novo: indicador de retirada e código de pagamento (PIX chave ou boleto)
-    private boolean pickup;
-    private String paymentCode;
+    private boolean retirada;
+    private String codigoPagamento;
 
-    public OrderRecord(AppUser user, List<OrderItem> items, Address address, PaymentMethod paymentMethod, OrderStatus status, String couponCode, BigDecimal subtotal, BigDecimal discount, BigDecimal total) {
-        this.user = user;
-        this.items = items;
-        this.address = address;
-        this.paymentMethod = paymentMethod;
+    public Pedido(Usuario usuario, List<ItemPedido> itens, Endereco endereco, MetodoPagamento metodoPagamento, StatusPedido status, String codigoCupom, BigDecimal subtotal, BigDecimal desconto, BigDecimal total) {
+        this.usuario = usuario;
+        this.itens = itens;
+        this.endereco = endereco;
+        this.metodoPagamento = metodoPagamento;
         this.status = status;
-        this.couponCode = couponCode;
+        this.codigoCupom = codigoCupom;
         this.subtotal = subtotal;
-        this.discount = discount;
+        this.desconto = desconto;
         this.total = total;
-        this.createdAt = Instant.now();
+        this.criadoEm = Instant.now();
     }
 }

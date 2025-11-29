@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { OrderRecord } from '../../models';
+import { Pedido } from '../../models';
 
 @Component({
   selector: 'app-admin-orders-panel',
@@ -19,19 +19,19 @@ import { OrderRecord } from '../../models';
         <div class="order-row" *ngFor="let o of orders">
           <div class="row">
             <strong>#{{o.id}}</strong>
-            <span class="muted">{{o.createdAt | date:'short'}}</span>
+            <span class="muted">{{o.criadoEm | date:'short'}}</span>
           </div>
           <div class="row">
-            <span>{{o.items.length}} itens</span>
+            <span>{{o.itens.length}} itens</span>
             <span class="price">{{o.total | currency:'BRL':'symbol'}}</span>
           </div>
-          <div class="muted">Cliente: {{o.user?.name || 'Visitante'}}</div>
+          <div class="muted">Cliente: {{o.usuario?.nome || 'Visitante'}}</div>
         </div>
       </div>
     </div>
   `
 })
 export class AdminOrdersPanelComponent {
-  @Input() orders: OrderRecord[] = [];
+  @Input() orders: Pedido[] = [];
   @Output() refresh = new EventEmitter<void>();
 }

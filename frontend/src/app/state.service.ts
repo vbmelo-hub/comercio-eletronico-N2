@@ -1,18 +1,18 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { ApiService } from './api.service';
-import { AuthResponse, CartItem, OrderRecord, Product, User } from './models';
+import { RespostaAuth, ItemCarrinho, Pedido, Produto, Usuario } from './models';
 
 interface CartState {
-  items: CartItem[];
-  couponCode?: string;
+  items: ItemCarrinho[];
+  codigoCupom?: string;
 }
 
 @Injectable({ providedIn: 'root' })
 export class StateService {
-  user$ = new BehaviorSubject<User | null>(null);
+  user$ = new BehaviorSubject<Usuario | null>(null);
   cart$ = new BehaviorSubject<CartState>({ items: [] });
-  orders$ = new BehaviorSubject<OrderRecord[]>([]);
+  orders$ = new BehaviorSubject<Pedido[]>([]);
   token: string | null = null;
 
   constructor(private api: ApiService) {
@@ -38,13 +38,13 @@ export class StateService {
     else localStorage.removeItem('petshop-token');
   }
 
-  setUserAuth(auth: AuthResponse) {
+  setUserAuth(auth: RespostaAuth) {
     this.setToken(auth.token);
     this.user$.next({
-      id: auth.userId,
-      name: auth.name,
+      id: auth.usuarioId,
+      nome: auth.nome,
       email: auth.email,
-      role: auth.role,
+      papel: auth.papel,
       pets: []
     });
   }
@@ -54,30 +54,30 @@ export class StateService {
     this.user$.next(null);
   }
 
-  addToCart(product: Product, quantity = 1) {
+  addToCart(produto: Produto, quantidade = 1) {
     const cart = this.cart$.value;
-    const existing = cart.items.find(i => i.product.id === product.id);
+    const existing = cart.items.find(i => i.produto.id === produto.id);
     if (existing) {
-      existing.quantity = Math.min(existing.quantity + quantity, product.stock);
+      existing.quantidade = Math.min(existing.quantidade + quantidade, produto.estoque);
     } else {
-      cart.items.push({ product, quantity });
+      cart.items.push({ produto, quantidade });
     }
     this.cart$.next({ ...cart });
     this.persistCart();
   }
 
-  updateQty(productId: number, quantity: number) {
+  updateQty(produtoId: number, quantidade: number) {
     const cart = this.cart$.value;
     cart.items = cart.items
-      .map(i => (i.product.id === productId ? { ...i, quantity } : i))
-      .filter(i => i.quantity > 0);
+      .map(i => (i.produto.id === produtoId ? { ...i, quantidade } : i))
+      .filter(i => i.quantidade > 0);
     this.cart$.next({ ...cart });
     this.persistCart();
   }
 
-  removeFromCart(productId: number) {
+  removeFromCart(produtoId: number) {
     const cart = this.cart$.value;
-    cart.items = cart.items.filter(i => i.product.id !== productId);
+    cart.items = cart.items.filter(i => i.produto.id !== produtoId);
     this.cart$.next({ ...cart });
     this.persistCart();
   }
@@ -87,9 +87,9 @@ export class StateService {
     this.persistCart();
   }
 
-  setCoupon(code: string | undefined) {
+  setCoupon(codigo: string | undefined) {
     const cart = this.cart$.value;
-    cart.couponCode = code;
+    cart.codigoCupom = codigo;
     this.cart$.next({ ...cart });
     this.persistCart();
   }

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Category } from '../../models';
+import { Categoria } from '../../models';
 
 @Component({
   selector: 'app-catalog-filters',
@@ -21,23 +21,23 @@ import { Category } from '../../models';
         <span class="muted tiny">Tipo de pet</span>
         <select [(ngModel)]="petFilter" (ngModelChange)="onPet($event)">
           <option value="">Todos</option>
-          <option value="DOG">Caes</option>
-          <option value="CAT">Gatos</option>
-          <option value="ACCESSORY">Acessorios</option>
+          <option value="CAO">Caes</option>
+          <option value="GATO">Gatos</option>
+          <option value="ACESSORIO">Acessorios</option>
         </select>
       </label>
       <label>
         <span class="muted tiny">Categoria</span>
         <select [(ngModel)]="categoryFilter" (ngModelChange)="onCategory($event)">
           <option [ngValue]="null">Todas</option>
-          <option *ngFor="let c of categories" [ngValue]="c.id">{{c.name}}</option>
+          <option *ngFor="let c of categories" [ngValue]="c.id">{{c.nome}}</option>
         </select>
       </label>
     </div>
   `
 })
 export class CatalogFiltersComponent {
-  @Input() categories: Category[] = [];
+  @Input() categories: Categoria[] = [];
   @Input() searchTerm = '';
   @Input() petFilter = '';
   @Input() categoryFilter: number | null = null;

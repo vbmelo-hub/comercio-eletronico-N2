@@ -1,46 +1,46 @@
-import { OrderStatus, PaymentMethod, PetType, User } from './models';
+import { StatusPedido, MetodoPagamento, TipoPet, Usuario } from './models';
 
-const petTypeLabels: Record<PetType, string> = {
-  DOG: 'Caes',
-  CAT: 'Gatos',
-  ACCESSORY: 'Acessorios'
+const petTypeLabels: Record<TipoPet, string> = {
+  CAO: 'Caes',
+  GATO: 'Gatos',
+  ACESSORIO: 'Acessorios'
 };
 
-const paymentMethodLabels: Record<PaymentMethod, string> = {
-  CREDIT_CARD: 'Cartao de credito',
+const paymentMethodLabels: Record<MetodoPagamento, string> = {
+  CARTAO_CREDITO: 'Cartao de credito',
   PIX: 'PIX',
   BOLETO: 'Boleto',
-  CASH: 'Dinheiro'
+  DINHEIRO: 'Dinheiro'
 };
 
-const orderStatusLabels: Record<OrderStatus, string> = {
-  CONFIRMED: 'Confirmado',
-  PROCESSING: 'Processando',
-  SHIPPED: 'Enviado',
-  CANCELLED: 'Cancelado'
+const orderStatusLabels: Record<StatusPedido, string> = {
+  CONFIRMADO: 'Confirmado',
+  PROCESSANDO: 'Processando',
+  ENVIADO: 'Enviado',
+  CANCELADO: 'Cancelado'
 };
 
-const roleLabels: Record<User['role'], string> = {
+const roleLabels: Record<Usuario['papel'], string> = {
   ADMIN: 'Administrador',
-  CUSTOMER: 'Cliente'
+  CLIENTE: 'Cliente'
 };
 
-export function labelPetType(type?: PetType | null): string {
+export function labelPetType(type?: TipoPet | null): string {
   if (!type) return '';
   return petTypeLabels[type] ?? type;
 }
 
-export function labelPaymentMethod(method?: PaymentMethod | null): string {
+export function labelPaymentMethod(method?: MetodoPagamento | null): string {
   if (!method) return '';
   return paymentMethodLabels[method] ?? method;
 }
 
-export function labelOrderStatus(status?: OrderStatus | null): string {
+export function labelOrderStatus(status?: StatusPedido | null): string {
   if (!status) return '';
   return orderStatusLabels[status] ?? status;
 }
 
-export function labelUserRole(role?: User['role'] | null): string {
+export function labelUserRole(role?: Usuario['papel'] | null): string {
   if (!role) return '';
   return roleLabels[role] ?? role;
 }

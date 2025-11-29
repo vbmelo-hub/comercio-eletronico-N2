@@ -1,18 +1,18 @@
 package com.artemis.petshop.controller;
 
-import com.artemis.petshop.dto.CategoryRequest;
-import com.artemis.petshop.dto.CouponRequest;
-import com.artemis.petshop.dto.ProductRequest;
-import com.artemis.petshop.model.AppUser;
-import com.artemis.petshop.model.Category;
-import com.artemis.petshop.model.Coupon;
-import com.artemis.petshop.model.OrderRecord;
-import com.artemis.petshop.model.Product;
+import com.artemis.petshop.dto.CategoriaRequisicao;
+import com.artemis.petshop.dto.CupomRequisicao;
+import com.artemis.petshop.dto.ProdutoRequisicao;
+import com.artemis.petshop.model.Usuario;
+import com.artemis.petshop.model.Categoria;
+import com.artemis.petshop.model.Cupom;
+import com.artemis.petshop.model.Pedido;
+import com.artemis.petshop.model.Produto;
 import com.artemis.petshop.service.AuthService;
-import com.artemis.petshop.service.CategoryService;
-import com.artemis.petshop.service.CouponService;
-import com.artemis.petshop.service.OrderService;
-import com.artemis.petshop.service.ProductService;
+import com.artemis.petshop.service.CategoriaService;
+import com.artemis.petshop.service.CupomService;
+import com.artemis.petshop.service.PedidoService;
+import com.artemis.petshop.service.ProdutoService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,64 +23,64 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 public class AdminController {
     private final AuthService authService;
-    private final ProductService productService;
-    private final CategoryService categoryService;
-    private final CouponService couponService;
-    private final OrderService orderService;
+    private final ProdutoService produtoService;
+    private final CategoriaService categoriaService;
+    private final CupomService cupomService;
+    private final PedidoService pedidoService;
 
-    public AdminController(AuthService authService, ProductService productService, CategoryService categoryService, CouponService couponService, OrderService orderService) {
+    public AdminController(AuthService authService, ProdutoService produtoService, CategoriaService categoriaService, CupomService cupomService, PedidoService pedidoService) {
         this.authService = authService;
-        this.productService = productService;
-        this.categoryService = categoryService;
-        this.couponService = couponService;
-        this.orderService = orderService;
+        this.produtoService = produtoService;
+        this.categoriaService = categoriaService;
+        this.cupomService = cupomService;
+        this.pedidoService = pedidoService;
     }
 
     @PostMapping("/products")
-    public Product createProduct(@RequestHeader("X-Auth-Token") String token, @Valid @RequestBody ProductRequest request) {
+    public Produto createProduct(@RequestHeader("X-Auth-Token") String token, @Valid @RequestBody ProdutoRequisicao request) {
         authService.requireAdmin(token);
-        return productService.create(request);
+        return produtoService.create(request);
     }
 
     @PutMapping("/products/{id}")
-    public Product updateProduct(@RequestHeader("X-Auth-Token") String token, @PathVariable Long id, @Valid @RequestBody ProductRequest request) {
+    public Produto updateProduct(@RequestHeader("X-Auth-Token") String token, @PathVariable Long id, @Valid @RequestBody ProdutoRequisicao request) {
         authService.requireAdmin(token);
-        return productService.update(id, request);
+        return produtoService.update(id, request);
     }
 
     @DeleteMapping("/products/{id}")
     public void deleteProduct(@RequestHeader("X-Auth-Token") String token, @PathVariable Long id) {
         authService.requireAdmin(token);
-        productService.delete(id);
+        produtoService.delete(id);
     }
 
     @PostMapping("/categories")
-    public Category createCategory(@RequestHeader("X-Auth-Token") String token, @Valid @RequestBody CategoryRequest request) {
+    public Categoria createCategory(@RequestHeader("X-Auth-Token") String token, @Valid @RequestBody CategoriaRequisicao request) {
         authService.requireAdmin(token);
-        return categoryService.create(request);
+        return categoriaService.create(request);
     }
 
     @DeleteMapping("/categories/{id}")
     public void deleteCategory(@RequestHeader("X-Auth-Token") String token, @PathVariable Long id) {
         authService.requireAdmin(token);
-        categoryService.delete(id);
+        categoriaService.delete(id);
     }
 
     @PostMapping("/coupons")
-    public Coupon saveCoupon(@RequestHeader("X-Auth-Token") String token, @Valid @RequestBody CouponRequest request) {
+    public Cupom saveCoupon(@RequestHeader("X-Auth-Token") String token, @Valid @RequestBody CupomRequisicao request) {
         authService.requireAdmin(token);
-        return couponService.save(request);
+        return cupomService.save(request);
     }
 
     @GetMapping("/coupons")
-    public List<Coupon> listCoupons(@RequestHeader("X-Auth-Token") String token) {
+    public List<Cupom> listCoupons(@RequestHeader("X-Auth-Token") String token) {
         authService.requireAdmin(token);
-        return couponService.list();
+        return cupomService.list();
     }
 
     @GetMapping("/orders")
-    public List<OrderRecord> allOrders(@RequestHeader("X-Auth-Token") String token) {
-        AppUser admin = authService.requireAdmin(token);
-        return orderService.listForUser(admin);
+    public List<Pedido> allOrders(@RequestHeader("X-Auth-Token") String token) {
+        Usuario admin = authService.requireAdmin(token);
+        return pedidoService.listForUser(admin);
     }
 }

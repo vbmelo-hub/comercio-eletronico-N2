@@ -1,6 +1,8 @@
 package com.artemis.petshop.model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -10,17 +12,16 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @NoArgsConstructor
-public class Coupon {
+public class Categoria {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String code;
-    private Integer discountPercent;
-    private boolean active;
+    private String nome;
+    @Enumerated(EnumType.STRING)
+    private TipoPet tipoPet;
 
-    public Coupon(String code, Integer discountPercent, boolean active) {
-        this.code = code;
-        this.discountPercent = discountPercent;
-        this.active = active;
+    public Categoria(String nome, TipoPet tipoPet) {
+        this.nome = nome;
+        this.tipoPet = tipoPet;
     }
 }

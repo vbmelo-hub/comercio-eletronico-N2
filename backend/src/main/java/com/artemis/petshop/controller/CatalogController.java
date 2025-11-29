@@ -1,10 +1,10 @@
 package com.artemis.petshop.controller;
 
-import com.artemis.petshop.model.Category;
-import com.artemis.petshop.model.PetType;
-import com.artemis.petshop.model.Product;
-import com.artemis.petshop.service.CategoryService;
-import com.artemis.petshop.service.ProductService;
+import com.artemis.petshop.model.Categoria;
+import com.artemis.petshop.model.TipoPet;
+import com.artemis.petshop.model.Produto;
+import com.artemis.petshop.service.CategoriaService;
+import com.artemis.petshop.service.ProdutoService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,28 +13,28 @@ import java.util.List;
 @RequestMapping("/api/catalog")
 @CrossOrigin(origins = "*")
 public class CatalogController {
-    private final ProductService productService;
-    private final CategoryService categoryService;
+    private final ProdutoService produtoService;
+    private final CategoriaService categoriaService;
 
-    public CatalogController(ProductService productService, CategoryService categoryService) {
-        this.productService = productService;
-        this.categoryService = categoryService;
+    public CatalogController(ProdutoService produtoService, CategoriaService categoriaService) {
+        this.produtoService = produtoService;
+        this.categoriaService = categoriaService;
     }
 
     @GetMapping("/products")
-    public List<Product> listProducts(@RequestParam(required = false) Long categoryId,
-                                      @RequestParam(required = false) PetType petType,
+    public List<Produto> listProducts(@RequestParam(required = false) Long categoryId,
+                                      @RequestParam(required = false) TipoPet petType,
                                       @RequestParam(required = false, defaultValue = "") String q) {
-        return productService.list(categoryId, petType, q);
+        return produtoService.list(categoryId, petType, q);
     }
 
     @GetMapping("/products/{id}")
-    public Product getProduct(@PathVariable Long id) {
-        return productService.get(id);
+    public Produto getProduct(@PathVariable Long id) {
+        return produtoService.get(id);
     }
 
     @GetMapping("/categories")
-    public List<Category> categories() {
-        return categoryService.list();
+    public List<Categoria> categories() {
+        return categoriaService.list();
     }
 }

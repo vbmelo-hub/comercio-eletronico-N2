@@ -4,9 +4,9 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class PetRequest {
+public class PetRequisicao {
     @NotBlank
-    private String name;
-    private String age;
-    private String breed;
+    private String nome;
+    private String idade;
+    private String raca;
 }

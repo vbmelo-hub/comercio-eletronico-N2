@@ -9,16 +9,16 @@ import { FormsModule } from '@angular/forms';
   template: `
     <div class="card stack">
       <h3>Novo cadastro</h3>
-      <label>Nome<input [(ngModel)]="name"></label>
+      <label>Nome<input [(ngModel)]="nome"></label>
       <label>Email<input [(ngModel)]="email"></label>
-      <label>Senha<input type="password" [(ngModel)]="password"></label>
-      <button class="btn ghost full" (click)="signup.emit({ name, email, password })">Cadastrar</button>
+      <label>Senha<input type="password" [(ngModel)]="senha"></label>
+      <button class="btn ghost full" (click)="signup.emit({ nome, email, senha })">Cadastrar</button>
     </div>
   `
 })
 export class SignupPanelComponent {
-  @Input() name = '';
+  @Input() nome = '';
   @Input() email = '';
-  @Input() password = '';
-  @Output() signup = new EventEmitter<{ name: string; email: string; password: string }>();
+  @Input() senha = '';
+  @Output() signup = new EventEmitter<{ nome: string; email: string; senha: string }>();
 }

@@ -8,16 +8,16 @@ import { FormsModule } from '@angular/forms';
   imports: [CommonModule, FormsModule],
   template: `
     <div class="card stack">
-      <h3>Entrar</h3>
+      <h3>Login</h3>
       <label>Email<input [(ngModel)]="email"></label>
-      <label>Senha<input type="password" [(ngModel)]="password"></label>
-      <button class="btn primary full" (click)="login.emit({ email, password })">Entrar</button>
-      <p class="muted">Administrador: admin&#64;petshop.com / admin123</p>
+      <label>Senha<input type="password" [(ngModel)]="senha"></label>
+      <button class="btn primary full" (click)="login.emit({ email, senha })">Entrar</button>
+      <p class="muted">Admin: admin&#64;petshop.com / admin123</p>
     </div>
   `
 })
 export class LoginPanelComponent {
   @Input() email = '';
-  @Input() password = '';
-  @Output() login = new EventEmitter<{ email: string; password: string }>();
+  @Input() senha = '';
+  @Output() login = new EventEmitter<{ email: string; senha: string }>();
 }

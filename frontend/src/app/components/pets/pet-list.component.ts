@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { PetProfile } from '../../models';
+import { PerfilPet } from '../../models';
 
 @Component({
   selector: 'app-pet-list',
@@ -16,12 +16,12 @@ import { PetProfile } from '../../models';
         </div>
       </div>
       <div class="pill-collection">
-        <span class="pill" *ngFor="let p of pets">{{p.name}} · {{p.age}} · {{p.breed}}</span>
+        <span class="pill" *ngFor="let p of pets">{{p.nome}} - {{p.idade}} - {{p.raca}}</span>
       </div>
       <div class="mini-grid">
-        <label>Nome<input [(ngModel)]="petForm.name"></label>
-        <label>Idade<input [(ngModel)]="petForm.age"></label>
-        <label>Raca<input [(ngModel)]="petForm.breed"></label>
+        <label>Nome<input [(ngModel)]="petForm.nome"></label>
+        <label>Idade<input [(ngModel)]="petForm.idade"></label>
+        <label>Raca<input [(ngModel)]="petForm.raca"></label>
       </div>
       <button class="btn ghost" (click)="addPet()">Adicionar pet</button>
     </div>
@@ -30,14 +30,14 @@ import { PetProfile } from '../../models';
 export class PetListComponent {
   @Input() enabled = false;
   @Input() ownerName = '';
-  @Input() pets: PetProfile[] = [];
-  @Output() add = new EventEmitter<PetProfile>();
+  @Input() pets: PerfilPet[] = [];
+  @Output() add = new EventEmitter<PerfilPet>();
 
-  petForm: PetProfile = { name: '', age: '', breed: '' };
+  petForm: PerfilPet = { nome: '', idade: '', raca: '' };
 
   addPet() {
-    if (!this.petForm.name.trim()) return;
+    if (!this.petForm.nome.trim()) return;
     this.add.emit({ ...this.petForm });
-    this.petForm = { name: '', age: '', breed: '' };
+    this.petForm = { nome: '', idade: '', raca: '' };
   }
 }

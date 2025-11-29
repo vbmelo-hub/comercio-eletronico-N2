@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Coupon } from '../../models';
+import { Cupom } from '../../models';
 
 @Component({
   selector: 'app-admin-coupon-panel',
@@ -17,10 +17,10 @@ import { Coupon } from '../../models';
         <button class="btn ghost" (click)="refresh.emit()">Atualizar</button>
       </div>
       <div class="mini-grid">
-        <label>Codigo<input [(ngModel)]="coupon.code"></label>
-        <label>Desconto %<input type="number" [(ngModel)]="coupon.discountPercent"></label>
+        <label>Codigo<input [(ngModel)]="coupon.codigo"></label>
+        <label>Desconto %<input type="number" [(ngModel)]="coupon.percentualDesconto"></label>
         <label>Status
-          <select [(ngModel)]="coupon.active">
+          <select [(ngModel)]="coupon.ativo">
             <option [ngValue]="true">Ativo</option>
             <option [ngValue]="false">Pausado</option>
           </select>
@@ -28,14 +28,14 @@ import { Coupon } from '../../models';
       </div>
       <button class="btn ghost" (click)="save.emit(coupon)">Salvar cupom</button>
       <div class="pill-collection">
-        <span class="pill" *ngFor="let c of coupons">{{c.code}} - {{c.discountPercent}}% - {{c.active ? 'ativo' : 'pausado'}}</span>
+        <span class="pill" *ngFor="let c of coupons">{{c.codigo}} - {{c.percentualDesconto}}% - {{c.ativo ? 'ativo' : 'off'}}</span>
       </div>
     </div>
   `
 })
 export class AdminCouponPanelComponent {
   @Input() coupon: any = {};
-  @Input() coupons: Coupon[] = [];
+  @Input() coupons: Cupom[] = [];
   @Output() save = new EventEmitter<any>();
   @Output() refresh = new EventEmitter<void>();
 }

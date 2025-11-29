@@ -6,11 +6,11 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class CouponRequest {
+public class CupomRequisicao {
     @NotBlank
-    private String code;
+    private String codigo;
     @Min(0)
     @Max(90)
-    private Integer discountPercent;
-    private boolean active = true;
+    private Integer percentualDesconto;
+    private boolean ativo = true;
 }

@@ -1,103 +1,104 @@
-export type PetType = 'DOG' | 'CAT' | 'ACCESSORY';
-export type PaymentMethod = 'CREDIT_CARD' | 'PIX' | 'BOLETO' | 'CASH';
-export type OrderStatus = 'CONFIRMED' | 'PROCESSING' | 'SHIPPED' | 'CANCELLED';
+export type TipoPet = 'CAO' | 'GATO' | 'ACESSORIO';
+export type MetodoPagamento = 'CARTAO_CREDITO' | 'PIX' | 'BOLETO' | 'DINHEIRO';
+export type StatusPedido = 'CONFIRMADO' | 'PROCESSANDO' | 'ENVIADO' | 'CANCELADO';
 
-export interface Category {
+export interface Categoria {
   id: number;
-  name: string;
-  petType: PetType;
+  nome: string;
+  tipoPet: TipoPet;
 }
 
-export interface Product {
+export interface Produto {
   id: number;
-  name: string;
-  description: string;
-  price: number;
-  stock: number;
-  rating: number;
-  imageUrl: string;
-  petType: PetType;
-  category: Category;
+  nome: string;
+  descricao: string;
+  preco: number;
+  estoque: number;
+  avaliacao: number;
+  urlImagem: string;
+  tipoPet: TipoPet;
+  categoria: Categoria;
 }
 
-export interface Coupon {
+export interface Cupom {
   id: number;
-  code: string;
-  discountPercent: number;
-  active: boolean;
+  codigo: string;
+  percentualDesconto: number;
+  ativo: boolean;
 }
 
-export interface User {
+export interface Usuario {
   id: number;
-  name: string;
+  nome: string;
   email: string;
-  role: 'ADMIN' | 'CUSTOMER';
-  pets: PetProfile[];
+  papel: 'ADMIN' | 'CLIENTE';
+  pets: PerfilPet[];
 }
 
-export interface PetProfile {
-  name: string;
-  age?: string;
-  breed?: string;
+export interface PerfilPet {
+  nome: string;
+  idade?: string;
+  raca?: string;
 }
 
-export interface AuthResponse {
+export interface RespostaAuth {
   token: string;
-  userId: number;
-  name: string;
+  usuarioId: number;
+  nome: string;
   email: string;
-  role: 'ADMIN' | 'CUSTOMER';
+  papel: 'ADMIN' | 'CLIENTE';
 }
 
-export interface OrderItemRequest {
-  productId: number;
-  quantity: number;
+export interface ItemPedidoRequisicao {
+  produtoId: number;
+  quantidade: number;
 }
 
-export interface OrderRequest {
-  items: OrderItemRequest[];
-  couponCode?: string;
-  paymentMethod: PaymentMethod;
-  name: string;
+export interface PedidoRequisicao {
+  itens: ItemPedidoRequisicao[];
+  codigoCupom?: string;
+  metodoPagamento: MetodoPagamento;
+  nome: string;
   email: string;
-  street: string;
-  city: string;
-  state: string;
-  zip: string;
+  rua: string;
+  cidade: string;
+  estado: string;
+  cep: string;
+  retirada: boolean;
 }
 
-export interface OrderItem {
-  productId: number;
-  productName: string;
-  quantity: number;
-  price: number;
+export interface ItemPedido {
+  produtoId: number;
+  nomeProduto: string;
+  quantidade: number;
+  preco: number;
   total: number;
 }
 
-export interface OrderRecord {
+export interface Pedido {
   id: number;
-  user: User;
-  items: OrderItem[];
-  address: {
-    name: string;
+  usuario: Usuario;
+  itens: ItemPedido[];
+  endereco: {
+    nome: string;
     email: string;
-    street: string;
-    city: string;
-    state: string;
-    zip: string;
+    rua: string;
+    cidade: string;
+    estado: string;
+    cep: string;
   };
-  paymentMethod: PaymentMethod;
-  status: OrderStatus;
-  couponCode?: string;
+  metodoPagamento: MetodoPagamento;
+  status: StatusPedido;
+  codigoCupom?: string;
   subtotal: number;
-  discount: number;
+  desconto: number;
   total: number;
-  paymentCode?: string;
-  pickup?: boolean;
-  createdAt: string;
+  codigoPagamento?: string;
+  retirada?: boolean;
+  criadoEm: string;
 }
 
-export interface CartItem {
-  product: Product;
-  quantity: number;
+export interface ItemCarrinho {
+  produto: Produto;
+  quantidade: number;
 }

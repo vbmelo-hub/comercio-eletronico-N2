@@ -1,7 +1,6 @@
 package com.artemis.petshop.model;
 
 import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -19,23 +18,23 @@ import java.util.List;
 @Table(name = "users")
 @Data
 @NoArgsConstructor
-public class AppUser {
+public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
+    private String nome;
     private String email;
-    private String password;
+    private String senha;
     @Enumerated(EnumType.STRING)
-    private UserRole role;
+    private PapelUsuario papel;
 
     @ElementCollection
-    private List<PetProfile> pets = new ArrayList<>();
+    private List<PerfilPet> pets = new ArrayList<>();
 
-    public AppUser(String name, String email, String password, UserRole role) {
-        this.name = name;
+    public Usuario(String nome, String email, String senha, PapelUsuario papel) {
+        this.nome = nome;
         this.email = email;
-        this.password = password;
-        this.role = role;
+        this.senha = senha;
+        this.papel = papel;
     }
 }

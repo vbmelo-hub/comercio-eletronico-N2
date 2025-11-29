@@ -1,13 +1,13 @@
 package com.artemis.petshop.controller;
 
-import com.artemis.petshop.dto.AuthResponse;
-import com.artemis.petshop.dto.LoginRequest;
-import com.artemis.petshop.dto.PetRequest;
-import com.artemis.petshop.dto.SignupRequest;
-import com.artemis.petshop.model.AppUser;
-import com.artemis.petshop.model.PetProfile;
+import com.artemis.petshop.dto.RespostaAuth;
+import com.artemis.petshop.dto.LoginRequisicao;
+import com.artemis.petshop.dto.PetRequisicao;
+import com.artemis.petshop.dto.CadastroRequisicao;
+import com.artemis.petshop.model.Usuario;
+import com.artemis.petshop.model.PerfilPet;
 import com.artemis.petshop.service.AuthService;
-import com.artemis.petshop.repository.UserRepository;
+import com.artemis.petshop.repository.UsuarioRepository;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,33 +18,33 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 public class AuthController {
     private final AuthService authService;
-    private final UserRepository userRepository;
+    private final UsuarioRepository usuarioRepository;
 
-    public AuthController(AuthService authService, UserRepository userRepository) {
+    public AuthController(AuthService authService, UsuarioRepository usuarioRepository) {
         this.authService = authService;
-        this.userRepository = userRepository;
+        this.usuarioRepository = usuarioRepository;
     }
 
     @PostMapping("/login")
-    public AuthResponse login(@Valid @RequestBody LoginRequest request) {
-        return authService.login(request);
+    public RespostaAuth login(@Valid @RequestBody LoginRequisicao requisicao) {
+        return authService.login(requisicao);
     }
 
     @PostMapping("/signup")
-    public AuthResponse signup(@Valid @RequestBody SignupRequest request) {
-        return authService.signup(request);
+    public RespostaAuth signup(@Valid @RequestBody CadastroRequisicao requisicao) {
+        return authService.signup(requisicao);
     }
 
     @GetMapping("/me")
-    public AppUser me(@RequestHeader(value = "X-Auth-Token", required = false) String token) {
+    public Usuario me(@RequestHeader(value = "X-Auth-Token", required = false) String token) {
         return authService.me(token);
     }
 
     @PostMapping("/pets")
-    public List<PetProfile> addPet(@RequestHeader("X-Auth-Token") String token, @Valid @RequestBody PetRequest request) {
-        AppUser user = authService.requireUser(token);
-        user.getPets().add(new PetProfile(request.getName(), request.getAge(), request.getBreed()));
-        userRepository.save(user);
-        return user.getPets();
+    public List<PerfilPet> addPet(@RequestHeader("X-Auth-Token") String token, @Valid @RequestBody PetRequisicao requisicao) {
+        Usuario usuario = authService.requireUser(token);
+        usuario.getPets().add(new PerfilPet(requisicao.getNome(), requisicao.getIdade(), requisicao.getRaca()));
+        usuarioRepository.save(usuario);
+        return usuario.getPets();
     }
 }
