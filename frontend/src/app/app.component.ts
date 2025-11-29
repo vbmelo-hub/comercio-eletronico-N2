@@ -16,6 +16,7 @@ import { AdminProductFormComponent } from './components/admin/admin-product-form
 import { AdminCategoryPanelComponent } from './components/admin/admin-category-panel.component';
 import { AdminCouponPanelComponent } from './components/admin/admin-coupon-panel.component';
 import { AdminOrdersPanelComponent } from './components/admin/admin-orders-panel.component';
+import { labelUserRole } from './labels';
 
 @Component({
   selector: 'app-root',
@@ -73,6 +74,7 @@ export class AppComponent implements OnInit {
   toast: { message: string; type: 'info' | 'error' } | null = null;
   readonly pixKey = 'pix@artemispets.com';
   formError = '';
+  roleLabel = labelUserRole;
 
   private buildPixQr(payload: string): string {
     return `https://quickchart.io/qr?text=${encodeURIComponent(payload)}`;
@@ -289,6 +291,12 @@ export class AppComponent implements OnInit {
 
   checkout() {
     this.formError = '';
+    if (!this.user) {
+      this.formError = 'Entre na sua conta para finalizar a compra.';
+      this.showToast(this.formError, 'error');
+      this.openLoginModal();
+      return;
+    }
     if (!this.checkoutForm.name.trim()) {
       this.formError = 'Preencha o nome.';
       return;

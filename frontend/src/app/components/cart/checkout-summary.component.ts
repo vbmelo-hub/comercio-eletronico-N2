@@ -37,13 +37,24 @@ import { PaymentMethod } from '../../models';
         <label class="required">Nome<input [ngModel]="name" (ngModelChange)="nameChange.emit($event)" [class.filled]="name"></label>
         <label class="required">Email<input [ngModel]="email" (ngModelChange)="emailChange.emit($event)" [class.filled]="email"></label>
       </div>
-      <label [class.required]="!pickup">Endereco<input [disabled]="pickup" [ngModel]="street" (ngModelChange)="streetChange.emit($event)" [class.filled]="street"></label>
-      <div class="mini-grid">
-        <label [class.required]="!pickup">Cidade<input [disabled]="pickup" [ngModel]="city" (ngModelChange)="cityChange.emit($event)" [class.filled]="city"></label>
-        <label [class.required]="!pickup">Estado<input [disabled]="pickup" [ngModel]="state" (ngModelChange)="stateChange.emit($event)" [class.filled]="state"></label>
-      </div>
-      <div class="mini-grid">
-        <label [class.required]="!pickup">CEP<input [disabled]="pickup" [ngModel]="zip" (ngModelChange)="zipChange.emit($event)" [class.filled]="zip"></label>
+      <ng-container *ngIf="!pickup">
+        <label class="required">Endereco<input [ngModel]="street" (ngModelChange)="streetChange.emit($event)" [class.filled]="street"></label>
+        <div class="mini-grid">
+          <label class="required">Cidade<input [ngModel]="city" (ngModelChange)="cityChange.emit($event)" [class.filled]="city"></label>
+          <label class="required">Estado<input [ngModel]="state" (ngModelChange)="stateChange.emit($event)" [class.filled]="state"></label>
+        </div>
+        <div class="mini-grid">
+          <label class="required">CEP<input [ngModel]="zip" (ngModelChange)="zipChange.emit($event)" [class.filled]="zip"></label>
+          <label class="required">Pagamento
+            <select [ngModel]="paymentMethod" (ngModelChange)="paymentMethodChange.emit($event)" [class.filled]="paymentMethod">
+              <option value="PIX">PIX</option>
+              <option value="BOLETO">Boleto</option>
+              <option value="CASH">Dinheiro na entrega</option>
+            </select>
+          </label>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="pickup">
         <label class="required">Pagamento
           <select [ngModel]="paymentMethod" (ngModelChange)="paymentMethodChange.emit($event)" [class.filled]="paymentMethod">
             <option value="PIX">PIX</option>
@@ -51,9 +62,10 @@ import { PaymentMethod } from '../../models';
             <option value="CASH">Dinheiro na entrega</option>
           </select>
         </label>
-      </div>
+      </ng-container>
       <div class="muted tiny" *ngIf="formError">{{formError}}</div>
-      <button class="btn primary full" (click)="checkout.emit()">Finalizar</button>
+      <div class="muted tiny" *ngIf="!loggedIn">Entre para finalizar a compra.</div>
+      <button class="btn primary full" [disabled]="!loggedIn" (click)="checkout.emit()">Finalizar</button>
     </div>
   `
 })
@@ -72,6 +84,7 @@ export class CheckoutSummaryComponent {
   @Input() zip = '';
   @Input() paymentMethod: PaymentMethod = 'PIX';
   @Input() formError = '';
+  @Input() loggedIn = false;
 
   @Output() couponChange = new EventEmitter<string>();
   @Output() applyCoupon = new EventEmitter<void>();

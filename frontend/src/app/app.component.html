@@ -13,11 +13,11 @@
       <button class="nav-btn" [class.active]="activeTab==='cart'" (click)="setTab('cart')">Carrinho</button>
       <button class="nav-btn" [class.active]="activeTab==='orders'" (click)="setTab('orders')">Pedidos</button>
       <button class="nav-btn" [class.active]="activeTab==='profile'" (click)="setTab('profile')">Perfil</button>
-      <button class="nav-btn" *ngIf="isAdmin" [class.active]="activeTab==='admin'" (click)="setTab('admin')">Admin</button>
+      <button class="nav-btn" *ngIf="isAdmin" [class.active]="activeTab==='admin'" (click)="setTab('admin')">Administracao</button>
     </div>
 
     <div class="nav-user">
-      <span class="pill" *ngIf="user; else guest">{{user?.name}} / {{user?.role}}</span>
+      <span class="pill" *ngIf="user; else guest">{{user?.name}} / {{roleLabel(user?.role)}}</span>
       <ng-template #guest><span class="pill muted">Visitante</span></ng-template>
       <button class="btn ghost" *ngIf="!user" (click)="openLoginModal()">Entrar</button>
       <button class="btn ghost danger" *ngIf="user" (click)="logout()">Sair</button>
@@ -61,7 +61,7 @@
     <section class="panel" *ngIf="activeTab==='cart'">
       <div class="panel-head">
         <div>
-          <p class="eyebrow">Checkout</p>
+          <p class="eyebrow">Pagamento</p>
           <h2>Carrinho e pagamento</h2>
         </div>
         <button class="btn ghost" (click)="clearCart()">Esvaziar</button>
@@ -87,6 +87,7 @@
           [state]="checkoutForm.state"
           [zip]="checkoutForm.zip"
           [paymentMethod]="checkoutForm.paymentMethod"
+          [loggedIn]="!!user"
           [formError]="formError"
           (couponChange)="checkoutForm.coupon = $event"
           (applyCoupon)="applyCoupon()"
@@ -130,7 +131,7 @@
             <h3>{{user?.name}}</h3>
             <div class="compact-stats">
               <span class="pill muted">Email: {{user?.email}}</span>
-              <span class="pill muted">Perfil: {{user?.role}}</span>
+              <span class="pill muted">Perfil: {{roleLabel(user?.role)}}</span>
             </div>
             <div class="compact-stats">
               <span class="pill">Pets: {{user?.pets?.length || 0}}</span>
@@ -236,9 +237,9 @@
 
   <div class="modal-backdrop" *ngIf="paymentModal">
     <div class="modal-card">
-      <div class="row">
+      <div class="row modal-header">
         <h3>Pagamento</h3>
-        <button class="btn ghost danger" (click)="paymentModal=false">Fechar</button>
+        <button class="btn ghost danger modal-close" (click)="paymentModal=false" aria-label="Fechar modal">X</button>
       </div>
       <p class="muted" *ngIf="paymentDetails">{{paymentDetails?.info}}</p>
       <div *ngIf="paymentDetails?.pixKey">
@@ -261,12 +262,12 @@
 
   <div class="modal-backdrop" *ngIf="loginModal">
     <div class="modal-card auth-modal">
-      <div class="row">
+      <div class="row modal-header">
         <div>
           <p class="eyebrow">Acesso seguro</p>
           <h3>Entrar</h3>
         </div>
-        <button class="btn ghost danger" (click)="closeAuthModals()">Fechar</button>
+        <button class="btn ghost danger modal-close" (click)="closeAuthModals()" aria-label="Fechar modal">X</button>
       </div>
       <p class="muted tiny">Use seu email e senha para continuar.</p>
       <app-login-panel
@@ -283,12 +284,12 @@
 
   <div class="modal-backdrop" *ngIf="signupModal">
     <div class="modal-card auth-modal">
-      <div class="row">
+      <div class="row modal-header">
         <div>
           <p class="eyebrow">Cadastro</p>
           <h3>Criar conta</h3>
         </div>
-        <button class="btn ghost danger" (click)="closeAuthModals()">Fechar</button>
+        <button class="btn ghost danger modal-close" (click)="closeAuthModals()" aria-label="Fechar modal">X</button>
       </div>
       <p class="muted tiny">Ganhe historico, cupons e cadastro de pets.</p>
       <app-signup-panel

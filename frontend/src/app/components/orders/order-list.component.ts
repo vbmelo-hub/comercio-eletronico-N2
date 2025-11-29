@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { OrderRecord } from '../../models';
+import { labelOrderStatus, labelPaymentMethod } from '../../labels';
 
 @Component({
   selector: 'app-order-list',
@@ -17,7 +18,7 @@ import { OrderRecord } from '../../models';
           <span>{{o.items.length}} itens</span>
           <span class="price">{{o.total | currency:'BRL':'symbol'}}</span>
         </div>
-        <div class="muted">Pagamento: {{o.paymentMethod}} · Status: {{o.status}}</div>
+        <div class="muted">Pagamento: {{labelPaymentMethod(o.paymentMethod)}} - Status: {{labelOrderStatus(o.status)}}</div>
         <button class="btn ghost full" (click)="viewPayment.emit(o)">Ver pagamento</button>
       </div>
       <p class="muted" *ngIf="!orders || orders.length===0">Sem pedidos ainda.</p>
@@ -27,4 +28,7 @@ import { OrderRecord } from '../../models';
 export class OrderListComponent {
   @Input() orders: OrderRecord[] = [];
   @Output() viewPayment = new EventEmitter<OrderRecord>();
+
+  labelPaymentMethod = labelPaymentMethod;
+  labelOrderStatus = labelOrderStatus;
 }

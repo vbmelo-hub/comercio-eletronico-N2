@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Product } from '../../models';
+import { labelPetType } from '../../labels';
 
 @Component({
   selector: 'app-product-card',
@@ -10,8 +11,8 @@ import { Product } from '../../models';
     <article class="card product">
       <img [src]="product?.imageUrl" [alt]="product?.name">
       <div class="row">
-        <span class="pill">{{product?.category?.name}} · {{product?.petType}}</span>
-        <span class="pill">★ {{product?.rating}}</span>
+        <span class="pill">{{product?.category?.name}} - {{labelPetType(product?.petType)}}</span>
+        <span class="pill">Nota: {{product?.rating}}</span>
       </div>
       <h3>{{product?.name}}</h3>
       <p class="muted">{{product?.description}}</p>
@@ -26,4 +27,6 @@ import { Product } from '../../models';
 export class ProductCardComponent {
   @Input() product!: Product;
   @Output() add = new EventEmitter<Product>();
+
+  labelPetType = labelPetType;
 }

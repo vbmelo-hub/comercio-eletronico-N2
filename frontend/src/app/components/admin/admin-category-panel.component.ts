@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Category } from '../../models';
+import { labelPetType } from '../../labels';
 
 @Component({
   selector: 'app-admin-category-panel',
@@ -29,7 +30,7 @@ import { Category } from '../../models';
       <button class="btn ghost" (click)="save.emit(category)">Salvar categoria</button>
       <div class="pill-collection">
         <span class="pill" *ngFor="let c of categories">
-          {{c.name}} · {{c.petType}}
+          {{c.name}} - {{labelPetType(c.petType)}}
           <button class="btn ghost danger" (click)="remove.emit(c.id)">x</button>
         </span>
       </div>
@@ -42,4 +43,6 @@ export class AdminCategoryPanelComponent {
   @Output() save = new EventEmitter<any>();
   @Output() remove = new EventEmitter<number>();
   @Output() refresh = new EventEmitter<void>();
+
+  labelPetType = labelPetType;
 }

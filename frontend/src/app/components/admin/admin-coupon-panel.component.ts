@@ -28,7 +28,7 @@ import { Coupon } from '../../models';
       </div>
       <button class="btn ghost" (click)="save.emit(coupon)">Salvar cupom</button>
       <div class="pill-collection">
-        <span class="pill" *ngFor="let c of coupons">{{c.code}} · {{c.discountPercent}}% · {{c.active ? 'ativo' : 'off'}}</span>
+        <span class="pill" *ngFor="let c of coupons">{{c.code}} - {{c.discountPercent}}% - {{c.active ? 'ativo' : 'pausado'}}</span>
       </div>
     </div>
   `

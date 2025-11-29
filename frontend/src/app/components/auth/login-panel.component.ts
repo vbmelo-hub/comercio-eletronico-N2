@@ -8,11 +8,11 @@ import { FormsModule } from '@angular/forms';
   imports: [CommonModule, FormsModule],
   template: `
     <div class="card stack">
-      <h3>Login</h3>
+      <h3>Entrar</h3>
       <label>Email<input [(ngModel)]="email"></label>
       <label>Senha<input type="password" [(ngModel)]="password"></label>
       <button class="btn primary full" (click)="login.emit({ email, password })">Entrar</button>
-      <p class="muted">Admin: admin&#64;petshop.com / admin123</p>
+      <p class="muted">Administrador: admin&#64;petshop.com / admin123</p>
     </div>
   `
 })
