@@ -14,6 +14,8 @@ import com.artemis.petshop.repository.UsuarioRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -27,6 +29,7 @@ public class DataInitializer {
                                CupomRepository cupomRepository,
                                UsuarioRepository usuarioRepository,
                                PedidoRepository pedidoRepository) {
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         return args -> {
             final String racaoDogImg = "https://plus.unsplash.com/premium_photo-1726761692986-6bcde87fc2b8?q=80&w=1401&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
             final String racaoCatImg = "https://plus.unsplash.com/premium_photo-1726761692986-6bcde87fc2b8?q=80&w=1401&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
@@ -90,9 +93,9 @@ public class DataInitializer {
             cupomRepository.save(new Cupom("BEMVINDO", 10, true));
             cupomRepository.save(new Cupom("FRETEGRATIS", 5, false));
 
-            usuarioRepository.save(new Usuario("Equipe Admin", "admin@petshop.com", "admin123", PapelUsuario.ADMIN));
-            usuarioRepository.save(new Usuario("Cliente Demo", "cliente@petshop.com", "cliente123", PapelUsuario.CLIENTE));
-            usuarioRepository.save(new Usuario("Usuario Comum", "usuario@gmail.com", "1234", PapelUsuario.CLIENTE));
+            usuarioRepository.save(new Usuario("Equipe Admin", "admin@petshop.com", passwordEncoder.encode("admin123"), PapelUsuario.ADMIN));
+            usuarioRepository.save(new Usuario("Cliente Demo", "cliente@petshop.com", passwordEncoder.encode("cliente123"), PapelUsuario.CLIENTE));
+            usuarioRepository.save(new Usuario("Usuario Comum", "usuario@gmail.com", passwordEncoder.encode("1234"), PapelUsuario.CLIENTE));
         };
     }
 

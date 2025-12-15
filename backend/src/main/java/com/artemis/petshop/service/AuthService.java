@@ -1,4 +1,4 @@
-package com.artemis.petshop.service;
+    package com.artemis.petshop.service;
 
 import com.artemis.petshop.dto.RespostaAuth;
 import com.artemis.petshop.dto.LoginRequisicao;
@@ -7,6 +7,8 @@ import com.artemis.petshop.model.Usuario;
 import com.artemis.petshop.model.PapelUsuario;
 import com.artemis.petshop.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Map;
 import java.util.Optional;
@@ -17,6 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class AuthService {
     private final UsuarioRepository usuarioRepository;
     private final Map<String, Long> sessions = new ConcurrentHashMap<>();
+    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public AuthService(UsuarioRepository usuarioRepository) {
         this.usuarioRepository = usuarioRepository;
@@ -24,7 +27,7 @@ public class AuthService {
 
     public RespostaAuth login(LoginRequisicao requisicao) {
         Usuario usuario = usuarioRepository.findByEmailIgnoreCase(requisicao.getEmail())
-                .filter(u -> u.getSenha().equals(requisicao.getSenha()))
+                .filter(u -> passwordEncoder.matches(requisicao.getSenha(), u.getSenha()))
                 .orElseThrow(() -> new IllegalArgumentException("Credenciais invalidas"));
         String token = UUID.randomUUID().toString();
         sessions.put(token, usuario.getId());
@@ -36,7 +39,8 @@ public class AuthService {
         if (existing.isPresent()) {
             throw new IllegalArgumentException("Email ja cadastrado");
         }
-        Usuario usuario = new Usuario(requisicao.getNome(), requisicao.getEmail(), requisicao.getSenha(), PapelUsuario.CLIENTE);
+        String hash = passwordEncoder.encode(requisicao.getSenha());
+        Usuario usuario = new Usuario(requisicao.getNome(), requisicao.getEmail(), hash, PapelUsuario.CLIENTE);
         usuarioRepository.save(usuario);
         String token = UUID.randomUUID().toString();
         sessions.put(token, usuario.getId());

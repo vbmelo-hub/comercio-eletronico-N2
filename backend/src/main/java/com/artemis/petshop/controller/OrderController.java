@@ -24,13 +24,13 @@ public class OrderController {
 
     @GetMapping
     public List<Pedido> list(@RequestHeader(value = "X-Auth-Token", required = false) String token) {
-        Usuario usuario = authService.me(token);
+        Usuario usuario = authService.requireUser(token);
         return pedidoService.listForUser(usuario);
     }
 
     @PostMapping
     public Pedido create(@RequestHeader(value = "X-Auth-Token", required = false) String token, @Valid @RequestBody PedidoRequisicao requisicao) {
-        Usuario usuario = authService.me(token);
+        Usuario usuario = authService.requireUser(token);
         return pedidoService.createOrder(usuario, requisicao);
     }
 }

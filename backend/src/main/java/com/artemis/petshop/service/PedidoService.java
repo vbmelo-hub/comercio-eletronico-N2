@@ -28,6 +28,9 @@ public class PedidoService {
 
     @Transactional
     public Pedido createOrder(Usuario usuario, PedidoRequisicao requisicao) {
+        if (usuario == null) {
+            throw new IllegalArgumentException("Faça login para concluir o pedido");
+        }
         if (requisicao == null || requisicao.getItens() == null || requisicao.getItens().isEmpty()) {
             throw new IllegalArgumentException("Carrinho vazio");
         }
