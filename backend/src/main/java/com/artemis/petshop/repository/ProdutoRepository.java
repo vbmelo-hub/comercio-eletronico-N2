@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ProdutoRepository extends JpaRepository<Produto, Long> {
     @Query("""
@@ -19,4 +20,6 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
     List<Produto> search(@Param("categoryId") Long categoryId, @Param("petType") TipoPet petType, @Param("q") String q);
 
     long countByCategoriaId(Long categoriaId);
+
+    Optional<Produto> findByNome(String nome);
 }

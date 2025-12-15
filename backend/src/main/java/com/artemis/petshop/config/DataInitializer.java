@@ -28,23 +28,24 @@ public class DataInitializer {
                                UsuarioRepository usuarioRepository,
                                PedidoRepository pedidoRepository) {
         return args -> {
-            final String racaoDogImg = "https://images.unsplash.com/photo-1589463529286-21f8b154bdd0?auto=format&fit=crop&w=800&q=80";
-            final String racaoCatImg = "https://images.unsplash.com/photo-1558944351-c7e7d6f1a14a?auto=format&fit=crop&w=800&q=80";
-            final String brinquedoMordedorImg = "https://images.unsplash.com/photo-1626337928254-287a1b6b1c2c?auto=format&fit=crop&w=800&q=80";
-            final String arranhadorImg = "https://images.unsplash.com/photo-1601758062965-6ec2ef64a1c2?auto=format&fit=crop&w=800&q=80";
-            final String kitBanhoImg = "https://images.unsplash.com/photo-1617032238119-296d7731ea40?auto=format&fit=crop&w=800&q=80";
-            final String caminhaImg = "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=800&q=80";
-            final String coleiraReflexivaImg = "https://images.unsplash.com/photo-1530281700549-e82e7bf110d6?auto=format&fit=crop&w=800&q=80";
-            final String snackDentalImg = "https://images.unsplash.com/photo-1611944212129-29977ae1398c?auto=format&fit=crop&w=800&q=80";
-            final String fonteGatosImg = "https://images.unsplash.com/photo-1619983081563-430f63602796?auto=format&fit=crop&w=800&q=80";
-            final String areiaSilicaImg = "https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=800&q=80";
-            final String bolinhaInteligenteImg = "https://images.unsplash.com/photo-1582719478248-54e9f2afbc98?auto=format&fit=crop&w=800&q=80";
-            final String coleteAnsiedadeImg = "https://images.unsplash.com/photo-1544568100-847a948585b9?auto=format&fit=crop&w=800&q=80";
-            final String petiscoGatoImg = "https://images.unsplash.com/photo-1587554801395-0340b9e559e9?auto=format&fit=crop&w=800&q=80";
-            final String tapeteHigienicoImg = "https://images.unsplash.com/photo-1525253086316-d0c936c814f8?auto=format&fit=crop&w=800&q=80";
-            final String racaoGrainFreeImg = "https://images.unsplash.com/photo-1596496050301-0d79d2fd1f1f?auto=format&fit=crop&w=800&q=80";
-            final String racaoIndoorCastradosImg = "https://images.unsplash.com/photo-1545243424-0ce743321e11?auto=format&fit=crop&w=800&q=80";
-            final String kitEscovaImg = "https://images.unsplash.com/photo-1601758065894-6ec2ef64a1c2?auto=format&fit=crop&w=800&q=80";
+            final String racaoDogImg = "https://plus.unsplash.com/premium_photo-1726761692986-6bcde87fc2b8?q=80&w=1401&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+            final String racaoCatImg = "https://plus.unsplash.com/premium_photo-1726761692986-6bcde87fc2b8?q=80&w=1401&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+            final String brinquedoMordedorImg = "https://images.unsplash.com/photo-1535294435445-d7249524ef2e?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+
+            final String arranhadorImg = "https://media.istockphoto.com/id/537726994/pt/foto/bonitos-gatinho-numa-arranhador-para-gato-isolado-no-branco.jpg?s=2048x2048&w=is&k=20&c=DSxQIgJIcJBcR3CLqiGN21Xj1vqTFG_jCa817ilsUAY=";
+            final String kitBanhoImg = "https://media.istockphoto.com/id/1570674801/pt/foto/funny-cute-baby-dog-bathes-in-bathtub-with-rubber-toy-duck-in-foam-soap-bubble.jpg?s=2048x2048&w=is&k=20&c=RyqknQMb5FmuXBO1-8y6m4BAQFBGQqEwiGSw2KdddFU=";
+            final String caminhaImg = "https://images.unsplash.com/photo-1581888227599-779811939961?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+            final String coleiraReflexivaImg = "https://media.istockphoto.com/id/1027876184/pt/foto/dog-walking-in-the-city.jpg?s=2048x2048&w=is&k=20&c=B8ZCKCabS_yI8xACyALsS93XPupnviS4LNC4-FOYbRY=";
+            final String snackDentalImg = "https://images.unsplash.com/photo-1746513230312-83b1e7629e83?q=80&w=735&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+            final String fonteGatosImg = "https://images.unsplash.com/photo-1764741368227-38ac9fd670a2?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+            final String areiaSilicaImg = "https://media.istockphoto.com/id/1315441226/pt/foto/valentines-day-heart-gift-from-bengal-cat-the-cat-expresses-its-love.jpg?s=2048x2048&w=is&k=20&c=wkofAQ8Wh9Ckc1YLNdEgt2EOtahFyiIgF_5t_naSWrk=";
+            final String bolinhaInteligenteImg = "https://images.unsplash.com/photo-1608743839000-50a0aa35e979?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+            final String coleteAnsiedadeImg = "https://images.unsplash.com/photo-1761532907528-85579a5c2e00?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+            final String petiscoGatoImg = "https://images.unsplash.com/photo-1592468257342-8375cb556a69?q=80&w=1469&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+            final String tapeteHigienicoImg = "https://images.unsplash.com/photo-1542178623-549d77f5262e?q=80&w=1474&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+            final String racaoGrainFreeImg = "https://plus.unsplash.com/premium_photo-1726761692986-6bcde87fc2b8?q=80&w=1401&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+            final String racaoIndoorCastradosImg = "https://plus.unsplash.com/premium_photo-1726761692986-6bcde87fc2b8?q=80&w=1401&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+            final String kitEscovaImg = "https://media.istockphoto.com/id/1814702073/pt/foto/groomer-brushing-corgi-dog-with-a-slicker-brush-cute-pembroke-welsh-corgi-puppy-enjoys-being.jpg?s=1024x1024&w=is&k=20&c=AHxnKEN7E-q4ip8S9wV7eZcybChs3ykv0B2Q91b8JIg=";
 
             boolean hasSeedData = categoriaRepository.count() > 0
                     || produtoRepository.count() > 0
@@ -53,6 +54,10 @@ public class DataInitializer {
                     || pedidoRepository.count() > 0;
 
             if (hasSeedData) {
+                updateProdutoImagem(produtoRepository, "Biofresh Natural 10 kg", racaoDogImg);
+                updateProdutoImagem(produtoRepository, "Premier Ambientes Internos 7 kg", racaoCatImg);
+                updateProdutoImagem(produtoRepository, "Mordedor de Borracha Aromケtico", brinquedoMordedorImg);
+                updateProdutoImagem(produtoRepository, "Arranhador Modular Sisal", arranhadorImg);
                 return;
             }
 
@@ -89,5 +94,12 @@ public class DataInitializer {
             usuarioRepository.save(new Usuario("Cliente Demo", "cliente@petshop.com", "cliente123", PapelUsuario.CLIENTE));
             usuarioRepository.save(new Usuario("Usuario Comum", "usuario@gmail.com", "1234", PapelUsuario.CLIENTE));
         };
+    }
+
+    private void updateProdutoImagem(ProdutoRepository produtoRepository, String nome, String novaUrl) {
+        produtoRepository.findByNome(nome).ifPresent(produto -> {
+            produto.setUrlImagem(novaUrl);
+            produtoRepository.save(produto);
+        });
     }
 }
